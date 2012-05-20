@@ -1,4 +1,4 @@
-Clara - Declarative UI and bindings for Vaadin Framework
+Clara - Declarative UI and Bindings for Vaadin Framework
 ========================================================
 
 Purpose of this project is to define a declarative XML-based syntax for defining Vaadin user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
