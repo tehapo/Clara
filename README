@@ -1,0 +1,13 @@
+Clara - Declarative UI and Bindings for Vaadin Framework
+========================================================
+
+Purpose of this project is to define a declarative XML-based syntax for defining Vaadin user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
+
+Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his xmlui Vaadin add-on (http://vaadin.com/addon/xmlui).
+
+Project Status
+==============
+
+The project is still very experimental and documentation is minimal at this point. Although you can still find a demo application demonstrating the current version of the project at:
+
+http://teemu.virtuallypreinstalled.com/clara
