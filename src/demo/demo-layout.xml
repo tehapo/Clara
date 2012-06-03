@@ -27,6 +27,6 @@
     <DateField caption="Select a date" id="date" immediate="true" />
     <a:RatingStars id="value-field" immediate="true" caption="Rate this app" />
 
-    <Table id="person-list" caption="Controller provides my datasource..." pageLength="2" />
+    <Table id="person-list" caption="Controller provides my datasource..." layout_componentAlignment="MIDDLE_CENTER" pageLength="2" />
     <Select caption="...try moving the person-list id to me" itemCaptionPropertyId="Name" />
 </VerticalLayout>

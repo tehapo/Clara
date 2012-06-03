@@ -40,8 +40,9 @@ class ViewInflaterContentHandler extends DefaultHandler {
             String className = localName;
 
             currentId = null;
+            Map<String, String> attributeMap = getAttributeMap(attributes);
             currentComponent = componentFactory.createComponent(packageName,
-                    className, getAttributeMap(attributes));
+                    className, attributeMap);
             if (currentId != null) {
                 idMap.put(currentId, currentComponent);
             }
@@ -51,6 +52,8 @@ class ViewInflaterContentHandler extends DefaultHandler {
             }
             if (currentContainer != null) {
                 currentContainer.addComponent(currentComponent);
+                componentFactory.handleLayoutAttributes(currentContainer,
+                        currentComponent, attributeMap);
             }
             if (currentComponent instanceof ComponentContainer) {
                 currentContainer = (ComponentContainer) currentComponent;

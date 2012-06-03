@@ -3,6 +3,7 @@ package org.vaadin.teemu.clara.factory;
 import java.util.Map;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 public interface ComponentFactory {
 
@@ -21,5 +22,8 @@ public interface ComponentFactory {
     Component createComponent(String namespace, String name,
             Map<String, String> attributes)
             throws ComponentInstantiationException;
+
+    void handleLayoutAttributes(ComponentContainer layout, Component component,
+            Map<String, String> attributes);
 
 }

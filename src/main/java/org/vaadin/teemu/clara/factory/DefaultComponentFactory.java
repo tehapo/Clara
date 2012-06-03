@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 
 public class DefaultComponentFactory implements ComponentFactory {
 
@@ -151,6 +152,61 @@ public class DefaultComponentFactory implements ComponentFactory {
             }
         }
         return null;
+    }
+
+    public void handleLayoutAttributes(ComponentContainer layout,
+            Component component, Map<String, String> attributes) {
+        try {
+            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+                if (attribute.getKey().startsWith("layout_")) {
+                    String layoutProperty = attribute.getKey().substring(
+                            "layout_".length());
+                    Method layoutMethod = findLayoutMethod(layout.getClass(),
+                            layoutProperty);
+                    if (layoutMethod != null) {
+                        AttributeHandler handler = getHandlerFor(layoutMethod
+                                .getParameterTypes()[1]);
+                        if (handler != null)
+                            layoutMethod
+                                    .invoke(layout, component,
+                                            handler.getValueAs(attribute
+                                                    .getValue(), layoutMethod
+                                                    .getParameterTypes()[1]));
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static Method findLayoutMethod(
+            Class<? extends ComponentContainer> layoutClass, String propertyName) {
+        Method[] layoutMethods = layoutClass.getMethods();
+        Method candiateMethod = null;
+        String methodToLookFor = "set"
+                + propertyName.substring(0, 1).toUpperCase()
+                + propertyName.substring(1);
+
+        for (Method layoutMethod : layoutMethods) {
+            Class<?>[] params = layoutMethod.getParameterTypes();
+            if (params.length == 2
+                    && params[0].isAssignableFrom(Component.class)
+                    && layoutMethod.getName().equals(methodToLookFor)) {
+                if (layoutMethod.getAnnotation(Deprecated.class) == null) {
+                    // Prefer non-deprecated methods.
+                    return layoutMethod;
+                } else {
+                    // Use deprecated methods only if no other match found.
+                    candiateMethod = layoutMethod;
+                }
+            }
+        }
+        return candiateMethod;
     }
 
 }
