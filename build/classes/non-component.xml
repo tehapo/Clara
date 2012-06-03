@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<v:VerticalLayout xmlns:v="urn:vaadin:com.vaadin.ui"
-xmlns:a="urn:vaadin:org.vaadin.teemu.ratingstars"
-xmlns:b="urn:vaadin:java.util">
-
-	<!-- java.util.Random is not a Component -->
-	<b:Random/>
-	
-</v:VerticalLayout>
