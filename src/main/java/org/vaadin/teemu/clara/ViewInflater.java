@@ -3,9 +3,9 @@ package org.vaadin.teemu.clara;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.vaadin.teemu.clara.factory.ComponentFactory;
+import org.vaadin.teemu.clara.factory.ComponentManager;
 import org.vaadin.teemu.clara.factory.ComponentInstantiationException;
-import org.vaadin.teemu.clara.factory.DefaultComponentFactory;
+import org.vaadin.teemu.clara.factory.DefaultComponentManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -13,10 +13,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class ViewInflater {
 
-    private ComponentFactory componentFactory = new DefaultComponentFactory();
+    private ComponentManager componentManager = new DefaultComponentManager();
 
-    public void setComponentFactory(ComponentFactory componentFactory) {
-        this.componentFactory = componentFactory;
+    public void setComponentFactory(ComponentManager componentManager) {
+        this.componentManager = componentManager;
     }
 
     public InflatedCustomComponent inflate(InputStream xml)
@@ -24,7 +24,7 @@ public class ViewInflater {
         try {
             // initialize content handler
             ViewInflaterContentHandler handler = new ViewInflaterContentHandler(
-                    componentFactory);
+                    componentManager);
 
             // parse the XML
             XMLReader parser = XMLReaderFactory.createXMLReader();

@@ -57,6 +57,21 @@ public class ViewInflaterTest {
     }
 
     @Test
+    public void inflate_layoutAttributes_layoutAttributesApplied() {
+        CustomComponent view = inflater
+                .inflate(getXml("layout-attributes.xml"));
+        Component layout = view.getComponentIterator().next();
+
+        // check that the composition root is actually a VerticalLayout
+        assertEquals(com.vaadin.ui.VerticalLayout.class, layout.getClass());
+
+        // check expandRatio
+        VerticalLayout verticalLayout = (VerticalLayout) layout;
+        Component button = verticalLayout.getComponentIterator().next();
+        assertEquals(1.0f, verticalLayout.getExpandRatio(button), 0.0f);
+    }
+
+    @Test
     public void inflate_singleButton_findByIdWorks() {
         InflatedCustomComponent view = inflater
                 .inflate(getXml("single-button.xml"));

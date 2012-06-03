@@ -14,15 +14,15 @@ import java.util.logging.Logger;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
-public class DefaultComponentFactory implements ComponentFactory {
+public class DefaultComponentManager implements ComponentManager {
 
     private List<AttributeHandler> attributeHandlers = new ArrayList<AttributeHandler>();
 
     private Logger getLogger() {
-        return Logger.getLogger(DefaultComponentFactory.class.getName());
+        return Logger.getLogger(DefaultComponentManager.class.getName());
     }
 
-    public DefaultComponentFactory() {
+    public DefaultComponentManager() {
         // Setup the default AttributeHandlers.
         addAttributeHandler(new PrimitiveAttributeHandler());
         addAttributeHandler(new VaadinAttributeHandler());
@@ -154,21 +154,25 @@ public class DefaultComponentFactory implements ComponentFactory {
         return null;
     }
 
-    public void handleLayoutAttributes(ComponentContainer layout,
+    public void applyLayoutAttributes(ComponentContainer container,
             Component component, Map<String, String> attributes) {
+        if (!component.getParent().equals(container)) {
+            throw new IllegalStateException(
+                    "The given container must be the parent of given component.");
+        }
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
                 if (attribute.getKey().startsWith("layout_")) {
                     String layoutProperty = attribute.getKey().substring(
                             "layout_".length());
-                    Method layoutMethod = findLayoutMethod(layout.getClass(),
-                            layoutProperty);
+                    Method layoutMethod = findLayoutMethod(
+                            container.getClass(), layoutProperty);
                     if (layoutMethod != null) {
                         AttributeHandler handler = getHandlerFor(layoutMethod
                                 .getParameterTypes()[1]);
                         if (handler != null)
                             layoutMethod
-                                    .invoke(layout, component,
+                                    .invoke(container, component,
                                             handler.getValueAs(attribute
                                                     .getValue(), layoutMethod
                                                     .getParameterTypes()[1]));

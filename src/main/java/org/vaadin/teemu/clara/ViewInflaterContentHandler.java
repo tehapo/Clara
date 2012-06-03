@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.vaadin.teemu.clara.factory.ComponentFactory;
+import org.vaadin.teemu.clara.factory.ComponentManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -19,10 +19,10 @@ class ViewInflaterContentHandler extends DefaultHandler {
     private Component currentComponent;
     private Component root;
     private String currentId;
-    private final ComponentFactory componentFactory;
+    private final ComponentManager componentFactory;
     private final Map<String, Component> idMap = new HashMap<String, Component>();
 
-    public ViewInflaterContentHandler(ComponentFactory componentFactory) {
+    public ViewInflaterContentHandler(ComponentManager componentFactory) {
         this.componentFactory = componentFactory;
     }
 
@@ -52,7 +52,7 @@ class ViewInflaterContentHandler extends DefaultHandler {
             }
             if (currentContainer != null) {
                 currentContainer.addComponent(currentComponent);
-                componentFactory.handleLayoutAttributes(currentContainer,
+                componentFactory.applyLayoutAttributes(currentContainer,
                         currentComponent, attributeMap);
             }
             if (currentComponent instanceof ComponentContainer) {
