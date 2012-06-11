@@ -1,6 +1,6 @@
 ## Clara - Declarative UI and Bindings for Vaadin Framework
 
-Purpose of this project is to define a declarative XML-based syntax for defining Vaadin user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
+Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
 
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.com/addon/xmlui).
 
@@ -14,4 +14,20 @@ The project is still very experimental and documentation is minimal at this poin
 
 ## Quickstart
 
-Coming soon...
+```java
+// Get XML file from classpath.
+InputStream xmlLayout = getClass().getClassLoader().getResourceAsStream("xml-layout.xml");
+
+// Instantiate a new ViewInflater instance and inflate the XML to a CustomComponent.
+ViewInflater inflater = new ViewInflater();
+InflatedCustomComponent layout = inflater.inflate(xmlLayout);
+
+// Now the inflated layout is ready to be used.
+getMainWindow().addComponent(layout);
+
+// Optional:
+// Bind to a POJO (myController) that has methods annotated with @DataSource or
+// @EventHandler annotations.
+Binder binder = new Binder();
+binder.bind(layout, myController);
+```
