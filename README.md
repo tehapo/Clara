@@ -1,3 +1,5 @@
+![Clara](https://github.com/tehapo/Clara/raw/99386831b5c2f3fc1e916180b1b60c796c2cd0ad/dist/img/clara-logo-150x174.png)
+
 ## Clara - Declarative UI and Bindings for Vaadin Framework
 
 Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
