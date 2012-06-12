@@ -14,6 +14,24 @@ The project is still very experimental and documentation is minimal at this poin
 
 ## Quickstart
 
+**Quickstart is written for Clara 0.1.0. Please notice that at this point anything and everything can change in future releases.**
+
+1) Create a new Vaadin project.
+
+2) Download the latest version of Clara to WEB-INF/lib from Vaadin Directory (or use the Maven dependency).
+
+3) Create a layout definition in XML. See the example below.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<VerticalLayout xmlns="urn:vaadin:com.vaadin.ui">
+    <Label id="my-label" value="Hello Clara!" />
+    <Button id="my-button" caption="Click me!" />
+</VerticalLayout>
+```
+
+4) Now you can inflate the XML definition to a Vaadin component in your Java code. See the example below.
+
 ```java
 // Get XML file from classpath.
 InputStream xmlLayout = getClass().getClassLoader().getResourceAsStream("xml-layout.xml");
@@ -23,11 +41,32 @@ ViewInflater inflater = new ViewInflater();
 InflatedCustomComponent layout = inflater.inflate(xmlLayout);
 
 // Now the inflated layout is ready to be used.
-getMainWindow().addComponent(layout);
+getMainWindow().setContent(layout);
+```
 
-// Optional:
-// Bind to a POJO (myController) that has methods annotated with @DataSource or
+6) At this point you should see a view with a single Label with text "Hello Clara!" and a Button that does nothing.
+
+7) Next you can bind datasources or event handlers declaratively. First you need to create a contoller POJO class like the example below.
+
+```java
+// The value "my-button" of the annotation is a reference to the id attribute in the XML layout.
+@EventHandler("my-button")
+public void handleMyButtonClick(ClickEvent event) {
+    event.getButton().getApplication().getMainWindow()
+            .showNotification("Clicked!");
+}
+
+@DataSource("my-label")
+public Property getLabelProperty() {
+    return new ObjectProperty<String>("Hello from Controller!",
+            String.class);
+}
+```
+
+8) After you have prepared your controller, you can bind it to the layout from step 4. See the example code below.
+```java
+// Bind the layout to a POJO that has methods annotated with @DataSource and/or
 // @EventHandler annotations.
 Binder binder = new Binder();
-binder.bind(layout, myController);
+binder.bind(layout, new MyController());
 ```
