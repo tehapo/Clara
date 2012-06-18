@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,6 +107,6 @@ public class ViewInflaterTest {
 
     @Test(expected = ViewInflaterException.class)
     public void inflate_invalidXml_exceptionThrown() {
-        inflater.inflate(new StringInputStream("THIS IS NOT XML!"));
+        inflater.inflate(new ByteArrayInputStream("THIS IS NOT XML!".getBytes()));
     }
 }
