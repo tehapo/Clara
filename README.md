@@ -4,7 +4,12 @@
 
 Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
 
-Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.com/addon/xmlui).
+Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
+com/addon/xmlui).
+
+Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). Travis CI is used for automated testing.
+
+[![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
 
 ## License
 
