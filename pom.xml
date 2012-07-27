@@ -3,11 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vaadin.teemu</groupId>
 	<artifactId>clara-parent</artifactId>
-	<version>0.1.0</version>
+	<version>${project.version}</version>
 	<name>clara-parent</name>
 	<description>Declarative UI and bindings for Vaadin Framework</description>
 	<url>https://github.com/tehapo/Clara</url>
 	<packaging>pom</packaging>
+
+	<properties>
+		<project.version>0.1.0</project.version>
+	</properties>
 
 	<modules>
 		<module>clara</module>
