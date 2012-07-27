@@ -188,8 +188,8 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<version>2.2.0</version>
-						<configuration><!-- <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory> -->
+						<version>2.3.0-1</version>
+						<configuration>
 							<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
 							<extraJvmArgs>-Xmx512M -Xss1024k -Djava.awt.headless=true</extraJvmArgs>
 							<runTarget>expjpa</runTarget>
@@ -206,18 +206,6 @@
 								</goals>
 							</execution>
 						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>com.google.gwt</groupId>
-								<artifactId>gwt-dev</artifactId>
-								<version>2.3.0</version>
-							</dependency>
-							<dependency>
-								<groupId>com.google.gwt</groupId>
-								<artifactId>gwt-user</artifactId>
-								<version>2.3.0</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 					<plugin>
 						<groupId>com.vaadin</groupId>
