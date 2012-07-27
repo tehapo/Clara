@@ -15,13 +15,13 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
-public class ViewInflaterTest {
+public class LayoutInflaterTest {
 
-    private ViewInflater inflater;
+    private LayoutInflater inflater;
 
     @Before
     public void setUp() {
-        inflater = new ViewInflater();
+        inflater = new LayoutInflater();
     }
 
     private InputStream getXml(String fileName) {
@@ -84,17 +84,17 @@ public class ViewInflaterTest {
         assertEquals(null, view.findById("non-existing-id"));
     }
 
-    @Test(expected = ViewInflaterException.class)
+    @Test(expected = LayoutInflaterException.class)
     public void inflate_nonComponent_exceptionThrown() {
         inflater.inflate(getXml("non-component.xml"));
     }
 
-    @Test(expected = ViewInflaterException.class)
+    @Test(expected = LayoutInflaterException.class)
     public void inflate_duplicateId_exceptionThrown() {
         inflater.inflate(getXml("duplicate-id.xml"));
     }
 
-    @Test(expected = ViewInflaterException.class)
+    @Test(expected = LayoutInflaterException.class)
     public void inflate_IOException_exceptionThrown() {
         inflater.inflate(new InputStream() {
 
@@ -105,7 +105,7 @@ public class ViewInflaterTest {
         });
     }
 
-    @Test(expected = ViewInflaterException.class)
+    @Test(expected = LayoutInflaterException.class)
     public void inflate_invalidXml_exceptionThrown() {
         inflater.inflate(new ByteArrayInputStream("THIS IS NOT XML!".getBytes()));
     }

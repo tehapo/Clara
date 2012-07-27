@@ -20,12 +20,12 @@ import com.vaadin.ui.DateField;
 
 public class BinderTest {
 
-    private ViewInflater inflater;
+    private LayoutInflater inflater;
     private boolean clickCalled;
 
     @Before
     public void setUp() {
-        inflater = new ViewInflater();
+        inflater = new LayoutInflater();
     }
 
     private InputStream getXml(String fileName) {

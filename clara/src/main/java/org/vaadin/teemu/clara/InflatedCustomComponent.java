@@ -9,7 +9,7 @@ import com.vaadin.ui.CustomComponent;
 
 /**
  * {@link CustomComponent} that is inflated from a declarative representation by
- * the {@link ViewInflater}.
+ * the {@link LayoutInflater}.
  */
 @SuppressWarnings("serial")
 public class InflatedCustomComponent extends CustomComponent implements

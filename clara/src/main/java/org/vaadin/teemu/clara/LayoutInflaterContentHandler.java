@@ -12,7 +12,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
-class ViewInflaterContentHandler extends DefaultHandler {
+class LayoutInflaterContentHandler extends DefaultHandler {
 
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
@@ -22,7 +22,7 @@ class ViewInflaterContentHandler extends DefaultHandler {
     private final ComponentManager componentFactory;
     private final Map<String, Component> idMap = new HashMap<String, Component>();
 
-    public ViewInflaterContentHandler(ComponentManager componentFactory) {
+    public LayoutInflaterContentHandler(ComponentManager componentFactory) {
         this.componentFactory = componentFactory;
     }
 
@@ -70,7 +70,7 @@ class ViewInflaterContentHandler extends DefaultHandler {
             String name = attributes.getLocalName(i);
             if (name.equals("id")) {
                 if (idMap.containsKey(value)) {
-                    throw new ViewInflaterException(String.format(
+                    throw new LayoutInflaterException(String.format(
                             "Duplicate id: %s.", value));
                 } else {
                     currentId = value;

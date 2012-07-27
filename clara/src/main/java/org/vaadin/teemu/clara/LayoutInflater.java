@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-public class ViewInflater {
+public class LayoutInflater {
 
     private ComponentManager componentManager = new DefaultComponentManager();
 
@@ -20,10 +20,10 @@ public class ViewInflater {
     }
 
     public InflatedCustomComponent inflate(InputStream xml)
-            throws ViewInflaterException {
+            throws LayoutInflaterException {
         try {
             // initialize content handler
-            ViewInflaterContentHandler handler = new ViewInflaterContentHandler(
+            LayoutInflaterContentHandler handler = new LayoutInflaterContentHandler(
                     componentManager);
 
             // parse the XML
@@ -35,11 +35,11 @@ public class ViewInflater {
             return new InflatedCustomComponent(handler.getIdMap(),
                     handler.getRoot());
         } catch (SAXException e) {
-            throw new ViewInflaterException(e);
+            throw new LayoutInflaterException(e);
         } catch (IOException e) {
-            throw new ViewInflaterException(e);
+            throw new LayoutInflaterException(e);
         } catch (ComponentInstantiationException e) {
-            throw new ViewInflaterException(e.getMessage(), e);
+            throw new LayoutInflaterException(e.getMessage(), e);
         }
     }
 

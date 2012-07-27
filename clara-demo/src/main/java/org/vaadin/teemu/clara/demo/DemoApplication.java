@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.vaadin.teemu.clara.InflatedCustomComponent;
-import org.vaadin.teemu.clara.ViewInflater;
-import org.vaadin.teemu.clara.ViewInflaterException;
+import org.vaadin.teemu.clara.LayoutInflater;
+import org.vaadin.teemu.clara.LayoutInflaterException;
 import org.vaadin.teemu.clara.binder.Binder;
 
 import com.vaadin.Application;
@@ -27,7 +27,7 @@ public class DemoApplication extends Application {
     private HorizontalSplitPanel split = new HorizontalSplitPanel();
     private Window mainWindow;
 
-    private ViewInflater inflater = new ViewInflater();
+    private LayoutInflater inflater = new LayoutInflater();
     private Binder binder = new Binder();
 
     @Override
@@ -104,7 +104,7 @@ public class DemoApplication extends Application {
             binder.bind(c, controller);
 
             split.setSecondComponent(c);
-        } catch (ViewInflaterException e) {
+        } catch (LayoutInflaterException e) {
             mainWindow.showNotification(e.getMessage(),
                     Notification.TYPE_ERROR_MESSAGE);
         }
