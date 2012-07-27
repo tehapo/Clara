@@ -7,7 +7,7 @@ Purpose of this project is to define a declarative XML-based syntax for defining
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
 com/addon/xmlui).
 
-Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). Travis CI is used for automated testing.
+Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). [Travis CI](http://travis-ci.org/) is used for automated testing.
 
 [![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
 
