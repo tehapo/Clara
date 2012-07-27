@@ -20,7 +20,7 @@
 			<artifactId>vaadin</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.vaadin.teemu</groupId>
+			<groupId>org.vaadin.addons</groupId>
 			<artifactId>clara</artifactId>
 			<version>${project.version}</version>
 		</dependency>
