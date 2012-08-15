@@ -15,7 +15,7 @@ public class LayoutInflater {
 
     private ComponentManager componentManager = new DefaultComponentManager();
 
-    public void setComponentFactory(ComponentManager componentManager) {
+    public void setComponentManager(ComponentManager componentManager) {
         this.componentManager = componentManager;
     }
 
