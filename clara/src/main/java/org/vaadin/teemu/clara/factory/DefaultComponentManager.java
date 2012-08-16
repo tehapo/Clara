@@ -9,7 +9,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
+
+import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -70,7 +73,7 @@ public class DefaultComponentManager implements ComponentManager {
         componentClass = Class.forName(qualifiedClassName);
 
         // Check that we're dealing with a Component.
-        if (isComponent(componentClass)) {
+        if (ReflectionUtils.isComponent(componentClass)) {
             return (Class<? extends Component>) componentClass;
         } else {
             throw new IllegalArgumentException(String.format(
@@ -79,55 +82,32 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    /**
-     * Returns {@code true} if the given {@link Class} implements the
-     * {@link Component} interface of Vaadin Framework otherwise {@code false}.
-     * 
-     * @param componentClass
-     *            {@link Class} to check against {@link Component} interface.
-     * @return {@code true} if the given {@link Class} is a {@link Component},
-     *         {@code false} otherwise.
-     */
-    protected boolean isComponent(Class<?> componentClass) {
-        if (componentClass != null) {
-            return Component.class.isAssignableFrom(componentClass);
-        } else {
-            return false;
-        }
-    }
-
     protected void handleAttributes(Component component,
             Map<String, String> attributes) {
         getLogger().fine(attributes.toString());
 
         try {
-            // Get the Component properties.
-            BeanInfo beanInfo = Introspector.getBeanInfo(component.getClass());
-            PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                for (PropertyDescriptor property : properties) {
-                    if (property.getName().equals(attribute.getKey())) {
-                        AttributeHandler handler = getHandlerFor(property
-                                .getPropertyType());
-                        if (handler != null) {
-                            Method setter = property.getWriteMethod();
-                            if (setter.getParameterTypes().length == 1) {
-                                String attributeValue = attribute.getValue();
-                                if (attributeValue == null
-                                        || attributeValue.length() == 0) {
-                                    // No need for conversion.
-                                    setter.invoke(component, attributeValue);
-                                } else {
-                                    // Ask the AttributeHandler to convert the
-                                    // value.
-                                    setter.invoke(
-                                            component,
-                                            handler.getValueAs(
-                                                    attributeValue,
-                                                    setter.getParameterTypes()[0]));
-                                }
-                            }
+                Method setter = getSetter(attribute.getKey(),
+                        component.getClass());
+                if (setter != null) {
+                    AttributeHandler handler = getHandlerFor(setter
+                            .getParameterTypes()[0]);
+                    if (handler != null) {
+                        // We have a handler that knows how to handle conversion
+                        // for this property.
+                        String attributeValue = attribute.getValue();
+                        if (attributeValue == null
+                                || attributeValue.length() == 0) {
+                            // No need for conversion.
+                            setter.invoke(component, attributeValue);
+                        } else {
+                            // Ask the AttributeHandler to convert the
+                            // value.
+                            setter.invoke(
+                                    component,
+                                    handler.getValueAs(attributeValue,
+                                            setter.getParameterTypes()[0]));
                         }
                     }
                 }
@@ -165,8 +145,8 @@ public class DefaultComponentManager implements ComponentManager {
                 if (attribute.getKey().startsWith("layout_")) {
                     String layoutProperty = attribute.getKey().substring(
                             "layout_".length());
-                    Method layoutMethod = findLayoutMethod(
-                            container.getClass(), layoutProperty);
+                    Method layoutMethod = getLayoutMethod(container.getClass(),
+                            layoutProperty);
                     if (layoutMethod != null) {
                         AttributeHandler handler = getHandlerFor(layoutMethod
                                 .getParameterTypes()[1]);
@@ -188,25 +168,57 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    protected static Method findLayoutMethod(
+    private static Method getSetter(String propertyName,
+            Class<? extends Component> componentClass)
+            throws IntrospectionException {
+        // Get the Component properties.
+        BeanInfo beanInfo = Introspector.getBeanInfo(componentClass);
+        PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+
+        Method candidate = null;
+        for (PropertyDescriptor property : properties) {
+            if (property.getName().equals(propertyName)) {
+                // Workaround to the overloaded setters in Vaadin components.
+                Set<Method> setters = ReflectionUtils
+                        .getMethodsByNameAndParamCount(componentClass, property
+                                .getWriteMethod().getName(), 1);
+
+                for (Method setter : setters) {
+                    if (setter.isAnnotationPresent(Deprecated.class)
+                            || !setter.getParameterTypes()[0]
+                                    .equals(String.class)) {
+                        // Prefer non-deprecated setters and those that directly
+                        // accept String as their parameters without any
+                        // conversion.
+                        candidate = setter;
+                    } else {
+                        return setter;
+                    }
+                }
+            }
+        }
+        return candidate;
+    }
+
+    private static Method getLayoutMethod(
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
-        Method[] layoutMethods = layoutClass.getMethods();
-        Method candiateMethod = null;
         String methodToLookFor = "set"
                 + propertyName.substring(0, 1).toUpperCase()
                 + propertyName.substring(1);
+        Set<Method> settersWithTwoParams = ReflectionUtils
+                .getMethodsByNameAndParamCount(layoutClass, methodToLookFor, 2);
 
-        for (Method layoutMethod : layoutMethods) {
-            Class<?>[] params = layoutMethod.getParameterTypes();
-            if (params.length == 2
-                    && params[0].isAssignableFrom(Component.class)
-                    && layoutMethod.getName().equals(methodToLookFor)) {
-                if (layoutMethod.getAnnotation(Deprecated.class) == null) {
+        Method candiateMethod = null;
+        for (Method setter : settersWithTwoParams) {
+            Class<?>[] params = setter.getParameterTypes();
+            if (ReflectionUtils.isComponent(params[0])
+                    && setter.getName().equals(methodToLookFor)) {
+                if (!setter.isAnnotationPresent(Deprecated.class)) {
                     // Prefer non-deprecated methods.
-                    return layoutMethod;
+                    return setter;
                 } else {
                     // Use deprecated methods only if no other match found.
-                    candiateMethod = layoutMethod;
+                    candiateMethod = setter;
                 }
             }
         }

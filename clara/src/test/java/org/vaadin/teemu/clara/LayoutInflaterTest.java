@@ -11,6 +11,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
@@ -69,6 +70,16 @@ public class LayoutInflaterTest {
         VerticalLayout verticalLayout = (VerticalLayout) layout;
         Component button = verticalLayout.getComponentIterator().next();
         assertEquals(1.0f, verticalLayout.getExpandRatio(button), 0.0f);
+    }
+
+    @Test
+    public void inflate_componentHasWidth_widthAttributeApplied() {
+        InflatedCustomComponent view = inflater
+                .inflate(getXml("component-width.xml"));
+
+        // check width
+        Button button200px = (Button) view.findById("button200px");
+        assertEquals(200.0f, button200px.getWidth(), 0.0f);
     }
 
     @Test

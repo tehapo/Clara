@@ -4,10 +4,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.binder.annotation.DataSource;
 import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -23,15 +25,14 @@ public class Binder {
     public void bind(ComponentMapper mapper, Object controller) {
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {
-            DataSource dataSource = method.getAnnotation(DataSource.class);
-            if (dataSource != null) {
-                bindDataSource(mapper, controller, method, dataSource);
+            if (method.isAnnotationPresent(DataSource.class)) {
+                bindDataSource(mapper, controller, method,
+                        method.getAnnotation(DataSource.class));
             }
 
-            EventHandler eventHandler = method
-                    .getAnnotation(EventHandler.class);
-            if (eventHandler != null) {
-                bindEventHandler(mapper, controller, method, eventHandler);
+            if (method.isAnnotationPresent(EventHandler.class)) {
+                bindEventHandler(mapper, controller, method,
+                        method.getAnnotation(EventHandler.class));
             }
         }
     }
@@ -44,7 +45,7 @@ public class Binder {
         Class<?> eventClass = (method.getParameterTypes().length > 0 ? method
                 .getParameterTypes()[0] : null);
         if (eventClass != null && component != null) {
-            Method addListenerMethod = findAddListenerMethod(
+            Method addListenerMethod = getAddListenerMethod(
                     component.getClass(), eventClass);
             if (addListenerMethod != null) {
                 try {
@@ -97,25 +98,22 @@ public class Binder {
         return proxy;
     }
 
-    private Method findAddListenerMethod(
+    private Method getAddListenerMethod(
             Class<? extends Component> componentClass, Class<?> eventClass) {
-        Method[] methods = componentClass.getMethods();
+        Set<Method> methods = ReflectionUtils.getMethodsByNameAndParamCount(
+                componentClass, "addListener", 1);
         for (Method method : methods) {
-            if (method.getName().equals("addListener")
-                    && method.getParameterTypes().length == 1) {
-                // Method called addListener -> continue check if
-                // it accepts correct type of listeners.
-                Class<?> listenerClass = method.getParameterTypes()[0];
-                Method[] listenerMethods = listenerClass.getMethods();
-                for (Method listenerMethod : listenerMethods) {
-                    if (listenerMethod.getParameterTypes().length == 1
-                            && listenerMethod.getParameterTypes()[0]
-                                    .equals(eventClass)) {
-                        // Found a method from the listener interface
-                        // that accepts the eventClass instance as
-                        // a sole parameter.
-                        return method;
-                    }
+            // Check if this method accepts correct type of listeners.
+            Class<?> listenerClass = method.getParameterTypes()[0];
+            Method[] listenerMethods = listenerClass.getMethods();
+            for (Method listenerMethod : listenerMethods) {
+                if (listenerMethod.getParameterTypes().length == 1
+                        && listenerMethod.getParameterTypes()[0]
+                                .equals(eventClass)) {
+                    // Found a method from the listener interface
+                    // that accepts the eventClass instance as
+                    // a sole parameter.
+                    return method;
                 }
             }
         }

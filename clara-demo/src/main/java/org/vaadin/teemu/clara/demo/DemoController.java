@@ -35,7 +35,7 @@ public class DemoController {
         Object itemId = container.addItem();
         container.getItem(itemId).getItemProperty("Name")
                 .setValue("Teemu Pöntelin");
-        container.getItem(itemId).getItemProperty("Age").setValue(31);
+        container.getItem(itemId).getItemProperty("Age").setValue(32);
 
         itemId = container.addItem();
         container.getItem(itemId).getItemProperty("Name")

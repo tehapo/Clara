@@ -21,12 +21,12 @@
 
     <HorizontalLayout caption="Horizontal button row" spacing="true">
         <Button id="button" caption="Click me to invoke the controller" />
-        <Button id="another-button" caption="Click me too" />
+        <Button id="another-button" width="200px" caption="Click me too" />
     </HorizontalLayout>
 
     <DateField caption="Select a date" id="date" immediate="true" />
     <a:RatingStars id="value-field" immediate="true" caption="Rate this app" />
 
-    <Table id="person-list" caption="Controller provides my datasource..." layout_componentAlignment="MIDDLE_CENTER" pageLength="2" />
+    <Table id="person-list" width="70%" caption="Controller provides my datasource..." layout_componentAlignment="MIDDLE_CENTER" pageLength="2" />
     <Select caption="...try moving the person-list id to me" itemCaptionPropertyId="Name" />
 </VerticalLayout>
