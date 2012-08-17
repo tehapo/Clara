@@ -9,6 +9,11 @@ com/addon/xmlui).
 
 Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). [Travis CI](http://travis-ci.org/) is used for automated testing.
 
+To package the Clara add-on and demo (with widgetset compilation) just run the following command:
+```bash
+mvn install -Pcompile-widgetset
+```
+
 [![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
 
 ## License
