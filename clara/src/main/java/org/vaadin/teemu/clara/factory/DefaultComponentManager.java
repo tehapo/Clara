@@ -168,61 +168,67 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    private static Method getSetter(String propertyName,
+    private Method getSetter(String propertyName,
             Class<? extends Component> componentClass)
             throws IntrospectionException {
         // Get the Component properties.
         BeanInfo beanInfo = Introspector.getBeanInfo(componentClass);
         PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
 
-        Method candidate = null;
         for (PropertyDescriptor property : properties) {
             if (property.getName().equals(propertyName)) {
-                // Workaround to the overloaded setters in Vaadin components.
                 Set<Method> setters = ReflectionUtils
                         .getMethodsByNameAndParamCount(componentClass, property
                                 .getWriteMethod().getName(), 1);
-
-                for (Method setter : setters) {
-                    if (setter.isAnnotationPresent(Deprecated.class)
-                            || !setter.getParameterTypes()[0]
-                                    .equals(String.class)) {
-                        // Prefer non-deprecated setters and those that directly
-                        // accept String as their parameters without any
-                        // conversion.
-                        candidate = setter;
-                    } else {
-                        return setter;
-                    }
-                }
+                return selectPreferredMethod(setters, 0);
             }
         }
-        return candidate;
+        return null;
     }
 
-    private static Method getLayoutMethod(
+    private Method getLayoutMethod(
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
         String methodToLookFor = "set"
                 + propertyName.substring(0, 1).toUpperCase()
                 + propertyName.substring(1);
         Set<Method> settersWithTwoParams = ReflectionUtils
                 .getMethodsByNameAndParamCount(layoutClass, methodToLookFor, 2);
+        return selectPreferredMethod(settersWithTwoParams, 1);
+    }
 
-        Method candiateMethod = null;
-        for (Method setter : settersWithTwoParams) {
-            Class<?>[] params = setter.getParameterTypes();
-            if (ReflectionUtils.isComponent(params[0])
-                    && setter.getName().equals(methodToLookFor)) {
-                if (!setter.isAnnotationPresent(Deprecated.class)) {
-                    // Prefer non-deprecated methods.
-                    return setter;
-                } else {
-                    // Use deprecated methods only if no other match found.
-                    candiateMethod = setter;
-                }
+    private Method selectPreferredMethod(Set<Method> methods, int dataParamIndex) {
+        Method candidate = null;
+        for (Method method : methods) {
+            if (dataParamIndex > 0
+                    && !ReflectionUtils
+                            .isComponent(method.getParameterTypes()[0])) {
+                // First parameter must be a Component.
+                continue;
             }
+
+            Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
+            AttributeHandler handler = getHandlerFor(parameterType);
+
+            if (handler != null
+                    && !(handler instanceof PrimitiveAttributeHandler)) {
+                // We found a setter method that we have a special
+                // AttributeHandler for.
+                return method;
+            }
+
+            if (method.isAnnotationPresent(Deprecated.class)
+                    || !parameterType.equals(String.class)) {
+                // Prefer non-deprecated setters and those that directly
+                // accept String as their parameters without any
+                // conversion.
+                candidate = method;
+            } else {
+                return method;
+            }
+
         }
-        return candiateMethod;
+        // Did not found a perfect method -> fallback to the candidate.
+        return candidate;
     }
 
 }
