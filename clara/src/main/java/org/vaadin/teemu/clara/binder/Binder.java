@@ -40,7 +40,7 @@ public class Binder {
     private void bindEventHandler(ComponentMapper mapper, Object controller,
             Method method, EventHandler eventListener) {
         String componentId = eventListener.value();
-        Component component = mapper.findById(componentId);
+        Component component = mapper.getComponentById(componentId);
 
         Class<?> eventClass = (method.getParameterTypes().length > 0 ? method
                 .getParameterTypes()[0] : null);
@@ -123,7 +123,7 @@ public class Binder {
     private void bindDataSource(ComponentMapper mapper, Object controller,
             Method method, DataSource dataSource) {
         String componentId = dataSource.value();
-        Component component = mapper.findById(componentId);
+        Component component = mapper.getComponentById(componentId);
         Class<?> dataSourceClass = method.getReturnType();
 
         try {

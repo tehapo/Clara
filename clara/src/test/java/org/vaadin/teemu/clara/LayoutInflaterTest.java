@@ -78,7 +78,7 @@ public class LayoutInflaterTest {
                 .inflate(getXml("component-width.xml"));
 
         // check width
-        Button button200px = (Button) view.findById("button200px");
+        Button button200px = (Button) view.getComponentById("button200px");
         assertEquals(200.0f, button200px.getWidth(), 0.0f);
     }
 
@@ -88,11 +88,11 @@ public class LayoutInflaterTest {
                 .inflate(getXml("single-button.xml"));
 
         // check that the id my-button returns a Button
-        assertEquals(com.vaadin.ui.Button.class, view.findById("my-button")
+        assertEquals(com.vaadin.ui.Button.class, view.getComponentById("my-button")
                 .getClass());
 
         // check that non-existing id returns null
-        assertEquals(null, view.findById("non-existing-id"));
+        assertEquals(null, view.getComponentById("non-existing-id"));
     }
 
     @Test(expected = LayoutInflaterException.class)
