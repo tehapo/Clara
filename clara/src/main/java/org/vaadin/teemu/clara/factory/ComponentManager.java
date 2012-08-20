@@ -2,6 +2,8 @@ package org.vaadin.teemu.clara.factory;
 
 import java.util.Map;
 
+import org.vaadin.teemu.clara.AttributeInterceptor;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
@@ -37,5 +39,9 @@ public interface ComponentManager {
      */
     void applyLayoutAttributes(ComponentContainer container,
             Component component, Map<String, String> attributes);
+
+    void addInterceptor(AttributeInterceptor attributeInterceptor);
+
+    void removeInterceptor(AttributeInterceptor attributeInterceptor);
 
 }

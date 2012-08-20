@@ -3,8 +3,8 @@ package org.vaadin.teemu.clara;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.vaadin.teemu.clara.factory.ComponentManager;
 import org.vaadin.teemu.clara.factory.ComponentInstantiationException;
+import org.vaadin.teemu.clara.factory.ComponentManager;
 import org.vaadin.teemu.clara.factory.DefaultComponentManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -41,6 +41,14 @@ public class LayoutInflater {
         } catch (ComponentInstantiationException e) {
             throw new LayoutInflaterException(e.getMessage(), e);
         }
+    }
+
+    public void addInterceptor(AttributeInterceptor attributeInterceptor) {
+        componentManager.addInterceptor(attributeInterceptor);
+    }
+
+    public void removeInterceptor(AttributeInterceptor attributeInterceptor) {
+        componentManager.removeInterceptor(attributeInterceptor);
     }
 
 }

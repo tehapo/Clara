@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.vaadin.teemu.clara.AttributeInterceptor;
 import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.ui.Component;
@@ -20,6 +21,7 @@ import com.vaadin.ui.ComponentContainer;
 public class DefaultComponentManager implements ComponentManager {
 
     private List<AttributeHandler> attributeHandlers = new ArrayList<AttributeHandler>();
+    private List<AttributeInterceptor> interceptors = new ArrayList<AttributeInterceptor>();
 
     private Logger getLogger() {
         return Logger.getLogger(DefaultComponentManager.class.getName());
@@ -96,7 +98,8 @@ public class DefaultComponentManager implements ComponentManager {
                     if (handler != null) {
                         // We have a handler that knows how to handle conversion
                         // for this property.
-                        String attributeValue = attribute.getValue();
+                        String attributeValue = applyAttributeInterceptors(
+                                attribute.getKey(), attribute.getValue());
                         if (attributeValue == null
                                 || attributeValue.length() == 0) {
                             // No need for conversion.
@@ -125,6 +128,13 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
+    protected String applyAttributeInterceptors(String name, String value) {
+        for (AttributeInterceptor interceptor : interceptors) {
+            value = interceptor.intercept(name, value);
+        }
+        return value;
+    }
+
     protected AttributeHandler getHandlerFor(Class<?> type) {
         for (AttributeHandler handler : attributeHandlers) {
             if (handler.isSupported(type)) {
@@ -150,12 +160,17 @@ public class DefaultComponentManager implements ComponentManager {
                     if (layoutMethod != null) {
                         AttributeHandler handler = getHandlerFor(layoutMethod
                                 .getParameterTypes()[1]);
-                        if (handler != null)
+                        if (handler != null) {
+                            String attributeValue = applyAttributeInterceptors(
+                                    attribute.getKey(), attribute.getValue());
                             layoutMethod
-                                    .invoke(container, component,
-                                            handler.getValueAs(attribute
-                                                    .getValue(), layoutMethod
-                                                    .getParameterTypes()[1]));
+                                    .invoke(container,
+                                            component,
+                                            handler.getValueAs(
+                                                    attributeValue,
+                                                    layoutMethod
+                                                            .getParameterTypes()[1]));
+                        }
                     }
                 }
             }
@@ -229,6 +244,16 @@ public class DefaultComponentManager implements ComponentManager {
         }
         // Did not found a perfect method -> fallback to the candidate.
         return candidate;
+    }
+
+    @Override
+    public void addInterceptor(AttributeInterceptor attributeInterceptor) {
+        interceptors.add(attributeInterceptor);
+    }
+
+    @Override
+    public void removeInterceptor(AttributeInterceptor attributeInterceptor) {
+        interceptors.remove(attributeInterceptor);
     }
 
 }

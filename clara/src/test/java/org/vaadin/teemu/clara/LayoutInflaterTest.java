@@ -83,13 +83,39 @@ public class LayoutInflaterTest {
     }
 
     @Test
+    public void inflate_addAttributeInterceptor_valueInterceptedCorrectly() {
+        LayoutInflater interceptingInflater = new LayoutInflater();
+        interceptingInflater.addInterceptor(new AttributeInterceptor() {
+            @Override
+            public String intercept(String name, String value) {
+                if (value.startsWith("{i18n:")) {
+                    // Get translation for the value.
+                    return "interceptedValue";
+                }
+                return value; // Leave untouched.
+            }
+        });
+        InflatedCustomComponent interceptedView = interceptingInflater
+                .inflate(getXml("interceptor-test.xml"));
+        InflatedCustomComponent view = inflater
+                .inflate(getXml("interceptor-test.xml"));
+
+        // check caption
+        Button button200px = (Button) interceptedView
+                .getComponentById("button200px");
+        assertEquals("interceptedValue", button200px.getCaption());
+        button200px = (Button) view.getComponentById("button200px");
+        assertEquals("{i18n:test}", button200px.getCaption());
+    }
+
+    @Test
     public void inflate_singleButton_findByIdWorks() {
         InflatedCustomComponent view = inflater
                 .inflate(getXml("single-button.xml"));
 
         // check that the id my-button returns a Button
-        assertEquals(com.vaadin.ui.Button.class, view.getComponentById("my-button")
-                .getClass());
+        assertEquals(com.vaadin.ui.Button.class,
+                view.getComponentById("my-button").getClass());
 
         // check that non-existing id returns null
         assertEquals(null, view.getComponentById("non-existing-id"));
