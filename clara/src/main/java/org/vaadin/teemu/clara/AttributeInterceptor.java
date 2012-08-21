@@ -1,6 +1,5 @@
 package org.vaadin.teemu.clara;
 
-
 import com.vaadin.ui.Component;
 
 public interface AttributeInterceptor {
@@ -13,7 +12,7 @@ public interface AttributeInterceptor {
      * <br />
      * <br />
      * Call the {@link AttributeContext#proceed()} to proceed to the next
-     * {@link AttributeInterceptor} andf to finally set the value if no other
+     * {@link AttributeInterceptor} and to finally set the value if no other
      * {@link AttributeInterceptor}s exist. If you do not call the
      * {@link AttributeContext#proceed()} method, the value will never be set
      * for the {@link Component}.
