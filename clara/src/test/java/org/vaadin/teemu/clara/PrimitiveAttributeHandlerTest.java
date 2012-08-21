@@ -5,15 +5,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.teemu.clara.factory.PrimitiveAttributeHandler;
+import org.vaadin.teemu.clara.factory.PrimitiveAttributeParser;
 
 public class PrimitiveAttributeHandlerTest {
 
-    private PrimitiveAttributeHandler handler;
+    private PrimitiveAttributeParser handler;
 
     @Before
     public void setUp() {
-        handler = new PrimitiveAttributeHandler();
+        handler = new PrimitiveAttributeParser();
     }
 
     @Test

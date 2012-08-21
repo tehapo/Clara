@@ -22,7 +22,7 @@ import com.vaadin.ui.ComponentContainer;
 
 public class DefaultComponentManager implements ComponentManager {
 
-    private List<AttributeHandler> attributeHandlers = new ArrayList<AttributeHandler>();
+    private List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
     private List<AttributeInterceptor> interceptors = new ArrayList<AttributeInterceptor>();
 
     private Logger getLogger() {
@@ -31,16 +31,16 @@ public class DefaultComponentManager implements ComponentManager {
 
     public DefaultComponentManager() {
         // Setup the default AttributeHandlers.
-        addAttributeHandler(new PrimitiveAttributeHandler());
-        addAttributeHandler(new VaadinAttributeHandler());
+        addAttributeParser(new PrimitiveAttributeParser());
+        addAttributeParser(new VaadinAttributeParser());
     }
 
-    public void addAttributeHandler(AttributeHandler handler) {
-        attributeHandlers.add(handler);
+    public void addAttributeParser(AttributeParser handler) {
+        attributeParsers.add(handler);
     }
 
-    public void removeAttributeHandler(AttributeHandler handler) {
-        attributeHandlers.remove(handler);
+    public void removeAttributeParser(AttributeParser handler) {
+        attributeParsers.remove(handler);
     }
 
     public Component createComponent(String namespace, String name,
@@ -95,7 +95,7 @@ public class DefaultComponentManager implements ComponentManager {
                 Method setter = getSetter(attribute.getKey(),
                         component.getClass());
                 if (setter != null) {
-                    AttributeHandler handler = getHandlerFor(setter
+                    AttributeParser handler = getHandlerFor(setter
                             .getParameterTypes()[0]);
                     if (handler != null) {
                         // We have a handler that knows how to handle conversion
@@ -164,8 +164,8 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    protected AttributeHandler getHandlerFor(Class<?> type) {
-        for (AttributeHandler handler : attributeHandlers) {
+    protected AttributeParser getHandlerFor(Class<?> type) {
+        for (AttributeParser handler : attributeParsers) {
             if (handler.isSupported(type)) {
                 return handler;
             }
@@ -187,7 +187,7 @@ public class DefaultComponentManager implements ComponentManager {
                     Method layoutMethod = getLayoutMethod(container.getClass(),
                             layoutProperty);
                     if (layoutMethod != null) {
-                        AttributeHandler handler = getHandlerFor(layoutMethod
+                        AttributeParser handler = getHandlerFor(layoutMethod
                                 .getParameterTypes()[1]);
                         if (handler != null) {
                             invokeWithInterceptors(
@@ -248,10 +248,10 @@ public class DefaultComponentManager implements ComponentManager {
             }
 
             Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
-            AttributeHandler handler = getHandlerFor(parameterType);
+            AttributeParser handler = getHandlerFor(parameterType);
 
             if (handler != null
-                    && !(handler instanceof PrimitiveAttributeHandler)) {
+                    && !(handler instanceof PrimitiveAttributeParser)) {
                 // We found a setter method that we have a special
                 // AttributeHandler for.
                 return method;

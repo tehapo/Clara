@@ -1,9 +1,9 @@
 package org.vaadin.teemu.clara.factory;
 
-public interface AttributeHandler {
+public interface AttributeParser {
 
     /**
-     * Returns {@code true} if this {@link AttributeHandler} can convert a
+     * Returns {@code true} if this {@link AttributeParser} can parse a
      * {@link String} to an instance of the given {@code valueType}.
      * 
      * @param valueType

@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@link AttributeHandler} that handles all primitive types (including boxed
+ * {@link AttributeParser} that handles all primitive types (including boxed
  * representations), {@link String} and {@link Object}.
  */
-public class PrimitiveAttributeHandler implements AttributeHandler {
+public class PrimitiveAttributeParser implements AttributeParser {
 
     @SuppressWarnings("unchecked")
     private static final List<Class<?>> supportedClasses = Arrays.asList(

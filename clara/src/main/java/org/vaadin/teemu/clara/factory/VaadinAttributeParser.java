@@ -7,10 +7,10 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Layout.MarginInfo;
 
 /**
- * {@link AttributeHandler} that handles Vaadin specific types (like
+ * {@link AttributeParser} that handles Vaadin specific types (like
  * {@link MarginInfo} for example).
  */
-public class VaadinAttributeHandler implements AttributeHandler {
+public class VaadinAttributeParser implements AttributeParser {
 
     protected static final Map<String, Alignment> alignmentMap;
     static {
