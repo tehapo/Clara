@@ -85,16 +85,25 @@ public class LayoutInflaterTest {
     @Test
     public void inflate_addAttributeInterceptor_valueInterceptedCorrectly() {
         LayoutInflater interceptingInflater = new LayoutInflater();
-        interceptingInflater.addInterceptor(new AttributeInterceptor() {
+        AttributeInterceptor interceptor = new AttributeInterceptor() {
+
             @Override
-            public String intercept(String name, String value) {
-                if (value.startsWith("{i18n:")) {
-                    // Get translation for the value.
-                    return "interceptedValue";
+            public void intercept(AttributeContext attributeContext) {
+                if (attributeContext.getValue().getClass() == String.class) {
+                    String value = (String) attributeContext.getValue();
+                    if (value.startsWith("{i18n:")) {
+                        attributeContext.setValue("interceptedValue");
+                    }
                 }
-                return value; // Leave untouched.
+                try {
+                    attributeContext.proceed();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        });
+        };
+
+        interceptingInflater.addInterceptor(interceptor);
         InflatedCustomComponent interceptedView = interceptingInflater
                 .inflate(getXml("interceptor-test.xml"));
         InflatedCustomComponent view = inflater
