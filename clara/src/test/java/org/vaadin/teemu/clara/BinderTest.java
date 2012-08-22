@@ -67,7 +67,7 @@ public class BinderTest {
         Binder binder = new Binder();
         binder.bind(view, this);
 
-        Date value = (Date) (((DateField) view.getComponentById("my-datefield"))
+        Date value = (Date) (((DateField) view.findComponentById("my-datefield"))
                 .getValue());
         assertEquals(1337337477578L, value.getTime());
     }

@@ -78,7 +78,7 @@ public class LayoutInflaterTest {
                 .inflate(getXml("component-width.xml"));
 
         // check width
-        Button button200px = (Button) view.getComponentById("button200px");
+        Button button200px = (Button) view.findComponentById("button200px");
         assertEquals(200.0f, button200px.getWidth(), 0.0f);
     }
 
@@ -111,9 +111,9 @@ public class LayoutInflaterTest {
 
         // check caption
         Button button200px = (Button) interceptedView
-                .getComponentById("button200px");
+                .findComponentById("button200px");
         assertEquals("interceptedValue", button200px.getCaption());
-        button200px = (Button) view.getComponentById("button200px");
+        button200px = (Button) view.findComponentById("button200px");
         assertEquals("{i18n:test}", button200px.getCaption());
     }
 
@@ -124,10 +124,10 @@ public class LayoutInflaterTest {
 
         // check that the id my-button returns a Button
         assertEquals(com.vaadin.ui.Button.class,
-                view.getComponentById("my-button").getClass());
+                view.findComponentById("my-button").getClass());
 
         // check that non-existing id returns null
-        assertEquals(null, view.getComponentById("non-existing-id"));
+        assertEquals(null, view.findComponentById("non-existing-id"));
     }
 
     @Test(expected = LayoutInflaterException.class)

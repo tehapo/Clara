@@ -22,7 +22,7 @@ public class InflatedCustomComponent extends CustomComponent implements
         this.idMap = idMap;
     }
 
-    public Component getComponentById(String id) {
+    public Component findComponentById(String id) {
         return idMap.get(id);
     }
 

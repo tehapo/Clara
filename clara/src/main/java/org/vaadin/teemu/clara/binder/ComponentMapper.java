@@ -12,6 +12,6 @@ public interface ComponentMapper {
      *            identifier of the {@link Component} to search for.
      * @return the {@link Component} with given {@code id} or {@code null}.
      */
-    Component getComponentById(String id);
+    Component findComponentById(String id);
 
 }
