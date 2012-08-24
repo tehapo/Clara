@@ -11,9 +11,14 @@ import org.vaadin.teemu.clara.LayoutInflaterException;
 import org.vaadin.teemu.clara.binder.Binder;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -42,6 +47,7 @@ public class DemoApplication extends Application {
         editor.setSpacing(true);
         editor.setMargin(true);
         editor.setHeight("100%");
+        editor.addComponent(createLogo());
         editor.addComponent(xmlArea = createXmlArea());
         editor.setExpandRatio(xmlArea, 1.0f);
         editor.addComponent(createUpdateButton());
@@ -49,6 +55,20 @@ public class DemoApplication extends Application {
         split.setFirstComponent(editor);
         updateLayout();
         setTheme("clara");
+    }
+
+    private Component createLogo() {
+        Embedded logo = new Embedded(null, new ThemeResource("clara-logo.png"));
+        logo.setHeight("87px");
+
+        CssLayout logoLayout = new CssLayout();
+        logoLayout.setWidth("100%");
+        logoLayout.setStyleName("logo");
+        logoLayout.addComponent(logo);
+        logoLayout.addComponent(new Label(
+                "<h1>Clara <span>declarative UI for Vaadin</span></h1>",
+                Label.CONTENT_XHTML));
+        return logoLayout;
     }
 
     private TextArea createXmlArea() {

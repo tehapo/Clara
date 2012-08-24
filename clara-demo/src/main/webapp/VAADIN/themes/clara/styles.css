@@ -1,6 +1,25 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 @import url(../reindeer/styles.css);
 
 .v-textarea-xml-area {
 	font-family: Monaco, "Courier New", monospace !important;
 	font-size: 11px !important;
+}
+
+.logo .v-embedded,
+.logo h1 {
+	float: left;
+}
+
+.logo h1 {
+	color: #588076;
+	font-family: "Open Sans", Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 48px;
+	height: 87px;
+	line-height: 87px;
+	margin: 0;
+	padding-left: 25px;
+}
+.logo h1 span {
+	font-size: 40%;
 }
