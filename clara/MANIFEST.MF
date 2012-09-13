@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: Clara
+Implementation-Version: ${project.version}
+Vaadin-Addon: clara-${project.version}.jar
+Vaadin-Package-Version: 1
