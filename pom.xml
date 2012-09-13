@@ -1,104 +1,104 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.vaadin.addons</groupId>
-	<artifactId>clara-parent</artifactId>
-	<version>0.1.0</version>
-	<packaging>pom</packaging>
-	
-	<name>clara-parent</name>
-	<description>Declarative UI and bindings for Vaadin Framework</description>
-	<url>https://github.com/tehapo/Clara</url>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.vaadin.addons</groupId>
+    <artifactId>clara-parent</artifactId>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
 
-	<modules>
-		<module>clara</module>
-		<module>clara-demo</module>
-	</modules>
+    <name>clara-parent</name>
+    <description>Declarative UI and bindings for Vaadin Framework</description>
+    <url>https://github.com/tehapo/Clara</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <modules>
+        <module>clara</module>
+        <module>clara-demo</module>
+    </modules>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin</artifactId>
-				<version>6.8.1</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-						<verbose>true</verbose>
-						<fork>true</fork>
-					</configuration>
-				</plugin>
-				<!-- Generate source package along-side the normal package. -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>2.1.2</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<goals>
-								<goal>jar</goal>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<!-- Generate javadoc package along-side the normal package -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8.1</version>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<goals>
-								<goal>jar</goal>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin</artifactId>
+                <version>6.8.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <verbose>true</verbose>
+                        <fork>true</fork>
+                    </configuration>
+                </plugin>
+                <!-- Generate source package along-side the normal package. -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Generate javadoc package along-side the normal package -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <developers>
-		<developer>
-			<id>tehapo</id>
-			<name>Teemu Pöntelin</name>
-		</developer>
-	</developers>
-	<contributors>
-		<contributor>
-			<name>Vincent Demeester</name>
-			<email>vincent+github@demeester.fr</email>
-		</contributor>
-	</contributors>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<connection>scm:git:git@github.com:tehapo/Clara.git</connection>
-		<developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
-		<url>https://github.com/tehapo/Clara</url>
-	</scm>
+        <developer>
+            <id>tehapo</id>
+            <name>Teemu Pöntelin</name>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Vincent Demeester</name>
+            <email>vincent+github@demeester.fr</email>
+        </contributor>
+    </contributors>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:tehapo/Clara.git</connection>
+        <developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
+        <url>https://github.com/tehapo/Clara</url>
+    </scm>
 </project>

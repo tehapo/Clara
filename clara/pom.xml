@@ -1,90 +1,90 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.vaadin.addons</groupId>
-		<artifactId>clara-parent</artifactId>
-		<version>0.1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
-	<artifactId>clara</artifactId>
-	<packaging>jar</packaging>
-	
-	<name>Clara</name>
-	<description>Declarative UI and bindings for Vaadin Framework</description>
-	<url>https://github.com/tehapo/Clara</url>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>clara-parent</artifactId>
+        <version>0.1.0</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <artifactId>clara</artifactId>
+    <packaging>jar</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<!-- Plugins inherited from the parent -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<archive>
-						<index>true</index>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<!-- Package format version - do not change -->
-							<Vaadin-Package-Version>1</Vaadin-Package-Version>
-							<!-- Add-on specific fields to update -->
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <name>Clara</name>
+    <description>Declarative UI and bindings for Vaadin Framework</description>
+    <url>https://github.com/tehapo/Clara</url>
 
-	<developers>
-		<developer>
-			<id>tehapo</id>
-			<name>Teemu Pöntelin</name>
-		</developer>
-	</developers>
-	<contributors>
-		<contributor>
-			<name>Vincent Demeester</name>
-			<email>vincent+github@demeester.fr</email>
-		</contributor>
-	</contributors>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<connection>scm:git:git@github.com:tehapo/Clara.git</connection>
-		<developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
-		<url>https://github.com/tehapo/Clara</url>
-	</scm>
+    <dependencies>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- Plugins inherited from the parent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- Package format version - do not change -->
+                            <Vaadin-Package-Version>1</Vaadin-Package-Version>
+                            <!-- Add-on specific fields to update -->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <developers>
+        <developer>
+            <id>tehapo</id>
+            <name>Teemu Pöntelin</name>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Vincent Demeester</name>
+            <email>vincent+github@demeester.fr</email>
+        </contributor>
+    </contributors>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:tehapo/Clara.git</connection>
+        <developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
+        <url>https://github.com/tehapo/Clara</url>
+    </scm>
 </project>

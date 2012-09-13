@@ -1,95 +1,95 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.vaadin.addons</groupId>
-		<artifactId>clara-parent</artifactId>
-		<version>0.1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
-	<artifactId>clara-demo</artifactId>
-	<packaging>war</packaging>
-	
-	<name>Clara demo</name>
-	<description>Demo for Clara</description>
-	<url>https://github.com/tehapo/Clara</url>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>clara-parent</artifactId>
+        <version>0.1.0</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <artifactId>clara-demo</artifactId>
+    <packaging>war</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>clara</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>ratingstars</artifactId>
-			<version>1.4</version>
-		</dependency>
-	</dependencies>
-	
-	<repositories>
-		<repository>
-			<id>vaadin-addons</id>
-			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-	</repositories>
+    <name>Clara demo</name>
+    <description>Demo for Clara</description>
+    <url>https://github.com/tehapo/Clara</url>
 
-	<build>
-		<plugins>
-			<!-- Plugins inherited from the parent -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.10</version>
-				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<contextPath>/</contextPath>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.3.0-1</version>
-				<configuration>
-					<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
-					<extraJvmArgs>-Xmx1024M -Xss512m -XX:MaxPermSize=1024M</extraJvmArgs>
-					<noServer>true</noServer>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-    
-	<developers>
-		<developer>
-			<id>tehapo</id>
-			<name>Teemu Pöntelin</name>
-		</developer>
-	</developers>
-	<contributors>
-		<contributor>
-			<name>Vincent Demeester</name>
-			<email>vincent+github@demeester.fr</email>
-		</contributor>
-	</contributors>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<connection>scm:git:git@github.com:tehapo/Clara.git</connection>
-		<developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
-		<url>https://github.com/tehapo/Clara</url>
-	</scm>
+    <dependencies>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>clara</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>ratingstars</artifactId>
+            <version>1.4</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <!-- Plugins inherited from the parent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.10</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <contextPath>/</contextPath>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.3.0-1</version>
+                <configuration>
+                    <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+                    <extraJvmArgs>-Xmx1024M -Xss512m -XX:MaxPermSize=1024M</extraJvmArgs>
+                    <noServer>true</noServer>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <developers>
+        <developer>
+            <id>tehapo</id>
+            <name>Teemu Pöntelin</name>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Vincent Demeester</name>
+            <email>vincent+github@demeester.fr</email>
+        </contributor>
+    </contributors>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:tehapo/Clara.git</connection>
+        <developerConnection>scm:git:git@github.com:tehapo/Clara.git</developerConnection>
+        <url>https://github.com/tehapo/Clara</url>
+    </scm>
 </project>
