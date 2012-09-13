@@ -10,8 +10,8 @@
     <artifactId>clara-demo</artifactId>
     <packaging>war</packaging>
 
-    <name>Clara demo</name>
-    <description>Demo for Clara</description>
+    <name>Clara Demo Application</name>
+    <description>Demo Application for Clara</description>
     <url>https://github.com/tehapo/Clara</url>
 
     <dependencies>

@@ -6,7 +6,7 @@
     <version>0.1.0</version>
     <packaging>pom</packaging>
 
-    <name>clara-parent</name>
+    <name>Clara Parent Project</name>
     <description>Declarative UI and bindings for Vaadin Framework</description>
     <url>https://github.com/tehapo/Clara</url>
 
