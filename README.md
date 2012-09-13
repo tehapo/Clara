@@ -9,10 +9,23 @@ com/addon/xmlui).
 
 Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). [Travis CI](http://travis-ci.org/) is used for automated testing.
 
-To package the Clara add-on and demo (with widgetset compilation) just run the following command:
+To package and install the Clara add-on to your local repository, just run the following command:
 ```bash
-mvn install -Pcompile-widgetset
+mvn install
 ```
+
+If you want to run and/or package the demo application, you must first compile the widgetset.
+```bash
+cd clara-demo
+mvn gwt:compile install jetty:run
+```
+
+Packaging the distributable add-on zip (that can be uploaded to Vaadin Directory) can be done as follows.
+```bash
+cd clara
+mvn clean install assembly:single
+```
+
 
 [![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
 
@@ -26,7 +39,7 @@ The project is still very experimental and documentation is minimal at this poin
 
 ## Quickstart
 
-**Quickstart is written for Clara 0.1.0. Please notice that at this point anything and everything can change in future releases.**
+**Quickstart is written for Clara 0.2.0. Please notice that at this point anything and everything can change in future releases.**
 
 1) Create a new Vaadin project.
 
@@ -38,7 +51,7 @@ The project is still very experimental and documentation is minimal at this poin
 <?xml version="1.0" encoding="UTF-8"?>
 <VerticalLayout xmlns="urn:vaadin:com.vaadin.ui">
     <Label id="my-label" value="Hello Clara!" />
-    <Button id="my-button" caption="Click me!" />
+    <Button id="my-button" caption="Click me!" width="200px" layout_componentAlignment="MIDDLE_CENTER" />
 </VerticalLayout>
 ```
 
@@ -48,15 +61,15 @@ The project is still very experimental and documentation is minimal at this poin
 // Get XML file from classpath.
 InputStream xmlLayout = getClass().getClassLoader().getResourceAsStream("xml-layout.xml");
 
-// Instantiate a new ViewInflater instance and inflate the XML to a CustomComponent.
-ViewInflater inflater = new ViewInflater();
+// Instantiate a new LayoutInflater instance and inflate the XML to a CustomComponent.
+LayoutInflater inflater = new LayoutInflater();
 InflatedCustomComponent layout = inflater.inflate(xmlLayout);
 
 // Now the inflated layout is ready to be used.
 getMainWindow().setContent(layout);
 ```
 
-6) At this point you should see a view with a single Label with text "Hello Clara!" and a Button that does nothing.
+6) At this point you should see a view with a single Label with text "Hello Clara!" and a 200 pixels wide centered Button that does nothing. Notice the "layout_" prefix on the componentAlignment which basically means that the componentAlignment property belongs to the containing layout instead of the component.
 
 7) Next you can bind datasources or event handlers declaratively. First you need to create a contoller POJO class like the example below.
 
