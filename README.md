@@ -95,3 +95,28 @@ public Property getLabelProperty() {
 Binder binder = new Binder();
 binder.bind(layout, new MyController());
 ```
+
+## Internationalization with Attribute Interceptors
+
+Clara 0.2.0 introduced concept of attribute interceptors. Attribute interceptors enable runtime modification of any attributes read from the declarative XML layout file. The most obvious use case for this is to provide internationalization of text displayed in the user interface.
+
+To create an attribute interceptor, you must implement the single-method ```AttributeInterceptor``` interface and pass it to the ```addInterceptor``` method of the ```LayoutInflater``` instance. The sole method in the interface is called ```intercept``` and it takes a single argument of type ```AttributeContext```. You can modify the value before it's assigned  by calling the ```setValue``` method of the ```AttributeContext```. You should always call the ```proceed``` method to pass the value forward to next interceptor (or to finally assign the value). If you do not call the ```proceed``` method, the attribute value will never be assigned (which might sometimes be the desired effect).
+
+Simple example of an ```AttributeInterceptor``` implementation:
+
+```java
+AttributeInterceptor interceptor = new AttributeInterceptor() {
+
+    @Override
+    public void intercept(AttributeContext attributeContext) {
+        if (attributeContext.getValue().getClass() == String.class) {
+            String value = (String) attributeContext.getValue();
+            if (value.startsWith("{i18n:")) {
+                String translatedValue = getTranslation(value);
+                attributeContext.setValue(translatedValue);
+            }
+        }
+        attributeContext.proceed();
+    }
+};
+```
