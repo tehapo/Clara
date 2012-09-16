@@ -14,16 +14,16 @@ To package and install the Clara add-on to your local repository, just run the f
 mvn install
 ```
 
-If you want to run and/or package the demo application, you must first compile the widgetset.
+If you want to run and/or package the demo application, you must also compile the widgetset.
 ```bash
 cd clara-demo
-mvn gwt:compile install jetty:run
+mvn gwt:compile jetty:run
 ```
 
 Packaging the distributable add-on zip (that can be uploaded to Vaadin Directory) can be done as follows.
 ```bash
 cd clara
-mvn clean install assembly:single
+mvn clean package assembly:single
 ```
 
 
