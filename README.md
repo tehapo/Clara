@@ -55,7 +55,7 @@ The project is still very experimental and documentation is minimal at this poin
 </VerticalLayout>
 ```
 
-4) Now you can inflate the XML definition to a Vaadin component in your Java code. See the example below.
+4) Now you can inflate the XML definition to a Vaadin component in your Java code. See the example below. Starting from Clara 0.2.0 you can also create the file in ```VAADIN/layouts``` directory and just provide the file name to the ```inflate``` method.
 
 ```java
 // Get XML file from classpath.
@@ -116,7 +116,11 @@ AttributeInterceptor interceptor = new AttributeInterceptor() {
                 attributeContext.setValue(translatedValue);
             }
         }
-        attributeContext.proceed();
+        try {
+            attributeContext.proceed();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 };
 ```
