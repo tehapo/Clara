@@ -39,7 +39,7 @@ The project is still very experimental and documentation is minimal at this poin
 
 ## Quickstart
 
-**Quickstart is written for Clara 0.2.0. Please notice that at this point anything and everything can change in future releases.**
+**Quickstart is written for Clara 0.2.1. Please notice that at this point anything and everything can change in future releases.**
 
 1) Create a new Vaadin project.
 
