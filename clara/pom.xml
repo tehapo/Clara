@@ -49,6 +49,7 @@
                 <configuration>
                     <archive>
                         <index>true</index>
+                        <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
