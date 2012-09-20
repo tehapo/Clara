@@ -15,10 +15,9 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -45,30 +44,29 @@ public class DemoApplication extends Application {
 
         VerticalLayout editor = new VerticalLayout();
         editor.setSpacing(true);
-        editor.setMargin(true);
+        editor.setMargin(false, false, false, true);
         editor.setHeight("100%");
-        editor.addComponent(createLogo());
         editor.addComponent(xmlArea = createXmlArea());
         editor.setExpandRatio(xmlArea, 1.0f);
         editor.addComponent(createUpdateButton());
 
-        split.setFirstComponent(editor);
+        HorizontalLayout wrapper = new HorizontalLayout();
+        wrapper.setMargin(true);
+        wrapper.setSizeFull();
+        wrapper.addComponent(createLogo());
+        wrapper.addComponent(editor);
+        wrapper.setExpandRatio(editor, 1.0f);
+        split.setFirstComponent(wrapper);
         updateLayout();
         setTheme("clara");
     }
 
     private Component createLogo() {
-        Embedded logo = new Embedded(null, new ThemeResource("clara-logo.png"));
-        logo.setHeight("87px");
-
-        CssLayout logoLayout = new CssLayout();
-        logoLayout.setWidth("100%");
-        logoLayout.setStyleName("logo");
-        logoLayout.addComponent(logo);
-        logoLayout.addComponent(new Label(
-                "<h1>Clara <span>declarative UI for Vaadin</span></h1>",
-                Label.CONTENT_XHTML));
-        return logoLayout;
+        Embedded logo = new Embedded(null, new ThemeResource(
+                "clara-logo-90x90.png"));
+        logo.setHeight("90px");
+        logo.setWidth("90px");
+        return logo;
     }
 
     private TextArea createXmlArea() {
