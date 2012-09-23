@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.factory.PrimitiveAttributeParser;
 
-public class PrimitiveAttributeHandlerTest {
+public class PrimitiveAttributeParserTest {
 
     private PrimitiveAttributeParser handler;
 
