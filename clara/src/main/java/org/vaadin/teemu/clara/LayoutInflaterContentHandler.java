@@ -17,6 +17,7 @@ class LayoutInflaterContentHandler extends DefaultHandler {
     private static final String URN_NAMESPACE_ID = "package";
     private static final String DEFAULT_NAMESPACE = "urn:" + URN_NAMESPACE_ID
             + ":com.vaadin.ui";
+    private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:layout";
 
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
@@ -51,6 +52,7 @@ class LayoutInflaterContentHandler extends DefaultHandler {
 
             currentId = null;
             Map<String, String> attributeMap = getAttributeMap(attributes);
+            Map<String, String> layoutAttributeMap = getLayoutAttributeMap(attributes);
             currentComponent = componentFactory.createComponent(packageName,
                     className, attributeMap);
             if (currentId != null) {
@@ -63,7 +65,7 @@ class LayoutInflaterContentHandler extends DefaultHandler {
             if (currentContainer != null) {
                 currentContainer.addComponent(currentComponent);
                 componentFactory.applyLayoutAttributes(currentContainer,
-                        currentComponent, attributeMap);
+                        currentComponent, layoutAttributeMap);
             }
             if (currentComponent instanceof ComponentContainer) {
                 currentContainer = (ComponentContainer) currentComponent;
@@ -76,16 +78,31 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         Map<String, String> attributeMap = new HashMap<String, String>(
                 attributes.getLength());
         for (int i = 0; i < attributes.getLength(); i++) {
-            String value = attributes.getValue(i);
-            String name = attributes.getLocalName(i);
-            if (name.equals("id")) {
-                if (idMap.containsKey(value)) {
-                    throw new LayoutInflaterException(String.format(
-                            "Duplicate id: %s.", value));
+            if (!attributes.getURI(i).equals(LAYOUT_ATTRIBUTE_NAMESPACE)) {
+                String value = attributes.getValue(i);
+                String name = attributes.getLocalName(i);
+                if (name.equals("id")) {
+                    if (idMap.containsKey(value)) {
+                        throw new LayoutInflaterException(String.format(
+                                "Duplicate id: %s.", value));
+                    } else {
+                        currentId = value;
+                    }
                 } else {
-                    currentId = value;
+                    attributeMap.put(name, value);
                 }
-            } else {
+            }
+        }
+        return attributeMap;
+    }
+
+    private Map<String, String> getLayoutAttributeMap(Attributes attributes) {
+        Map<String, String> attributeMap = new HashMap<String, String>(
+                attributes.getLength());
+        for (int i = 0; i < attributes.getLength(); i++) {
+            if (attributes.getURI(i).equals(LAYOUT_ATTRIBUTE_NAMESPACE)) {
+                String value = attributes.getValue(i);
+                String name = attributes.getLocalName(i);
                 attributeMap.put(name, value);
             }
         }

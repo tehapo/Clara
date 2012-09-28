@@ -181,22 +181,16 @@ public class DefaultComponentManager implements ComponentManager {
         }
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                if (attribute.getKey().startsWith("layout_")) {
-                    String layoutProperty = attribute.getKey().substring(
-                            "layout_".length());
-                    Method layoutMethod = getLayoutMethod(container.getClass(),
-                            layoutProperty);
-                    if (layoutMethod != null) {
-                        AttributeParser handler = getHandlerFor(layoutMethod
-                                .getParameterTypes()[1]);
-                        if (handler != null) {
-                            invokeWithInterceptors(
-                                    layoutMethod,
-                                    container,
-                                    component,
-                                    handler.getValueAs(attribute.getValue(),
-                                            layoutMethod.getParameterTypes()[1]));
-                        }
+                Method layoutMethod = getLayoutMethod(container.getClass(),
+                        attribute.getKey());
+                if (layoutMethod != null) {
+                    AttributeParser handler = getHandlerFor(layoutMethod
+                            .getParameterTypes()[1]);
+                    if (handler != null) {
+                        invokeWithInterceptors(layoutMethod, container,
+                                component, handler.getValueAs(
+                                        attribute.getValue(),
+                                        layoutMethod.getParameterTypes()[1]));
                     }
                 }
             }

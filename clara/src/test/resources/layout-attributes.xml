@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VerticalLayout xmlns="urn:package:com.vaadin.ui">
-   	<Button layout_expandRatio="1.0" />
+<VerticalLayout xmlns="urn:package:com.vaadin.ui" xmlns:l="urn:vaadin:layout">
+   	<Button l:expandRatio="1.0" />
 </VerticalLayout>
