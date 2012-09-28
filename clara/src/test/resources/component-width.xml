@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VerticalLayout xmlns="urn:vaadin:com.vaadin.ui">
+<VerticalLayout xmlns="urn:package:com.vaadin.ui">
     <Button width="200px" id="button200px" />
 </VerticalLayout>

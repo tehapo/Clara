@@ -13,8 +13,8 @@
     Have fun!
      
 -->
-<VerticalLayout xmlns="urn:vaadin:com.vaadin.ui"
-    xmlns:a="urn:vaadin:org.vaadin.teemu.ratingstars" spacing="true"
+<VerticalLayout xmlns="urn:package:com.vaadin.ui"
+    xmlns:a="urn:package:org.vaadin.teemu.ratingstars" spacing="true"
     margin="true false false true">
 
     <Label id="label" value="Welcome to Clara demo application." />

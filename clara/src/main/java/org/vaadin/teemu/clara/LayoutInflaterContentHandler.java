@@ -14,7 +14,9 @@ import com.vaadin.ui.ComponentContainer;
 
 class LayoutInflaterContentHandler extends DefaultHandler {
 
-    private static final String DEFAULT_NAMESPACE = "urn:vaadin:com.vaadin.ui";
+    private static final String URN_NAMESPACE_ID = "package";
+    private static final String DEFAULT_NAMESPACE = "urn:" + URN_NAMESPACE_ID
+            + ":com.vaadin.ui";
 
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
@@ -42,8 +44,9 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
 
         currentComponent = null;
-        if (uri.startsWith("urn:vaadin:")) {
-            String packageName = uri.substring("urn:vaadin:".length());
+        if (uri.startsWith("urn:" + URN_NAMESPACE_ID + ":")) {
+            String packageName = uri
+                    .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
             String className = localName;
 
             currentId = null;

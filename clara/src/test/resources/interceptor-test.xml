@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VerticalLayout xmlns="urn:vaadin:com.vaadin.ui" margin="true true false false">
+<VerticalLayout xmlns="urn:package:com.vaadin.ui" margin="true true false false">
     <Button width="200px" layout_expandRatio="1.0" caption="{i18n:test}" id="button200px" />
 </VerticalLayout>
