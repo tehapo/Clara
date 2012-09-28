@@ -14,6 +14,8 @@ import com.vaadin.ui.ComponentContainer;
 
 class LayoutInflaterContentHandler extends DefaultHandler {
 
+    private static final String DEFAULT_NAMESPACE = "urn:vaadin:com.vaadin.ui";
+
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
     private Component currentComponent;
@@ -34,6 +36,11 @@ class LayoutInflaterContentHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName,
             Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
+
+        if (uri == null || uri.length() == 0) {
+            uri = DEFAULT_NAMESPACE;
+        }
+
         currentComponent = null;
         if (uri.startsWith("urn:vaadin:")) {
             String packageName = uri.substring("urn:vaadin:".length());

@@ -43,6 +43,20 @@ public class LayoutInflaterTest {
     }
 
     @Test
+    public void inflate_singleButtonNoNamespace_buttonInstantiated() {
+        CustomComponent view = inflater
+                .inflate(getXml("single-button-no-namespace.xml"));
+        Component button = view.getComponentIterator().next();
+
+        // check that the composition root is actually a Button
+        assertEquals(com.vaadin.ui.Button.class, button.getClass());
+
+        // check attributes
+        assertEquals("My Button", button.getCaption());
+        assertEquals(true, button.isReadOnly());
+    }
+
+    @Test
     public void inflate_singleLayout_layoutWithMarginsInstantiated() {
         CustomComponent view = inflater.inflate(getXml("single-layout.xml"));
         Component layout = view.getComponentIterator().next();
