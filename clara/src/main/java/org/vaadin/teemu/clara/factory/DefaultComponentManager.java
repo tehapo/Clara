@@ -239,7 +239,7 @@ public class DefaultComponentManager implements ComponentManager {
             if (handler != null
                     && !(handler instanceof PrimitiveAttributeParser)) {
                 // We found a setter method that we have a special
-                // AttributeHandler for.
+                // AttributeParser for.
                 return method;
             }
 
