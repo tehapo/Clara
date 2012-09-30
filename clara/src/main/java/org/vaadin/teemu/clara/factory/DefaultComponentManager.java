@@ -1,9 +1,5 @@
 package org.vaadin.teemu.clara.factory;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -126,8 +122,6 @@ public class DefaultComponentManager implements ComponentManager {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
         }
     }
 
@@ -204,21 +198,19 @@ public class DefaultComponentManager implements ComponentManager {
     }
 
     private Method getSetter(String propertyName,
-            Class<? extends Component> componentClass)
-            throws IntrospectionException {
-        // Get the Component properties.
-        BeanInfo beanInfo = Introspector.getBeanInfo(componentClass);
-        PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+            Class<? extends Component> componentClass) {
+        Set<Method> writeMethods = ReflectionUtils
+                .getMethodsByNameAndParamCount(componentClass, "set"
+                        + capitalize(propertyName), 1);
+        return selectPreferredMethod(writeMethods, 0);
+    }
 
-        for (PropertyDescriptor property : properties) {
-            if (property.getName().equals(propertyName)) {
-                Set<Method> setters = ReflectionUtils
-                        .getMethodsByNameAndParamCount(componentClass, property
-                                .getWriteMethod().getName(), 1);
-                return selectPreferredMethod(setters, 0);
-            }
+    private static String capitalize(String propertyName) {
+        if (propertyName.length() > 0) {
+            return propertyName.substring(0, 1).toUpperCase()
+                    + propertyName.substring(1);
         }
-        return null;
+        return "";
     }
 
     private Method getLayoutMethod(
