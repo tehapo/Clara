@@ -58,7 +58,6 @@ public class DemoApplication extends Application {
         wrapper.setExpandRatio(editor, 1.0f);
         split.setFirstComponent(wrapper);
         updateLayout();
-        setTheme("clara");
     }
 
     private Component createLogo() {
