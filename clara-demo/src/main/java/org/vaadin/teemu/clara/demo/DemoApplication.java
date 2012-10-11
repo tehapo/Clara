@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.vaadin.teemu.clara.InflatedCustomComponent;
 import org.vaadin.teemu.clara.LayoutInflater;
 import org.vaadin.teemu.clara.LayoutInflaterException;
 import org.vaadin.teemu.clara.binder.Binder;
@@ -115,12 +114,10 @@ public class DemoApplication extends Application {
 
     private void updateLayout() {
         try {
-            InflatedCustomComponent c = inflater
-                    .inflate(new ByteArrayInputStream(xmlArea.getValue()
-                            .toString().getBytes()));
+            Component c = inflater.inflate(new ByteArrayInputStream(xmlArea
+                    .getValue().toString().getBytes()));
             binder.bind(c, controller);
-
-            split.setSecondComponent(c);
+            split.replaceComponent(split.getSecondComponent(), c);
         } catch (LayoutInflaterException e) {
             mainWindow.showNotification(e.getMessage(),
                     Notification.TYPE_ERROR_MESSAGE);

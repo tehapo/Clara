@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.vaadin.teemu.clara.Clara;
 import org.vaadin.teemu.clara.binder.annotation.DataSource;
 import org.vaadin.teemu.clara.binder.annotation.EventHandler;
 import org.vaadin.teemu.clara.util.ReflectionUtils;
@@ -22,25 +23,26 @@ public class Binder {
         return Logger.getLogger(Binder.class.getName());
     }
 
-    public void bind(ComponentMapper mapper, Object controller) {
+    public void bind(Component componentRoot, Object controller) {
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(DataSource.class)) {
-                bindDataSource(mapper, controller, method,
+                bindDataSource(componentRoot, controller, method,
                         method.getAnnotation(DataSource.class));
             }
 
             if (method.isAnnotationPresent(EventHandler.class)) {
-                bindEventHandler(mapper, controller, method,
+                bindEventHandler(componentRoot, controller, method,
                         method.getAnnotation(EventHandler.class));
             }
         }
     }
 
-    private void bindEventHandler(ComponentMapper mapper, Object controller,
+    private void bindEventHandler(Component componentRoot, Object controller,
             Method method, EventHandler eventListener) {
         String componentId = eventListener.value();
-        Component component = mapper.findComponentById(componentId);
+        Component component = Clara.findComponentById(componentRoot,
+                componentId);
 
         Class<?> eventClass = (method.getParameterTypes().length > 0 ? method
                 .getParameterTypes()[0] : null);
@@ -120,10 +122,11 @@ public class Binder {
         return null;
     }
 
-    private void bindDataSource(ComponentMapper mapper, Object controller,
+    private void bindDataSource(Component componentRoot, Object controller,
             Method method, DataSource dataSource) {
         String componentId = dataSource.value();
-        Component component = mapper.findComponentById(componentId);
+        Component component = Clara.findComponentById(componentRoot,
+                componentId);
         Class<?> dataSourceClass = method.getReturnType();
 
         try {

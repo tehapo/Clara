@@ -16,6 +16,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext;
+import com.vaadin.ui.Component;
 
 public class LayoutInflater {
 
@@ -38,7 +39,7 @@ public class LayoutInflater {
      * @throws LayoutInflaterException
      */
     // TODO Test in portal environment.
-    public InflatedCustomComponent inflate(Application app, String xmlFile)
+    public Component inflate(Application app, String xmlFile)
             throws LayoutInflaterException {
         File layoutFile = getLayoutFile(app.getContext(), xmlFile);
         try {
@@ -49,8 +50,7 @@ public class LayoutInflater {
         }
     }
 
-    public InflatedCustomComponent inflate(InputStream xml)
-            throws LayoutInflaterException {
+    public Component inflate(InputStream xml) throws LayoutInflaterException {
         try {
             // initialize content handler
             LayoutInflaterContentHandler handler = new LayoutInflaterContentHandler(
@@ -62,8 +62,7 @@ public class LayoutInflater {
             parser.parse(new InputSource(xml));
 
             // construct the result
-            return new InflatedCustomComponent(handler.getIdMap(),
-                    handler.getRoot());
+            return handler.getRoot();
         } catch (SAXException e) {
             throw new LayoutInflaterException(e);
         } catch (IOException e) {

@@ -23,7 +23,6 @@ class LayoutInflaterContentHandler extends DefaultHandler {
     private ComponentContainer currentContainer;
     private Component currentComponent;
     private Component root;
-    private String currentId;
     private final ComponentManager componentFactory;
     private final Map<String, Component> idMap = new HashMap<String, Component>();
 
@@ -50,13 +49,12 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                     .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
             String className = localName;
 
-            currentId = null;
             Map<String, String> attributeMap = getAttributeMap(attributes);
             Map<String, String> layoutAttributeMap = getLayoutAttributeMap(attributes);
             currentComponent = componentFactory.createComponent(packageName,
                     className, attributeMap);
-            if (currentId != null) {
-                idMap.put(currentId, currentComponent);
+            if (currentComponent.getDebugId() != null) {
+                idMap.put(currentComponent.getDebugId(), currentComponent);
             }
             if (root == null) {
                 // This was the first Component created -> root.
@@ -85,12 +83,11 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                     if (idMap.containsKey(value)) {
                         throw new LayoutInflaterException(String.format(
                                 "Duplicate id: %s.", value));
-                    } else {
-                        currentId = value;
                     }
-                } else {
-                    attributeMap.put(name, value);
+                    // TODO remove this for Vaadin 7?
+                    name = "debugId";
                 }
+                attributeMap.put(name, value);
             }
         }
         return attributeMap;

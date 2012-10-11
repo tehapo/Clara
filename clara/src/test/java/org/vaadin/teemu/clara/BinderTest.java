@@ -45,14 +45,12 @@ public class BinderTest {
 
     @Test
     public void bind_clickListener_clickListenerInvoked() {
-        InflatedCustomComponent view = inflater
-                .inflate(getXml("single-button.xml"));
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
         Binder binder = new Binder();
-        binder.bind(view, this);
+        binder.bind(button, this);
 
         clickCalled = false;
-        Button button = (Button) view.getComponentIterator().next();
         simulateButtonClick(button);
 
         // check that the handler was called
@@ -61,14 +59,13 @@ public class BinderTest {
 
     @Test
     public void bind_dataSource_dataSourceAttached() {
-        InflatedCustomComponent view = inflater
+        DateField view = (DateField) inflater
                 .inflate(getXml("single-datefield.xml"));
 
         Binder binder = new Binder();
         binder.bind(view, this);
 
-        Date value = (Date) (((DateField) view.findComponentById("my-datefield"))
-                .getValue());
+        Date value = (Date) view.getValue();
         assertEquals(1337337477578L, value.getTime());
     }
 

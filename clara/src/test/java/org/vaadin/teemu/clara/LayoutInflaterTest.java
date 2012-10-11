@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
 public class LayoutInflaterTest {
@@ -31,8 +30,7 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_singleButton_buttonInstantiated() {
-        CustomComponent view = inflater.inflate(getXml("single-button.xml"));
-        Component button = view.getComponentIterator().next();
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
         // check that the composition root is actually a Button
         assertEquals(com.vaadin.ui.Button.class, button.getClass());
@@ -44,9 +42,8 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_singleButtonNoNamespace_buttonInstantiated() {
-        CustomComponent view = inflater
+        Component button = inflater
                 .inflate(getXml("single-button-no-namespace.xml"));
-        Component button = view.getComponentIterator().next();
 
         // check that the composition root is actually a Button
         assertEquals(com.vaadin.ui.Button.class, button.getClass());
@@ -58,8 +55,7 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_singleLayout_layoutWithMarginsInstantiated() {
-        CustomComponent view = inflater.inflate(getXml("single-layout.xml"));
-        Component layout = view.getComponentIterator().next();
+        Component layout = inflater.inflate(getXml("single-layout.xml"));
 
         // check that the composition root is actually a VerticalLayout
         assertEquals(com.vaadin.ui.VerticalLayout.class, layout.getClass());
@@ -73,9 +69,7 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_layoutAttributes_layoutAttributesApplied() {
-        CustomComponent view = inflater
-                .inflate(getXml("layout-attributes.xml"));
-        Component layout = view.getComponentIterator().next();
+        Component layout = inflater.inflate(getXml("layout-attributes.xml"));
 
         // check that the composition root is actually a VerticalLayout
         assertEquals(com.vaadin.ui.VerticalLayout.class, layout.getClass());
@@ -88,11 +82,11 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_componentHasWidth_widthAttributeApplied() {
-        InflatedCustomComponent view = inflater
-                .inflate(getXml("component-width.xml"));
+        Component layout = inflater.inflate(getXml("component-width.xml"));
 
         // check width
-        Button button200px = (Button) view.findComponentById("button200px");
+        Button button200px = (Button) Clara.findComponentById(layout,
+                "button200px");
         assertEquals(200.0f, button200px.getWidth(), 0.0f);
     }
 
@@ -118,30 +112,28 @@ public class LayoutInflaterTest {
         };
 
         interceptingInflater.addInterceptor(interceptor);
-        InflatedCustomComponent interceptedView = interceptingInflater
+        Component interceptedView = interceptingInflater
                 .inflate(getXml("interceptor-test.xml"));
-        InflatedCustomComponent view = inflater
-                .inflate(getXml("interceptor-test.xml"));
+        Component view = inflater.inflate(getXml("interceptor-test.xml"));
 
         // check caption
-        Button button200px = (Button) interceptedView
-                .findComponentById("button200px");
+        Button button200px = (Button) Clara.findComponentById(interceptedView,
+                "button200px");
         assertEquals("interceptedValue", button200px.getCaption());
-        button200px = (Button) view.findComponentById("button200px");
+        button200px = (Button) Clara.findComponentById(view, "button200px");
         assertEquals("{i18n:test}", button200px.getCaption());
     }
 
     @Test
     public void inflate_singleButton_findByIdWorks() {
-        InflatedCustomComponent view = inflater
-                .inflate(getXml("single-button.xml"));
+        Component view = inflater.inflate(getXml("single-button.xml"));
 
         // check that the id my-button returns a Button
         assertEquals(com.vaadin.ui.Button.class,
-                view.findComponentById("my-button").getClass());
+                Clara.findComponentById(view, "my-button").getClass());
 
         // check that non-existing id returns null
-        assertEquals(null, view.findComponentById("non-existing-id"));
+        assertEquals(null, Clara.findComponentById(view, "non-existing-id"));
     }
 
     @Test(expected = LayoutInflaterException.class)
