@@ -27,8 +27,10 @@
 
     <DateField caption="Select a date" id="date" immediate="true" />
 
-    <Table id="person-list" width="70%" caption="Controller provides my datasource..." pageLength="2" />
-    <Select caption="...try moving the person-list id to me" itemCaptionPropertyId="Name" />
+    <CssLayout width="60%">
+        <Table id="person-list" width="100%" caption="Controller provides my datasource..." pageLength="2" />
+        <Select caption="...try moving the person-list id here" itemCaptionPropertyId="Name" />
+    </CssLayout>
     
     <a:RatingStars id="value-field" l:componentAlignment="MIDDLE_CENTER" immediate="true" caption="Add-ons work too" />
 </VerticalLayout>
