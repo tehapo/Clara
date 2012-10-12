@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater;
 
 @SuppressWarnings("serial")
 public class LayoutInflaterException extends RuntimeException {

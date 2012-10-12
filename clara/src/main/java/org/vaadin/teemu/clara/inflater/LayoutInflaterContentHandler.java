@@ -1,10 +1,9 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.vaadin.teemu.clara.factory.ComponentManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

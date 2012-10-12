@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.annotation.DataSource;
 import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;

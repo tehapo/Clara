@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.factory;
+package org.vaadin.teemu.clara.inflater;
 
 public interface AttributeParser {
 

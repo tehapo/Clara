@@ -5,9 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.vaadin.teemu.clara.LayoutInflater;
-import org.vaadin.teemu.clara.LayoutInflaterException;
-import org.vaadin.teemu.clara.binder.Binder;
+import org.vaadin.teemu.clara.Clara;
+import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.ThemeResource;
@@ -29,9 +28,6 @@ public class DemoApplication extends Application {
     private TextArea xmlArea;
     private HorizontalSplitPanel split = new HorizontalSplitPanel();
     private Window mainWindow;
-
-    private LayoutInflater inflater = new LayoutInflater();
-    private Binder binder = new Binder();
 
     @Override
     public void init() {
@@ -114,9 +110,8 @@ public class DemoApplication extends Application {
 
     private void updateLayout() {
         try {
-            Component c = inflater.inflate(new ByteArrayInputStream(xmlArea
-                    .getValue().toString().getBytes()));
-            binder.bind(c, controller);
+            Component c = Clara.create(new ByteArrayInputStream(xmlArea
+                    .getValue().toString().getBytes()), controller);
             split.replaceComponent(split.getSecondComponent(), c);
         } catch (LayoutInflaterException e) {
             mainWindow.showNotification(e.getMessage(),

@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.factory;
+package org.vaadin.teemu.clara.inflater;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

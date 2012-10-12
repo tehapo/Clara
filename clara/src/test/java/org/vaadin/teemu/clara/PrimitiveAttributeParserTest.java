@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.teemu.clara.factory.PrimitiveAttributeParser;
+import org.vaadin.teemu.clara.inflater.PrimitiveAttributeParser;
 
 public class PrimitiveAttributeParserTest {
 

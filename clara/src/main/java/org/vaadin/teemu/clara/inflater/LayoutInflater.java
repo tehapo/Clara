@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.vaadin.teemu.clara.factory.ComponentInstantiationException;
-import org.vaadin.teemu.clara.factory.ComponentManager;
-import org.vaadin.teemu.clara.factory.DefaultComponentManager;
+import org.vaadin.teemu.clara.AttributeInterceptor;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
