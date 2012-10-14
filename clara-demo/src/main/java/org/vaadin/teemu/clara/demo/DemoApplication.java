@@ -58,7 +58,7 @@ public class DemoApplication extends Application {
 
     private Component createLogo() {
         Embedded logo = new Embedded(null, new ThemeResource(
-                "clara-logo-90x90.png"));
+                "clara-logo-simplified-90x90.png"));
         logo.setHeight("90px");
         logo.setWidth("90px");
         return logo;
