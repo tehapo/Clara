@@ -16,6 +16,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -66,6 +67,7 @@ public class DemoApplication extends Application {
     private TextArea createXmlArea() {
         TextArea area = new TextArea();
         area.setStyleName("xml-area");
+        area.setCaption("XML");
         area.setSizeFull();
         area.setValue(readStartingPoint()); // initial value
         return area;
@@ -110,9 +112,19 @@ public class DemoApplication extends Application {
 
     private void updateLayout() {
         try {
+            VerticalLayout wrapper = new VerticalLayout();
+            wrapper.setMargin(true);
+            wrapper.setSizeFull();
+
             Component c = Clara.create(new ByteArrayInputStream(xmlArea
                     .getValue().toString().getBytes()), controller);
-            split.replaceComponent(split.getSecondComponent(), c);
+
+            Panel p = new Panel("Result");
+            p.setStyleName("result");
+            p.addComponent(c);
+            p.setSizeFull();
+            wrapper.addComponent(p);
+            split.replaceComponent(split.getSecondComponent(), wrapper);
         } catch (LayoutInflaterException e) {
             mainWindow.showNotification(e.getMessage(),
                     Notification.TYPE_ERROR_MESSAGE);
