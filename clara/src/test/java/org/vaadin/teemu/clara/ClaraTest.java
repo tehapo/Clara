@@ -2,6 +2,7 @@ package org.vaadin.teemu.clara;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
@@ -12,8 +13,10 @@ import org.vaadin.teemu.clara.binder.annotation.EventHandler;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
 
-public class ClaraIntegrationTest {
+public class ClaraTest {
 
     private InputStream xml;
     private Controller controller;
@@ -91,6 +94,45 @@ public class ClaraIntegrationTest {
         Button button200px = (Button) Clara.findComponentById(layout,
                 "button200px");
         assertEquals("{i18n:test}", button200px.getCaption());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindComponentById_nullComponent_exceptionThrown() {
+        Clara.findComponentById(null, "foobar");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindComponentById_nullComponentId_exceptionThrown() {
+        Clara.findComponentById(new VerticalLayout(), null);
+    }
+
+    @Test
+    public void testFindComponentById_componentExistInTree_componentFound() {
+        @SuppressWarnings("serial")
+        Layout layout = new VerticalLayout() {
+            {
+                Button b = new Button();
+                b.setDebugId("foobar");
+                addComponent(b);
+            }
+        };
+        Component c = Clara.findComponentById(layout, "foobar");
+        assertTrue(c instanceof Button);
+        assertEquals("foobar", c.getDebugId());
+    }
+
+    @Test
+    public void testFindComponentById_componentDoesntExistInTree_nullReturned() {
+        @SuppressWarnings("serial")
+        Layout layout = new VerticalLayout() {
+            {
+                Button b = new Button();
+                b.setDebugId("button");
+                addComponent(b);
+            }
+        };
+        Component c = Clara.findComponentById(layout, "foobar");
+        assertNull(c);
     }
 
     private InputStream getXml(String fileName) {

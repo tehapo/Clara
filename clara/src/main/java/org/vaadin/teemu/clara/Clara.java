@@ -60,6 +60,10 @@ public class Clara {
         if (componentId == null) {
             throw new IllegalArgumentException("Component id must not be null.");
         }
+        if (root == null) {
+            throw new IllegalArgumentException(
+                    "Root component must not be null.");
+        }
 
         // Recursively traverse the whole component tree starting from the given
         // root component.
