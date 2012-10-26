@@ -49,11 +49,26 @@ public class Clara {
     }
 
     /**
-     * TODO documentation
+     * Searches the given component hierarchy {@code root} for the
+     * {@link Component} with a given {@code componentId} as its debugId (see
+     * {@link Component#setDebugId(String)}).
+     * 
+     * <br />
+     * <br />
+     * If the given {@code root} is a {@link ComponentContainer}, this method
+     * will iterate the component hierarchy in search for the correct
+     * {@link Component}. Otherwise if the given {@code root} is a single
+     * {@link Component}, only it is checked for its debugId value.
      * 
      * @param root
+     *            root of a component tree (non-{@code null}).
      * @param componentId
-     * @return
+     *            debugId of a component to search for (non-{@code null}).
+     * @return {@link Component} with a given {@code componentId} as its debugId
+     *         or {@code null} if no such component is found.
+     * @throws IllegalArgumentException
+     *             if either of the given parameters is {@code null}.
+     * @see Component#setDebugId(String)
      */
     public static Component findComponentById(Component root, String componentId) {
         // Check for null before doing anything.
