@@ -13,10 +13,11 @@
     Have fun!
      
 -->
-<VerticalLayout xmlns="urn:package:com.vaadin.ui"
+<VerticalLayout 
+    xmlns="urn:package:com.vaadin.ui"
     xmlns:a="urn:package:org.vaadin.teemu.ratingstars"
     xmlns:l="urn:vaadin:layout"
-    spacing="true" margin="true false false true">
+    spacing="true">
 
     <Label id="label" value="Welcome to Clara demo application." />
 
@@ -28,9 +29,12 @@
     <DateField caption="Select a date" id="date" immediate="true" />
 
     <CssLayout width="60%">
-        <Table id="person-list" width="100%" caption="Controller provides my datasource..." pageLength="2" />
-        <Select caption="...try moving the person-list id here" itemCaptionPropertyId="Name" />
+        <Table id="person-list" width="100%" 
+            caption="Controller provides my datasource..." pageLength="2" />
+        <Select caption="...try moving the person-list id here" 
+            itemCaptionPropertyId="Name" />
     </CssLayout>
     
-    <a:RatingStars id="value-field" l:componentAlignment="MIDDLE_CENTER" immediate="true" caption="Add-ons work too" />
+    <a:RatingStars id="value-field" l:componentAlignment="MIDDLE_CENTER" 
+        immediate="true" caption="Add-ons work too" />
 </VerticalLayout>

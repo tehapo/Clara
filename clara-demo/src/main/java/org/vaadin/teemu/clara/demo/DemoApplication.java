@@ -9,18 +9,21 @@ import org.vaadin.teemu.clara.Clara;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
 import com.vaadin.Application;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
 public class DemoApplication extends Application {
@@ -29,6 +32,8 @@ public class DemoApplication extends Application {
     private TextArea xmlArea;
     private HorizontalSplitPanel split = new HorizontalSplitPanel();
     private Window mainWindow;
+    private Label statusLabel;
+    private ResultPanel resultPanel = new ResultPanel();
 
     @Override
     public void init() {
@@ -38,13 +43,13 @@ public class DemoApplication extends Application {
         controller = new DemoController(mainWindow);
         mainWindow.setContent(split);
 
-        VerticalLayout editor = new VerticalLayout();
-        editor.setSpacing(true);
-        editor.setMargin(false, false, false, true);
-        editor.setHeight("100%");
+        CssLayout editor = new CssLayout();
+        editor.setSizeFull();
+        editor.setMargin(false, false, true, true);
+        editor.addComponent(statusLabel = new Label());
+        statusLabel.setStyleName("status");
+        statusLabel.addStyleName("error");
         editor.addComponent(xmlArea = createXmlArea());
-        editor.setExpandRatio(xmlArea, 1.0f);
-        editor.addComponent(createUpdateButton());
 
         HorizontalLayout wrapper = new HorizontalLayout();
         wrapper.setMargin(true);
@@ -53,6 +58,8 @@ public class DemoApplication extends Application {
         wrapper.addComponent(editor);
         wrapper.setExpandRatio(editor, 1.0f);
         split.setFirstComponent(wrapper);
+        split.setSecondComponent(resultPanel);
+        resultPanel.setSizeFull();
         updateLayout();
     }
 
@@ -70,15 +77,16 @@ public class DemoApplication extends Application {
         area.setCaption("XML");
         area.setSizeFull();
         area.setValue(readStartingPoint()); // initial value
-        return area;
-    }
+        area.setTextChangeEventMode(TextChangeEventMode.LAZY);
+        area.setTextChangeTimeout(500);
+        area.addListener(new TextChangeListener() {
 
-    private Button createUpdateButton() {
-        return new Button("Update", new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                updateLayout();
+            @Override
+            public void textChange(TextChangeEvent event) {
+                updateLayout(event.getText());
             }
         });
+        return area;
     }
 
     /**
@@ -110,25 +118,53 @@ public class DemoApplication extends Application {
         return null;
     }
 
+    private void setErrorStatus(String message) {
+        statusLabel.setValue(message);
+        statusLabel.addStyleName("error");
+    }
+
+    private void setOkStatus(String message) {
+        statusLabel.setValue(message);
+        statusLabel.removeStyleName("error");
+    }
+
     private void updateLayout() {
+        updateLayout(xmlArea.getValue().toString());
+    }
+
+    private void updateLayout(String xml) {
         try {
-            VerticalLayout wrapper = new VerticalLayout();
-            wrapper.setMargin(true);
-            wrapper.setSizeFull();
+            long startTime = System.currentTimeMillis();
+            Component c = Clara.create(
+                    new ByteArrayInputStream(xml.getBytes()), controller);
+            long endTime = System.currentTimeMillis();
 
-            Component c = Clara.create(new ByteArrayInputStream(xmlArea
-                    .getValue().toString().getBytes()), controller);
-
-            Panel p = new Panel("Result");
-            p.setStyleName("result");
-            p.addComponent(c);
-            p.setSizeFull();
-            wrapper.addComponent(p);
-            split.replaceComponent(split.getSecondComponent(), wrapper);
+            resultPanel.setContent(c);
+            setOkStatus("Layout updated in " + (endTime - startTime) + "ms.");
         } catch (LayoutInflaterException e) {
-            mainWindow.showNotification(e.getMessage(),
-                    Notification.TYPE_ERROR_MESSAGE);
+            setErrorStatus(e.getMessage());
         }
     }
 
+    private static class ResultPanel extends CustomComponent {
+
+        private Panel contentPanel;
+
+        public ResultPanel() {
+            VerticalLayout marginWrapper = new VerticalLayout();
+            marginWrapper.setMargin(true);
+            marginWrapper.setSizeFull();
+            setCompositionRoot(marginWrapper);
+
+            contentPanel = new Panel("Result");
+            contentPanel.setStyleName("result");
+            contentPanel.setSizeFull();
+            marginWrapper.addComponent(contentPanel);
+        }
+
+        public void setContent(Component content) {
+            contentPanel.removeAllComponents();
+            contentPanel.addComponent(content);
+        }
+    }
 }

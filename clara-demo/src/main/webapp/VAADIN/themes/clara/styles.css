@@ -4,6 +4,23 @@
 .v-textarea-xml-area {
 	font-family: Monaco, "Courier New", monospace !important;
 	font-size: 11px !important;
+	height: auto !important;
+	position: absolute;
+	top: 49px;
+	bottom: 17px;
+}
+
+.status {
+	position: absolute;
+	left: 21em;
+	top: 2em;
+	white-space: nowrap;
+}
+
+.status.error {
+	color: red;
+	background: url(../reindeer/common/icons/error.png) center left no-repeat;
+	padding-left: 13px;
 }
 
 .logo .v-embedded,
@@ -27,13 +44,15 @@
 .v-caption-xml-area {
 	position: relative;
 	top: 1px;
+	z-index: 1;
 }
 
 .v-panel-caption-result,
 .v-caption-xml-area .v-captiontext {
+	font-size: 12px;
 	font-weight: normal;
 	background: #fff;
-	padding: 0px 20px 2px;
+	padding: 8px 45px;
 	border-width: 1px 1px 0 1px;
 	border-style: solid;
 	border-color: #999;
