@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater;
 
 import com.vaadin.ui.Component;
 

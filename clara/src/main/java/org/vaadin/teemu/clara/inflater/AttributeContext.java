@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater;
 
 import java.lang.reflect.Method;
 

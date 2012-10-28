@@ -10,6 +10,8 @@ import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.vaadin.teemu.clara.inflater.AttributeContext;
+import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 

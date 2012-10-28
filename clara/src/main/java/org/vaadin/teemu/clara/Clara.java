@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import org.vaadin.teemu.clara.binder.Binder;
+import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import com.vaadin.ui.Component;

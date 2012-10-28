@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.vaadin.teemu.clara.AttributeContext;
-import org.vaadin.teemu.clara.AttributeInterceptor;
 import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.ui.Component;
