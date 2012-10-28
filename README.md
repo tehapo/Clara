@@ -45,7 +45,9 @@ The project is still very experimental and documentation is minimal at this poin
 
 2) Download the latest version of Clara to WEB-INF/lib from Vaadin Directory (or use the Maven dependency).
 
-3) Create a layout definition in XML. See the example below. Notice the special "urn:vaadin:layout" namespace on the componentAlignment attribute which means that the componentAlignment property belongs to the containing layout instead of the component itself.
+3) Create a new Java package that will contain the XML layout definition and the controller class (see steps 4 and 5).
+
+4) Create a new XML file (name it ```MyFirstClaraLayout.xml```) for the layout definition and save it to the Java package you just created. You can copy the example below. Notice the special "urn:vaadin:layout" namespace on the componentAlignment attribute which means that the componentAlignment property belongs to the containing layout instead of the component itself.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -55,7 +57,7 @@ The project is still very experimental and documentation is minimal at this poin
 </VerticalLayout>
 ```
 
-4) Save this XML file as a resource in your classpath as ```MyFirstClaraLayout.xml```. Next you should create a plain old Java class with the name ```MyFirstClaraController``` and add it to the same Java package as the XML file. Binding this controller to the components in the XML layout is done with annotations. Add the following two methods to your controller class.
+5) Create a plain old Java class with the name ```MyFirstClaraController``` and add it to the same Java package as the XML file. Binding this controller to the components in the XML layout is done with annotations. Add the following two methods to your controller class.
 
 ```java
 // The value "my-button" of the annotation is a reference to the id attribute in the XML layout.
@@ -72,15 +74,18 @@ public Property getLabelProperty() {
 }
 ```
 
-5) Now you can instantiate the XML definition to a Vaadin component in your Java code. See the example below.
+6) Now you can instantiate the XML definition to a Vaadin component in your Java code. See the example below.
 
 ```java
 // Use the static "create" method to instantiate the XML into a Vaadin component.
-Clara.create("MyFirstClaraLayout.xml", new MyFirstClaraController());
+VerticalLayout layout = (VerticalLayout) Clara.create(
+        "MyFirstClaraLayout.xml", new MyFirstClaraController());
 
 // Now the layout is ready to be used.
 getMainWindow().setContent(layout);
 ```
+
+7) Congratulations, you just created your first application that uses Clara. As next steps you might want to see the other static methods contained in the ```Clara``` class to see more ways to use Clara.
 
 ## Internationalization with Attribute Interceptors
 
