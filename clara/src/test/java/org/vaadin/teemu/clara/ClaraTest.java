@@ -10,6 +10,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -84,6 +85,26 @@ public class ClaraTest {
         assertFalse(controller.clicked);
         button200px.click();
         assertTrue(controller.clicked);
+    }
+
+    @Test
+    public void testCreateMethod_usingRelativeFilenameInClasspath_xmlReadCorrectly() {
+        Component component = Clara.create(
+                "xml-file-for-classpath-testing.xml", controller);
+        assertEquals(Button.class, component.getClass());
+    }
+
+    @Test
+    public void testCreateMethod_usingAbsoluteFilenameInClasspath_xmlReadCorrectly() {
+        Component component = Clara.create(
+                "/org/vaadin/teemu/clara/xml-file-for-classpath-testing.xml",
+                controller);
+        assertEquals(Button.class, component.getClass());
+    }
+
+    @Test(expected = LayoutInflaterException.class)
+    public void testCreateMethod_usingNonExistingFilenameInClasspath_exceptionThrown() {
+        Clara.create("non-existing-file.xml", controller);
     }
 
     @Test

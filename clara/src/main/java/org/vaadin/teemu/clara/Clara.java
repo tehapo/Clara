@@ -12,22 +12,41 @@ import com.vaadin.ui.ComponentContainer;
 public class Clara {
 
     /**
-     * TODO documentation
+     * Returns a {@link Component} that is read from the XML representation
+     * given as {@link InputStream}. If you would like to bind the resulting
+     * {@link Component} to a controller object, you should use
+     * {@link #create(InputStream, Object, AttributeInterceptor...)} method
+     * instead.
      * 
      * @param xml
-     * @return
+     *            XML representation.
+     * @return a {@link Component} that is read from the XML representation.
      */
     public static Component create(InputStream xml) {
         return create(xml, null);
     }
 
     /**
-     * TODO documentation
+     * Returns a {@link Component} that is read from the XML representation
+     * given as {@link InputStream} and binds the resulting {@link Component} to
+     * the given {@code controller} object.
+     * 
+     * <br />
+     * <br />
+     * Optionally you may also provide {@link AttributeInterceptor}s to do some
+     * modifications (or example localized translations) to any attributes
+     * present in the XML representation.
      * 
      * @param xml
+     *            XML representation.
      * @param controller
+     *            controller object to bind the resulting {@code Component} (
+     *            {@code null} allowed).
      * @param interceptors
-     * @return
+     *            optional {@link AttributeInterceptor}s to do attribute
+     *            modifications.
+     * @return a {@link Component} that is read from the XML representation and
+     *         bound to the given {@code controller}.
      */
     public static Component create(InputStream xml, Object controller,
             AttributeInterceptor... interceptors) {
@@ -46,6 +65,44 @@ public class Clara {
             binder.bind(result, controller);
         }
         return result;
+    }
+
+    /**
+     * Returns a {@link Component} that is read from an XML file in the
+     * classpath and binds the resulting {@link Component} to the given
+     * {@code controller} object.
+     * 
+     * <br />
+     * <br />
+     * The filename is given either as a path relative to the class of the
+     * {@code controller} object or as an absolute path. For example if you have
+     * a {@code MyController.java} and {@code MyController.xml} files in the
+     * same package, you can call this method like
+     * {@code Clara.create("MyController.xml", new MyController())}.
+     * 
+     * <br />
+     * <br />
+     * Optionally you may also provide {@link AttributeInterceptor}s to do some
+     * modifications (or example localized translations) to any attributes
+     * present in the XML representation.
+     * 
+     * @param xmlClassResourceFileName
+     *            filename of the XML representation (within classpath, relative
+     *            to {@code controller}'s class or absolute path).
+     * @param controller
+     *            controller object to bind the resulting {@code Component}
+     *            (non-{@code null}).
+     * @param interceptors
+     *            optional {@link AttributeInterceptor}s to do attribute
+     *            modifications.
+     * @return a {@link Component} that is read from the XML representation and
+     *         bound to the given {@code controller}.
+     */
+    public static Component create(String xmlClassResourceFileName,
+            Object controller, AttributeInterceptor... interceptors) {
+        InputStream xml = controller.getClass().getResourceAsStream(
+                xmlClassResourceFileName);
+        return create(xml, controller, interceptors);
     }
 
     /**
