@@ -6,23 +6,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.vaadin.teemu.clara.Clara;
+import org.vaadin.teemu.clara.binder.annotation.DataSource;
+import org.vaadin.teemu.clara.binder.annotation.EventHandler;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
 import com.vaadin.Application;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
@@ -30,69 +26,36 @@ public class DemoApplication extends Application {
 
     private DemoController controller;
     private TextArea xmlArea;
-    private HorizontalSplitPanel split = new HorizontalSplitPanel();
-    private Window mainWindow;
+    private HorizontalSplitPanel split;
     private Label statusLabel;
-    private ResultPanel resultPanel = new ResultPanel();
+    private Panel resultPanel;
 
     @Override
     public void init() {
         setTheme("clara");
-        setMainWindow(mainWindow = new Window());
+        Window mainWindow = new Window();
+        setMainWindow(mainWindow);
 
-        controller = new DemoController(mainWindow);
+        // Create the content from xml.
+        split = (HorizontalSplitPanel) Clara
+                .create("DemoApplication.xml", this);
         mainWindow.setContent(split);
 
-        CssLayout editor = new CssLayout();
-        editor.setSizeFull();
-        editor.setMargin(false, false, true, true);
-        editor.addComponent(statusLabel = new Label());
-        statusLabel.setStyleName("status");
-        statusLabel.addStyleName("error");
-        editor.addComponent(xmlArea = createXmlArea());
+        // TODO should Clara support @Component (or similar) annotation
+        xmlArea = (TextArea) Clara.findComponentById(split, "xmlArea");
+        statusLabel = (Label) Clara.findComponentById(split, "statusLabel");
+        resultPanel = (Panel) Clara.findComponentById(split, "resultPanel");
 
-        HorizontalLayout wrapper = new HorizontalLayout();
-        wrapper.setMargin(true);
-        wrapper.setSizeFull();
-        wrapper.addComponent(createLogo());
-        wrapper.addComponent(editor);
-        wrapper.setExpandRatio(editor, 1.0f);
-        split.setFirstComponent(wrapper);
-        split.setSecondComponent(resultPanel);
-        resultPanel.setSizeFull();
-        updateLayout();
-    }
-
-    private Component createLogo() {
-        Embedded logo = new Embedded(null, new ThemeResource(
-                "clara-logo-simplified-90x90.png"));
-        logo.setHeight("90px");
-        logo.setWidth("90px");
-        return logo;
-    }
-
-    private TextArea createXmlArea() {
-        TextArea area = new TextArea();
-        area.setStyleName("xml-area");
-        area.setCaption("XML");
-        area.setSizeFull();
-        area.setValue(readStartingPoint()); // initial value
-        area.setTextChangeEventMode(TextChangeEventMode.LAZY);
-        area.setTextChangeTimeout(500);
-        area.addListener(new TextChangeListener() {
-
-            @Override
-            public void textChange(TextChangeEvent event) {
-                updateLayout(event.getText());
-            }
-        });
-        return area;
+        // Initial update
+        controller = new DemoController(mainWindow);
+        updateResultPanel((String) xmlArea.getValue());
     }
 
     /**
      * Returns the content of {@code demo-layout.xml} as a {@link String}.
      */
-    private String readStartingPoint() {
+    @DataSource("xmlArea")
+    public Property readStartingPoint() {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(getClass()
@@ -103,7 +66,7 @@ public class DemoApplication extends Application {
                 xml.append(line);
                 xml.append("\n");
             }
-            return xml.toString();
+            return new ObjectProperty<String>(xml.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -128,43 +91,22 @@ public class DemoApplication extends Application {
         statusLabel.removeStyleName("error");
     }
 
-    private void updateLayout() {
-        updateLayout(xmlArea.getValue().toString());
-    }
-
-    private void updateLayout(String xml) {
+    @EventHandler("xmlArea")
+    public void updateLayout(TextChangeEvent event) {
         try {
             long startTime = System.currentTimeMillis();
-            Component c = Clara.create(
-                    new ByteArrayInputStream(xml.getBytes()), controller);
+            updateResultPanel(event.getText());
             long endTime = System.currentTimeMillis();
-
-            resultPanel.setContent(c);
             setOkStatus("Layout updated in " + (endTime - startTime) + "ms.");
         } catch (LayoutInflaterException e) {
             setErrorStatus(e.getMessage());
         }
     }
 
-    private static class ResultPanel extends CustomComponent {
-
-        private Panel contentPanel;
-
-        public ResultPanel() {
-            VerticalLayout marginWrapper = new VerticalLayout();
-            marginWrapper.setMargin(true);
-            marginWrapper.setSizeFull();
-            setCompositionRoot(marginWrapper);
-
-            contentPanel = new Panel("Result");
-            contentPanel.setStyleName("result");
-            contentPanel.setSizeFull();
-            marginWrapper.addComponent(contentPanel);
-        }
-
-        public void setContent(Component content) {
-            contentPanel.removeAllComponents();
-            contentPanel.addComponent(content);
-        }
+    private void updateResultPanel(String xml) {
+        Component c = Clara.create(new ByteArrayInputStream(xml.getBytes()),
+                controller);
+        resultPanel.removeAllComponents();
+        resultPanel.addComponent(c);
     }
 }

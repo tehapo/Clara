@@ -1,0 +1,17 @@
+<HorizontalSplitPanel xmlns:demo="urn:package:org.vaadin.teemu.clara.demo" xmlns:l="urn:vaadin:layout">
+
+	<!-- Left side: the editor -->
+	<HorizontalLayout margin="true" width="100%" height="100%">
+		<demo:ClaraLogoEmbedded />
+		<CssLayout id="editor" width="100%" height="100%" margin="false false true true" l:expandRatio="1.0">
+			<Label id="statusLabel" styleName="status" />
+			<TextArea id="xmlArea" styleName="xml-area" caption="XML" width="100%" height="100%" textChangeTimeout="500" />
+		</CssLayout>
+	</HorizontalLayout>
+
+	<!-- Right side: the result panel -->
+	<VerticalLayout margin="true" width="100%" height="100%">
+	    <Panel id="resultPanel" caption="Result" styleName="result" width="100%" height="100%" />
+	</VerticalLayout>
+	
+</HorizontalSplitPanel>
