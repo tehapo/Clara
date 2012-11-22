@@ -1,6 +1,10 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 @import url(../reindeer/styles.css);
 
+.v-view {
+	background: url(noise-bg.png) top left repeat;
+}
+
 .v-textarea-xml-area {
 	font-family: Monaco, "Courier New", monospace !important;
 	font-size: 11px !important;
