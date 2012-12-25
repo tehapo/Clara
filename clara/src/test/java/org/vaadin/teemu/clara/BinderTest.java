@@ -10,6 +10,7 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.Binder;
+import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.binder.annotation.DataSource;
 import org.vaadin.teemu.clara.binder.annotation.EventHandler;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
@@ -22,7 +23,6 @@ import com.vaadin.ui.DateField;
 public class BinderTest {
 
     private LayoutInflater inflater;
-    private boolean clickCalled;
 
     @Before
     public void setUp() {
@@ -33,29 +33,19 @@ public class BinderTest {
         return getClass().getClassLoader().getResourceAsStream(fileName);
     }
 
-    @EventHandler("my-button")
-    public void handleButtonClick(ClickEvent event) {
-        clickCalled = true;
-    }
-
-    @DataSource("my-datefield")
-    public Property getDataSource() {
-        Date date = new Date(1337337477578L);
-        return new com.vaadin.data.util.ObjectProperty<Date>(date);
-    }
-
     @Test
     public void bind_clickListener_clickListenerInvoked() {
         Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
+        ControllerWithClickHandler controller = new ControllerWithClickHandler();
         Binder binder = new Binder();
-        binder.bind(button, this);
+        binder.bind(button, controller);
 
-        clickCalled = false;
         simulateButtonClick(button);
 
         // check that the handler was called
-        assertTrue("Annotated handler method was not called.", clickCalled);
+        assertTrue("Annotated handler method was not called.",
+                controller.clickCalled);
     }
 
     @Test
@@ -64,10 +54,26 @@ public class BinderTest {
                 .inflate(getXml("single-datefield.xml"));
 
         Binder binder = new Binder();
-        binder.bind(view, this);
+        binder.bind(view, new ControllerWithDataSource());
 
         Date value = (Date) view.getValue();
         assertEquals(1337337477578L, value.getTime());
+    }
+
+    @Test(expected = BinderException.class)
+    public void bind_nonExistingId_exceptionThrown() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        Binder binder = new Binder();
+        binder.bind(button, new ControllerWithMissingIdBinding());
+    }
+
+    @Test(expected = BinderException.class)
+    public void bind_nonEventParameter_exceptionThrown() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        Binder binder = new Binder();
+        binder.bind(button, new ControllerWithNonEventHandler());
     }
 
     private void simulateButtonClick(Button button) {
@@ -79,6 +85,45 @@ public class BinderTest {
         } catch (Exception e) {
             throw new RuntimeException("Couldn't simulate button click.", e);
         }
+    }
+
+    public static class ControllerWithMissingIdBinding {
+
+        @EventHandler("non-existing-id")
+        public void handleButtonClick(ClickEvent event) {
+            // NOP
+        }
+
+    }
+
+    public static class ControllerWithDataSource {
+
+        @DataSource("my-datefield")
+        public Property getDataSource() {
+            Date date = new Date(1337337477578L);
+            return new com.vaadin.data.util.ObjectProperty<Date>(date);
+        }
+
+    }
+
+    public static class ControllerWithClickHandler {
+
+        boolean clickCalled;
+
+        @EventHandler("my-button")
+        public void handleButtonClick(ClickEvent event) {
+            clickCalled = true;
+        }
+
+    }
+
+    public static class ControllerWithNonEventHandler {
+
+        @EventHandler("my-button")
+        public void handleButtonClick(String nonEvent) {
+            // NOP
+        }
+
     }
 
 }

@@ -43,26 +43,33 @@ public class Binder {
         String componentId = eventListener.value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
+        if (component == null) {
+            throw new BinderException("No component found for id: "
+                    + componentId + ".");
+        }
 
-        Class<?> eventClass = (method.getParameterTypes().length > 0 ? method
+        Class<?> eventType = (method.getParameterTypes().length > 0 ? method
                 .getParameterTypes()[0] : null);
-        if (eventClass != null && component != null) {
-            Method addListenerMethod = getAddListenerMethod(
-                    component.getClass(), eventClass);
-            if (addListenerMethod != null) {
-                try {
-                    Object listener = createListenerProxy(
-                            addListenerMethod.getParameterTypes()[0],
-                            eventClass, method, controller);
-                    addListenerMethod.invoke(component, listener);
-                    // TODO exception handling
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+        if (eventType == null) {
+            throw new BinderException(
+                    "Couldn't figure out event type for method " + method + ".");
+        }
+
+        Method addListenerMethod = getAddListenerMethod(component.getClass(),
+                eventType);
+        if (addListenerMethod != null) {
+            try {
+                Object listener = createListenerProxy(
+                        addListenerMethod.getParameterTypes()[0], eventType,
+                        method, controller);
+                addListenerMethod.invoke(component, listener);
+                // TODO exception handling
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
     }
