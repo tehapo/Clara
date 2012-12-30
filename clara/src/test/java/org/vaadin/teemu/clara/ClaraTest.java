@@ -98,7 +98,7 @@ public class ClaraTest {
     public void testCreateMethod_usingRelativeFilenameInClasspath_xmlReadCorrectly() {
         Component component = Clara.create(
                 "xml-file-for-classpath-testing.xml", new EmptyController());
-        assertEquals(Button.class, component);
+        assertEquals(Button.class, component.getClass());
     }
 
     @Test
