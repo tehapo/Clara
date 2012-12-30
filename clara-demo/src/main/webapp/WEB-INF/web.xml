@@ -13,7 +13,7 @@
 			<description>
 			Application widgetset</description>
 			<param-name>widgetset</param-name>
-			<param-value>org.vaadin.teemu.clara.demo.widgetset.Declarative_ui_for_vaadinWidgetset</param-value>
+			<param-value>org.vaadin.teemu.clara.demo.widgetset.ClaraDemoWidgetset</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
