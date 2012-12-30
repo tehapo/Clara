@@ -2,8 +2,8 @@ package org.vaadin.teemu.clara.demo;
 
 import java.util.Date;
 
-import org.vaadin.teemu.clara.binder.annotation.DataSource;
-import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -21,12 +21,12 @@ public class DemoController {
         this.window = window;
     }
 
-    @DataSource("date")
+    @UiDataSource("date")
     public Property getDateProperty() {
         return new ObjectProperty<Date>(new Date());
     }
 
-    @DataSource("person-list")
+    @UiDataSource("person-list")
     public Container getPersonContainer() {
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty("Name", String.class, "");
@@ -44,17 +44,17 @@ public class DemoController {
         return container;
     }
 
-    @EventHandler("button")
+    @UiHandler("button")
     public void handleButtonClick(ClickEvent event) {
         window.showNotification("Button \"button\" clicked");
     }
 
-    @EventHandler("another-button")
+    @UiHandler("another-button")
     public void handleAnotherButtonClick(ClickEvent event) {
         window.showNotification("Button \"another-button\" clicked");
     }
 
-    @EventHandler("value-field")
+    @UiHandler("value-field")
     public void someValueChanged(ValueChangeEvent event) {
         window.showNotification("Value of \"value-field\" is now "
                 + event.getProperty().getValue());

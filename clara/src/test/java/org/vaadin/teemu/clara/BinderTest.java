@@ -11,8 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
-import org.vaadin.teemu.clara.binder.annotation.DataSource;
-import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import com.vaadin.data.Property;
@@ -49,6 +50,28 @@ public class BinderTest {
     }
 
     @Test
+    public void bind_field_fieldSetCorrectly() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        ControllerWithFieldBinding controller = new ControllerWithFieldBinding();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
+
+        // check that the field is correctly set
+        assertEquals(Button.class, controller.getMyButton().getClass());
+        assertEquals("My Button", controller.getMyButton().getCaption());
+    }
+
+    @Test(expected = BinderException.class)
+    public void bind_fieldWithMissingId_exceptionThrown() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        ControllerWithMissingIdBinding controller = new ControllerWithMissingIdBinding();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
+    }
+
+    @Test
     public void bind_dataSource_dataSourceAttached() {
         DateField view = (DateField) inflater
                 .inflate(getXml("single-datefield.xml"));
@@ -81,7 +104,7 @@ public class BinderTest {
 
     public static class ControllerWithMissingIdBinding {
 
-        @EventHandler("non-existing-id")
+        @UiHandler("non-existing-id")
         public void handleButtonClick(ClickEvent event) {
             // NOP
         }
@@ -90,7 +113,7 @@ public class BinderTest {
 
     public static class ControllerWithDataSource {
 
-        @DataSource("my-datefield")
+        @UiDataSource("my-datefield")
         public Property getDataSource() {
             Date date = new Date(1337337477578L);
             return new com.vaadin.data.util.ObjectProperty<Date>(date);
@@ -102,10 +125,28 @@ public class BinderTest {
 
         boolean clickCalled;
 
-        @EventHandler("my-button")
+        @UiHandler("my-button")
         public void handleButtonClick(ClickEvent event) {
             clickCalled = true;
         }
+
+    }
+
+    public static class ControllerWithFieldBinding {
+
+        @UiField("my-button")
+        private Button myButton;
+
+        public Button getMyButton() {
+            return myButton;
+        }
+
+    }
+
+    public static class ControllerWithFieldBindingOfMissingId {
+
+        @UiField("non-existing-id")
+        private Button myButton;
 
     }
 

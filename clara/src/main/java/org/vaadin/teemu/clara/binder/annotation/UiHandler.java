@@ -10,17 +10,17 @@ import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Indicates that a method decorated with this annotation can act as an event
- * handler for some UI components.
+ * handler for UI components.
  * 
  * <br />
  * <br />
- * The type of events that the method will be invoked on is deduced from the
+ * The type of events that the method will be invoked on is derived from the
  * parameter type. For example a method with {@link ClickEvent} parameter can
  * act as a click listener for a {@link Button}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface EventHandler {
+public @interface UiHandler {
 
     String value();
 

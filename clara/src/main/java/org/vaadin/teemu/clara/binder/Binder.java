@@ -1,5 +1,6 @@
 package org.vaadin.teemu.clara.binder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,8 +9,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.Clara;
-import org.vaadin.teemu.clara.binder.annotation.DataSource;
-import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.data.Container;
@@ -24,22 +26,58 @@ public class Binder {
     }
 
     public void bind(Component componentRoot, Object controller) {
-        Method[] methods = controller.getClass().getMethods();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(DataSource.class)) {
-                bindDataSource(componentRoot, controller, method,
-                        method.getAnnotation(DataSource.class));
-            }
+        bindFields(componentRoot, controller);
+        bindMethods(componentRoot, controller);
+    }
 
-            if (method.isAnnotationPresent(EventHandler.class)) {
-                bindEventHandler(componentRoot, controller, method,
-                        method.getAnnotation(EventHandler.class));
+    private void bindFields(Component componentRoot, Object controller) {
+        Field[] fields = controller.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(UiField.class)) {
+                bindField(componentRoot, controller, field,
+                        field.getAnnotation(UiField.class));
             }
         }
     }
 
+    private void bindMethods(Component componentRoot, Object controller) {
+        Method[] methods = controller.getClass().getMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(UiDataSource.class)) {
+                bindDataSource(componentRoot, controller, method,
+                        method.getAnnotation(UiDataSource.class));
+            }
+
+            if (method.isAnnotationPresent(UiHandler.class)) {
+                bindEventHandler(componentRoot, controller, method,
+                        method.getAnnotation(UiHandler.class));
+            }
+        }
+    }
+
+    private void bindField(Component componentRoot, Object controller,
+            Field field, UiField annotation) {
+        String componentId = annotation.value();
+        Component component = Clara.findComponentById(componentRoot,
+                componentId);
+        if (component == null) {
+            throw new BinderException("No component found for id: "
+                    + componentId + ".");
+        }
+
+        try {
+            field.setAccessible(true);
+            field.set(controller, component);
+            // TODO exception handling
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void bindEventHandler(Component componentRoot, Object controller,
-            Method method, EventHandler eventListener) {
+            Method method, UiHandler eventListener) {
         String componentId = eventListener.value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
@@ -130,7 +168,7 @@ public class Binder {
     }
 
     private void bindDataSource(Component componentRoot, Object controller,
-            Method method, DataSource dataSource) {
+            Method method, UiDataSource dataSource) {
         String componentId = dataSource.value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);

@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.teemu.clara.binder.annotation.EventHandler;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.inflater.AttributeContext;
 import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
@@ -29,7 +29,7 @@ public class ClaraTest {
     public static class Controller {
         private boolean clicked;
 
-        @EventHandler("button200px")
+        @UiHandler("button200px")
         public void clicked(Button.ClickEvent event) {
             clicked = true;
         }

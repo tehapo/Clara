@@ -20,7 +20,7 @@ import com.vaadin.data.Property;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface DataSource {
+public @interface UiDataSource {
 
     String value();
 
