@@ -68,14 +68,6 @@ public class BinderTest {
         binder.bind(button, new ControllerWithMissingIdBinding());
     }
 
-    @Test(expected = BinderException.class)
-    public void bind_nonEventParameter_exceptionThrown() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
-
-        Binder binder = new Binder();
-        binder.bind(button, new ControllerWithNonEventHandler());
-    }
-
     private void simulateButtonClick(Button button) {
         Method fireClick;
         try {
@@ -113,15 +105,6 @@ public class BinderTest {
         @EventHandler("my-button")
         public void handleButtonClick(ClickEvent event) {
             clickCalled = true;
-        }
-
-    }
-
-    public static class ControllerWithNonEventHandler {
-
-        @EventHandler("my-button")
-        public void handleButtonClick(String nonEvent) {
-            // NOP
         }
 
     }
