@@ -35,6 +35,11 @@ public class ClaraTest {
         }
     }
 
+    public static class EmptyController {
+        // This class is used as a dummy controller while testing XML loading
+        // from classpath.
+    }
+
     @Before
     public void setUp() {
         xml = getXml("integration-test.xml");
@@ -92,15 +97,15 @@ public class ClaraTest {
     @Test
     public void testCreateMethod_usingRelativeFilenameInClasspath_xmlReadCorrectly() {
         Component component = Clara.create(
-                "xml-file-for-classpath-testing.xml", controller);
-        assertEquals(Button.class, component.getClass());
+                "xml-file-for-classpath-testing.xml", new EmptyController());
+        assertEquals(Button.class, component);
     }
 
     @Test
     public void testCreateMethod_usingAbsoluteFilenameInClasspath_xmlReadCorrectly() {
         Component component = Clara.create(
                 "/org/vaadin/teemu/clara/xml-file-for-classpath-testing.xml",
-                controller);
+                new EmptyController());
         assertEquals(Button.class, component.getClass());
     }
 
