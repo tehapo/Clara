@@ -5,7 +5,7 @@
 Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
 
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
-com/addon/xmlui).
+com/addon/xmlui). A lot of the functionality is also inspired by GWT UiBinder.
 
 Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). [Travis CI](http://travis-ci.org/) is used for automated testing.
 
