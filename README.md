@@ -61,17 +61,24 @@ The project is still very experimental and documentation is minimal at this poin
 
 ```java
 // The value "my-button" of the annotation is a reference to the id attribute in the XML layout.
-@EventHandler("my-button")
+@UiHandler("my-button")
 public void handleMyButtonClick(ClickEvent event) {
     event.getButton().getApplication().getMainWindow()
             .showNotification("Clicked!");
 }
 
-@DataSource("my-label")
+@UiDataSource("my-label")
 public Property getLabelProperty() {
     return new ObjectProperty<String>("Hello from Controller!",
             String.class);
 }
+```
+
+By using the ```@UiField``` annotation on a field, you could bind a field directly to a component instance with a certain id. For example:
+
+```java
+@UiField("my-label")
+private Label myLabel;
 ```
 
 6) Now you can instantiate the XML definition to a Vaadin component in your Java code. See the example below.
@@ -87,19 +94,19 @@ getMainWindow().setContent(layout);
 
 7) Congratulations, you just created your first application that uses Clara. As next steps you might want to see the other static methods contained in the ```Clara``` class to see more ways to use Clara.
 
-## Internationalization with Attribute Interceptors
+## Internationalization with Attribute Filters
 
-Clara 0.2.0 introduced concept of attribute interceptors. Attribute interceptors enable runtime modification of any attributes read from the declarative XML layout file. The most obvious use case for this is to provide internationalization of text displayed in the user interface.
+Clara 0.2.0 introduced concept of attribute filters (renamed from attribute interceptors). Attribute filters enable runtime modification of any attributes read from the declarative XML layout file. The most obvious use case for this is to provide internationalization of text displayed in the user interface.
 
-To create an attribute interceptor, you must implement the single-method ```AttributeInterceptor``` interface and pass it to the ```Clara.create``` method. The sole method in the interface is called ```intercept``` and it takes a single argument of type ```AttributeContext```. You can modify the value before it's assigned  by calling the ```setValue``` method of the ```AttributeContext```. You should always call the ```proceed``` method to pass the value forward to next interceptor (or to finally assign the value). If you do not call the ```proceed``` method, the attribute value will never be assigned (which might sometimes be the desired effect).
+To create an attribute filter, you must implement the single-method ```AttributeFilter``` interface and pass it to the ```Clara.create``` method. The sole method in the interface is called ```filter``` and it takes a single argument of type ```AttributeContext```. You can modify the value before it's assigned  by calling the ```setValue``` method of the ```AttributeContext```. You should always call the ```proceed``` method to pass the value forward to next filter (or to finally assign the value). If you do not call the ```proceed``` method, the attribute value will never be assigned (which might sometimes be the desired effect).
 
-Simple example of an ```AttributeInterceptor``` implementation:
+Simple example of an ```AttributeFilter``` implementation:
 
 ```java
-AttributeInterceptor interceptor = new AttributeInterceptor() {
+AttributeFilter filter = new AttributeFilter() {
 
     @Override
-    public void intercept(AttributeContext attributeContext) {
+    public void filter(AttributeContext attributeContext) {
         if (attributeContext.getValue().getClass() == String.class) {
             String value = (String) attributeContext.getValue();
             if (value.startsWith("{i18n:")) {
