@@ -3,21 +3,20 @@
 	<display-name>Declarative UI for Vaadin</display-name>
 	
 	<servlet>
-		<servlet-name>clara</servlet-name>
+		<servlet-name>clara-demo</servlet-name>
 		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
 		<init-param>
 			<param-name>application</param-name>
 			<param-value>org.vaadin.teemu.clara.demo.DemoApplication</param-value>
 		</init-param>
 		<init-param>
-			<description>
-			Application widgetset</description>
+			<description>Application widgetset</description>
 			<param-name>widgetset</param-name>
 			<param-value>org.vaadin.teemu.clara.demo.widgetset.ClaraDemoWidgetset</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>clara</servlet-name>
+		<servlet-name>clara-demo</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	
