@@ -17,7 +17,7 @@ import com.vaadin.ui.ComponentContainer;
 public class DefaultComponentManager implements ComponentManager {
 
     private List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
-    private List<AttributeInterceptor> interceptors = new ArrayList<AttributeInterceptor>();
+    private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
     private Logger getLogger() {
         return Logger.getLogger(DefaultComponentManager.class.getName());
@@ -98,12 +98,12 @@ public class DefaultComponentManager implements ComponentManager {
                         if (attributeValue == null
                                 || attributeValue.length() == 0) {
                             // No need for conversion.
-                            invokeWithInterceptors(setter, component,
+                            invokeWithAttributeFilters(setter, component,
                                     attributeValue);
                         } else {
                             // Ask the AttributeHandler to convert the
                             // value.
-                            invokeWithInterceptors(
+                            invokeWithAttributeFilters(
                                     setter,
                                     component,
                                     handler.getValueAs(attributeValue,
@@ -123,27 +123,27 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    protected void invokeWithInterceptors(final Method methodToInvoke,
+    protected void invokeWithAttributeFilters(final Method methodToInvoke,
             final Object obj, final Object... args)
             throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
 
-        if (interceptors.isEmpty()) {
+        if (attributeFilters.isEmpty()) {
             methodToInvoke.invoke(obj, args);
         } else {
-            final LinkedList<AttributeInterceptor> interceptorsCopy = new LinkedList<AttributeInterceptor>(
-                    interceptors);
-            AttributeInterceptor interceptor = interceptorsCopy.pop();
-            interceptor.intercept(new AttributeContext(methodToInvoke,
+            final LinkedList<AttributeFilter> filtersCopy = new LinkedList<AttributeFilter>(
+                    attributeFilters);
+            AttributeFilter filter = filtersCopy.pop();
+            filter.filter(new AttributeContext(methodToInvoke,
                     args.length > 1 ? args[1] : args[0]) {
 
                 @Override
                 public void proceed() throws Exception {
-                    if (interceptorsCopy.size() > 0) {
-                        // More interceptors -> invoke them.
-                        interceptorsCopy.pop().intercept(this);
+                    if (filtersCopy.size() > 0) {
+                        // More filters -> invoke them.
+                        filtersCopy.pop().filter(this);
                     } else {
-                        // No more interceptors -> time to invoke the actual
+                        // No more filters -> time to invoke the actual
                         // method.
                         if (args.length > 1) {
                             methodToInvoke.invoke(obj, args[0], this.getValue());
@@ -179,7 +179,7 @@ public class DefaultComponentManager implements ComponentManager {
                     AttributeParser handler = getHandlerFor(layoutMethod
                             .getParameterTypes()[1]);
                     if (handler != null) {
-                        invokeWithInterceptors(layoutMethod, container,
+                        invokeWithAttributeFilters(layoutMethod, container,
                                 component, handler.getValueAs(
                                         attribute.getValue(),
                                         layoutMethod.getParameterTypes()[1]));
@@ -257,13 +257,13 @@ public class DefaultComponentManager implements ComponentManager {
     }
 
     @Override
-    public void addInterceptor(AttributeInterceptor attributeInterceptor) {
-        interceptors.add(attributeInterceptor);
+    public void addAttributeFilter(AttributeFilter attributeFilter) {
+        attributeFilters.add(attributeFilter);
     }
 
     @Override
-    public void removeInterceptor(AttributeInterceptor attributeInterceptor) {
-        interceptors.remove(attributeInterceptor);
+    public void removeAttributeFilter(AttributeFilter attributeFilter) {
+        attributeFilters.remove(attributeFilter);
     }
 
 }

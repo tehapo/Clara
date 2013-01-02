@@ -39,8 +39,8 @@ public interface ComponentManager {
     void applyLayoutAttributes(ComponentContainer container,
             Component component, Map<String, String> attributes);
 
-    void addInterceptor(AttributeInterceptor attributeInterceptor);
+    void addAttributeFilter(AttributeFilter attributeFilter);
 
-    void removeInterceptor(AttributeInterceptor attributeInterceptor);
+    void removeAttributeFilter(AttributeFilter attributeFilter);
 
 }

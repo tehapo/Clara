@@ -15,8 +15,8 @@ public abstract class AttributeContext {
 
     /**
      * Continue processing of the attribute by passing on to the next
-     * {@link AttributeInterceptor} or finally to the setter method if there is
-     * no more {@link AttributeInterceptor}s. If you do not call this method,
+     * {@link AttributeFilter} or finally to the setter method if there is
+     * no more {@link AttributeFilter}s. If you do not call this method,
      * the value is never set to the component.
      * 
      * @throws Exception

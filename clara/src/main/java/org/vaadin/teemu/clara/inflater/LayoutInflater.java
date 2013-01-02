@@ -69,12 +69,12 @@ public class LayoutInflater {
         }
     }
 
-    public void addInterceptor(AttributeInterceptor attributeInterceptor) {
-        componentManager.addInterceptor(attributeInterceptor);
+    public void addAttributeFilter(AttributeFilter attributeFilter) {
+        componentManager.addAttributeFilter(attributeFilter);
     }
 
-    public void removeInterceptor(AttributeInterceptor attributeInterceptor) {
-        componentManager.removeInterceptor(attributeInterceptor);
+    public void removeAttributeFilter(AttributeFilter attributeFilter) {
+        componentManager.removeAttributeFilter(attributeFilter);
     }
 
     private static File getLayoutFile(ApplicationContext context,

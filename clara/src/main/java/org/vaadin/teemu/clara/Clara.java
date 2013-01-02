@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import org.vaadin.teemu.clara.binder.Binder;
-import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
+import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import com.vaadin.ui.Component;
@@ -16,7 +16,7 @@ public class Clara {
      * Returns a {@link Component} that is read from the XML representation
      * given as {@link InputStream}. If you would like to bind the resulting
      * {@link Component} to a controller object, you should use
-     * {@link #create(InputStream, Object, AttributeInterceptor...)} method
+     * {@link #create(InputStream, Object, AttributeFilter...)} method
      * instead.
      * 
      * @param xml
@@ -34,7 +34,7 @@ public class Clara {
      * 
      * <br />
      * <br />
-     * Optionally you may also provide {@link AttributeInterceptor}s to do some
+     * Optionally you may also provide {@link AttributeFilter}s to do some
      * modifications (or example localized translations) to any attributes
      * present in the XML representation.
      * 
@@ -43,19 +43,19 @@ public class Clara {
      * @param controller
      *            controller object to bind the resulting {@code Component} (
      *            {@code null} allowed).
-     * @param interceptors
-     *            optional {@link AttributeInterceptor}s to do attribute
+     * @param attributeFilters
+     *            optional {@link AttributeFilter}s to do attribute
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
      */
     public static Component create(InputStream xml, Object controller,
-            AttributeInterceptor... interceptors) {
+            AttributeFilter... attributeFilters) {
         // Inflate the XML to a component (tree).
         LayoutInflater inflater = new LayoutInflater();
-        if (interceptors != null) {
-            for (AttributeInterceptor interceptor : interceptors) {
-                inflater.addInterceptor(interceptor);
+        if (attributeFilters != null) {
+            for (AttributeFilter filter : attributeFilters) {
+                inflater.addAttributeFilter(filter);
             }
         }
         Component result = inflater.inflate(xml);
@@ -83,7 +83,7 @@ public class Clara {
      * 
      * <br />
      * <br />
-     * Optionally you may also provide {@link AttributeInterceptor}s to do some
+     * Optionally you may also provide {@link AttributeFilter}s to do some
      * modifications (or example localized translations) to any attributes
      * present in the XML representation.
      * 
@@ -93,17 +93,17 @@ public class Clara {
      * @param controller
      *            controller object to bind the resulting {@code Component}
      *            (non-{@code null}).
-     * @param interceptors
-     *            optional {@link AttributeInterceptor}s to do attribute
+     * @param attributeFilters
+     *            optional {@link AttributeFilter}s to do attribute
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
      */
     public static Component create(String xmlClassResourceFileName,
-            Object controller, AttributeInterceptor... interceptors) {
+            Object controller, AttributeFilter... attributeFilters) {
         InputStream xml = controller.getClass().getResourceAsStream(
                 xmlClassResourceFileName);
-        return create(xml, controller, interceptors);
+        return create(xml, controller, attributeFilters);
     }
 
     /**

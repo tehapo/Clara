@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.inflater.AttributeContext;
-import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
+import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
 import com.vaadin.ui.Button;
@@ -23,8 +23,8 @@ public class ClaraTest {
 
     private InputStream xml;
     private Controller controller;
-    private AttributeInterceptor firstInterceptor;
-    private AttributeInterceptor secondInterceptor;
+    private AttributeFilter firstFilter;
+    private AttributeFilter secondFilter;
 
     public static class Controller {
         private boolean clicked;
@@ -44,19 +44,19 @@ public class ClaraTest {
     public void setUp() {
         xml = getXml("integration-test.xml");
         controller = new Controller();
-        firstInterceptor = getInterceptor();
-        secondInterceptor = getSecondInterceptor();
+        firstFilter = getFilter();
+        secondFilter = getSecondFilter();
     }
 
     @Test
-    public void testCreateMethod_usingAllParametersWithTwoInterceptors_interceptorsAndControllerCalled() {
-        Component layout = Clara.create(xml, controller, firstInterceptor,
-                secondInterceptor);
+    public void testCreateMethod_usingAllParametersWithTwoFilters_filtersAndControllerCalled() {
+        Component layout = Clara.create(xml, controller, firstFilter,
+                secondFilter);
 
         // check caption
         Button button200px = (Button) Clara.findComponentById(layout,
                 "button200px");
-        assertEquals("interceptedTwice", button200px.getCaption());
+        assertEquals("filteredTwice", button200px.getCaption());
 
         // simulate click
         assertFalse(controller.clicked);
@@ -65,13 +65,13 @@ public class ClaraTest {
     }
 
     @Test
-    public void testCreateMethod_usingAllParameters_interceptorAndControllerCalled() {
-        Component layout = Clara.create(xml, controller, firstInterceptor);
+    public void testCreateMethod_usingAllParameters_filterAndControllerCalled() {
+        Component layout = Clara.create(xml, controller, firstFilter);
 
         // check caption
         Button button200px = (Button) Clara.findComponentById(layout,
                 "button200px");
-        assertEquals("interceptedValue", button200px.getCaption());
+        assertEquals("filteredValue", button200px.getCaption());
 
         // simulate click
         assertFalse(controller.clicked);
@@ -167,15 +167,15 @@ public class ClaraTest {
         return getClass().getClassLoader().getResourceAsStream(fileName);
     }
 
-    public AttributeInterceptor getInterceptor() {
-        return new AttributeInterceptor() {
+    public AttributeFilter getFilter() {
+        return new AttributeFilter() {
 
             @Override
-            public void intercept(AttributeContext attributeContext) {
+            public void filter(AttributeContext attributeContext) {
                 if (attributeContext.getValue().getClass() == String.class) {
                     String value = (String) attributeContext.getValue();
                     if (value.startsWith("{i18n:")) {
-                        attributeContext.setValue("interceptedValue");
+                        attributeContext.setValue("filteredValue");
                     }
                 }
                 try {
@@ -187,15 +187,15 @@ public class ClaraTest {
         };
     }
 
-    public AttributeInterceptor getSecondInterceptor() {
-        return new AttributeInterceptor() {
+    public AttributeFilter getSecondFilter() {
+        return new AttributeFilter() {
 
             @Override
-            public void intercept(AttributeContext attributeContext) {
+            public void filter(AttributeContext attributeContext) {
                 if (attributeContext.getValue().getClass() == String.class) {
                     String value = (String) attributeContext.getValue();
-                    if (value.startsWith("interceptedValue")) {
-                        attributeContext.setValue("interceptedTwice");
+                    if (value.startsWith("filteredValue")) {
+                        attributeContext.setValue("filteredTwice");
                     }
                 }
                 try {

@@ -11,7 +11,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.inflater.AttributeContext;
-import org.vaadin.teemu.clara.inflater.AttributeInterceptor;
+import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
@@ -95,16 +95,16 @@ public class LayoutInflaterTest {
     }
 
     @Test
-    public void inflate_addAttributeInterceptor_valueInterceptedCorrectly() {
-        LayoutInflater interceptingInflater = new LayoutInflater();
-        AttributeInterceptor interceptor = new AttributeInterceptor() {
+    public void inflate_addAttributeFilter_valueFilteredCorrectly() {
+        LayoutInflater filteringInflater = new LayoutInflater();
+        AttributeFilter filter = new AttributeFilter() {
 
             @Override
-            public void intercept(AttributeContext attributeContext) {
+            public void filter(AttributeContext attributeContext) {
                 if (attributeContext.getValue().getClass() == String.class) {
                     String value = (String) attributeContext.getValue();
                     if (value.startsWith("{i18n:")) {
-                        attributeContext.setValue("interceptedValue");
+                        attributeContext.setValue("filteredValue");
                     }
                 }
                 try {
@@ -115,15 +115,15 @@ public class LayoutInflaterTest {
             }
         };
 
-        interceptingInflater.addInterceptor(interceptor);
-        Component interceptedView = interceptingInflater
-                .inflate(getXml("interceptor-test.xml"));
-        Component view = inflater.inflate(getXml("interceptor-test.xml"));
+        filteringInflater.addAttributeFilter(filter);
+        Component filteredView = filteringInflater
+                .inflate(getXml("attributefilter-test.xml"));
+        Component view = inflater.inflate(getXml("attributefilter-test.xml"));
 
         // check caption
-        Button button200px = (Button) Clara.findComponentById(interceptedView,
+        Button button200px = (Button) Clara.findComponentById(filteredView,
                 "button200px");
-        assertEquals("interceptedValue", button200px.getCaption());
+        assertEquals("filteredValue", button200px.getCaption());
         button200px = (Button) Clara.findComponentById(view, "button200px");
         assertEquals("{i18n:test}", button200px.getCaption());
     }
