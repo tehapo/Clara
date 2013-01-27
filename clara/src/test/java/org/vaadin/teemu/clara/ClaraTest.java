@@ -140,13 +140,13 @@ public class ClaraTest {
         Layout layout = new VerticalLayout() {
             {
                 Button b = new Button();
-                b.setDebugId("foobar");
+                b.setId("foobar");
                 addComponent(b);
             }
         };
         Component c = Clara.findComponentById(layout, "foobar");
         assertTrue(c instanceof Button);
-        assertEquals("foobar", c.getDebugId());
+        assertEquals("foobar", c.getId());
     }
 
     @Test
@@ -155,7 +155,7 @@ public class ClaraTest {
         Layout layout = new VerticalLayout() {
             {
                 Button b = new Button();
-                b.setDebugId("button");
+                b.setId("button");
                 addComponent(b);
             }
         };

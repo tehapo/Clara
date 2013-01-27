@@ -11,21 +11,16 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.Notification;
 
 public class DemoController {
 
-    private Window window;
-
-    public DemoController(Window window) {
-        this.window = window;
-    }
-
     @UiDataSource("date")
-    public Property getDateProperty() {
+    public Property<Date> getDateProperty() {
         return new ObjectProperty<Date>(new Date());
     }
 
+    @SuppressWarnings("unchecked")
     @UiDataSource("person-list")
     public Container getPersonContainer() {
         IndexedContainer container = new IndexedContainer();
@@ -46,17 +41,17 @@ public class DemoController {
 
     @UiHandler("button")
     public void handleButtonClick(ClickEvent event) {
-        window.showNotification("Button \"button\" clicked");
+        Notification.show("Button \"button\" clicked");
     }
 
     @UiHandler("another-button")
     public void handleAnotherButtonClick(ClickEvent event) {
-        window.showNotification("Button \"another-button\" clicked");
+        Notification.show("Button \"another-button\" clicked");
     }
 
     @UiHandler("value-field")
     public void someValueChanged(ValueChangeEvent event) {
-        window.showNotification("Value of \"value-field\" is now "
+        Notification.show("Value of \"value-field\" is now "
                 + event.getProperty().getValue());
     }
 

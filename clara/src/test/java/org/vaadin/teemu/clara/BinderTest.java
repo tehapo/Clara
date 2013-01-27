@@ -114,7 +114,7 @@ public class BinderTest {
     public static class ControllerWithDataSource {
 
         @UiDataSource("my-datefield")
-        public Property getDataSource() {
+        public Property<Date> getDataSource() {
             Date date = new Date(1337337477578L);
             return new com.vaadin.data.util.ObjectProperty<Date>(date);
         }

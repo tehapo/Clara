@@ -52,8 +52,8 @@ class LayoutInflaterContentHandler extends DefaultHandler {
             Map<String, String> layoutAttributeMap = getLayoutAttributeMap(attributes);
             currentComponent = componentFactory.createComponent(packageName,
                     className, attributeMap);
-            if (currentComponent.getDebugId() != null) {
-                idMap.put(currentComponent.getDebugId(), currentComponent);
+            if (currentComponent.getId() != null) {
+                idMap.put(currentComponent.getId(), currentComponent);
             }
             if (root == null) {
                 // This was the first Component created -> root.
@@ -83,8 +83,6 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                         throw new LayoutInflaterException(String.format(
                                 "Duplicate id: %s.", value));
                     }
-                    // TODO remove this for Vaadin 7?
-                    name = "debugId";
                 }
                 attributeMap.put(name, value);
             }

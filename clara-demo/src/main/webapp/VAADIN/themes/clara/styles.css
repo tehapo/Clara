@@ -1,7 +1,6 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
-@import url(../reindeer/styles.css);
+@import url(../reindeer/legacy-styles.css);
 
-.v-view {
+.v-ui {
 	background: url(noise-bg.png) top left repeat;
 }
 
@@ -16,8 +15,8 @@
 
 .status {
 	position: absolute;
-	left: 21em;
-	top: 2em;
+	left: 11em;
+	top: 0.5em;
 	white-space: nowrap;
 }
 
@@ -27,22 +26,14 @@
 	padding-left: 13px;
 }
 
-.logo .v-embedded,
-.logo h1 {
-	float: left;
+#editor {
+	position: relative;
 }
 
-.logo h1 {
-	color: #588076;
-	font-family: "Open Sans", Arial, Helvetica, Tahoma, Verdana, sans-serif;
-	font-size: 48px;
-	height: 87px;
-	line-height: 87px;
-	margin: 0;
-	padding-left: 25px;
-}
-.logo h1 span {
-	font-size: 40%;
+.xml-area {
+	position: absolute;
+	top: 31px;
+	bottom: 0;
 }
 
 .v-caption-xml-area {

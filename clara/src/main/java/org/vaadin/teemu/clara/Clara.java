@@ -1,7 +1,6 @@
 package org.vaadin.teemu.clara;
 
 import java.io.InputStream;
-import java.util.Iterator;
 
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.inflater.AttributeFilter;
@@ -9,6 +8,7 @@ import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HasComponents;
 
 public class Clara {
 
@@ -16,8 +16,7 @@ public class Clara {
      * Returns a {@link Component} that is read from the XML representation
      * given as {@link InputStream}. If you would like to bind the resulting
      * {@link Component} to a controller object, you should use
-     * {@link #create(InputStream, Object, AttributeFilter...)} method
-     * instead.
+     * {@link #create(InputStream, Object, AttributeFilter...)} method instead.
      * 
      * @param xml
      *            XML representation.
@@ -140,15 +139,13 @@ public class Clara {
 
         // Recursively traverse the whole component tree starting from the given
         // root component.
-        if (componentId.equals(root.getDebugId())) {
+        if (componentId.equals(root.getId())) {
             return root;
-        } else if (root instanceof ComponentContainer) {
-            // TODO change to HasComponents for Vaadin 7?
-            for (Iterator<Component> i = ((ComponentContainer) root)
-                    .getComponentIterator(); i.hasNext();) {
-                Component c = findComponentById(i.next(), componentId);
-                if (c != null) {
-                    return c;
+        } else if (root instanceof HasComponents) {
+            for (Component c : (HasComponents) root) {
+                Component result = findComponentById(c, componentId);
+                if (result != null) {
+                    return result;
                 }
             }
         }

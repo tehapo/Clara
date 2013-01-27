@@ -1,6 +1,6 @@
 package org.vaadin.teemu.clara.demo;
 
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Embedded;
 
 @SuppressWarnings("serial")

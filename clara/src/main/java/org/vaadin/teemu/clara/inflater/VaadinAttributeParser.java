@@ -3,8 +3,8 @@ package org.vaadin.teemu.clara.inflater;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Layout.MarginInfo;
 
 /**
  * {@link AttributeParser} that parses Vaadin specific types (like

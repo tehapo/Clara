@@ -4,10 +4,10 @@
 	
 	<servlet>
 		<servlet-name>clara-demo</servlet-name>
-		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
-			<param-name>application</param-name>
-			<param-value>org.vaadin.teemu.clara.demo.DemoApplication</param-value>
+			<param-name>UI</param-name>
+			<param-value>org.vaadin.teemu.clara.demo.DemoUI</param-value>
 		</init-param>
 		<init-param>
 			<description>Application widgetset</description>
