@@ -2,7 +2,7 @@
 
 ## Clara - Declarative UI and Bindings for Vaadin Framework
 
-Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers.
+Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers. Starting from version 0.5.0 Clara supports only Vaadin 7. A separate [branch](https://github.com/tehapo/Clara/tree/vaadin-6) exist for Vaadin 6, but it is not guaranteed to be maintained.
 
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
 com/addon/xmlui). A lot of the functionality is also inspired by GWT UiBinder.
@@ -17,7 +17,7 @@ mvn install
 If you want to run and/or package the demo application, you must also compile the widgetset.
 ```bash
 cd clara-demo
-mvn gwt:compile jetty:run
+mvn vaadin:compile jetty:run
 ```
 
 Packaging the distributable add-on zip (that can be uploaded to Vaadin Directory) can be done as follows.
@@ -39,9 +39,9 @@ The project is still very experimental and documentation is minimal at this poin
 
 ## Quickstart
 
-**Quickstart is written for Clara 0.4.0. Please notice that at this point anything and everything can change in future releases.**
+**Quickstart is written for Clara 0.5.0. Please notice that at this point anything and everything can change in future releases.**
 
-1) Create a new Vaadin project.
+1) Create a new Vaadin 7 project.
 
 2) Download the latest version of Clara to WEB-INF/lib from Vaadin Directory (or use the Maven dependency).
 
