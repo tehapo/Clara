@@ -63,12 +63,11 @@ The project is still very experimental and documentation is minimal at this poin
 // The value "my-button" of the annotation is a reference to the id attribute in the XML layout.
 @UiHandler("my-button")
 public void handleMyButtonClick(ClickEvent event) {
-    event.getButton().getApplication().getMainWindow()
-            .showNotification("Clicked!");
+    Notification.show("Clicked!");
 }
 
 @UiDataSource("my-label")
-public Property getLabelProperty() {
+public Property<String> getLabelProperty() {
     return new ObjectProperty<String>("Hello from Controller!",
             String.class);
 }
@@ -89,7 +88,7 @@ VerticalLayout layout = (VerticalLayout) Clara.create(
         "MyFirstClaraLayout.xml", new MyFirstClaraController());
 
 // Now the layout is ready to be used.
-getMainWindow().setContent(layout);
+setContent(layout);
 ```
 
 7) Congratulations, you just created your first application that uses Clara. As next steps you might want to see the other static methods contained in the ```Clara``` class to see more ways to use Clara.
