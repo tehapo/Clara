@@ -25,6 +25,19 @@ public class Binder {
         return Logger.getLogger(Binder.class.getName());
     }
 
+    /**
+     * Binds fields and methods of the given {@code controller} instance to
+     * {@link Component}s found in the given {@code componentRoot} component
+     * hierarchy. The binding is defined using the annotations {@link UiField},
+     * {@link UiHandler} and {@link UiDataSource}.
+     * 
+     * @param componentRoot
+     * @param controller
+     * 
+     * @see UiField
+     * @see UiHandler
+     * @see UiDataSource
+     */
     public void bind(Component componentRoot, Object controller) {
         bindFields(componentRoot, controller);
         bindMethods(componentRoot, controller);
