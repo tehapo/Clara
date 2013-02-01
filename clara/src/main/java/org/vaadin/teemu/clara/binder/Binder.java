@@ -56,13 +56,11 @@ public class Binder {
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(UiDataSource.class)) {
-                bindDataSource(componentRoot, controller, method,
-                        method.getAnnotation(UiDataSource.class));
+                bindDataSource(componentRoot, controller, method);
             }
 
             if (method.isAnnotationPresent(UiHandler.class)) {
-                bindEventHandler(componentRoot, controller, method,
-                        method.getAnnotation(UiHandler.class));
+                bindEventHandler(componentRoot, controller, method);
             }
         }
     }
@@ -107,9 +105,17 @@ public class Binder {
         return componentId;
     }
 
+    /**
+     * Expects that the given {@link Method} is annotated with {@link UiHandler}
+     * annotation.
+     * 
+     * @param componentRoot
+     * @param controller
+     * @param method
+     */
     private void bindEventHandler(Component componentRoot, Object controller,
-            Method method, UiHandler eventListener) {
-        String componentId = eventListener.value();
+            Method method) {
+        String componentId = method.getAnnotation(UiHandler.class).value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
         if (component == null) {
@@ -198,9 +204,17 @@ public class Binder {
         return null;
     }
 
+    /**
+     * Expects that the given {@link Method} is annotated with
+     * {@link UiDataSource} annotation.
+     * 
+     * @param componentRoot
+     * @param controller
+     * @param method
+     */
     private void bindDataSource(Component componentRoot, Object controller,
-            Method method, UiDataSource dataSource) {
-        String componentId = dataSource.value();
+            Method method) {
+        String componentId = method.getAnnotation(UiDataSource.class).value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
         Class<?> dataSourceClass = method.getReturnType();
@@ -216,7 +230,7 @@ public class Binder {
             } else if (isProperty(dataSourceClass)
                     && component instanceof Property.Viewer) {
                 ((Property.Viewer) component)
-                        .setPropertyDataSource((Property) method
+                        .setPropertyDataSource((Property<?>) method
                                 .invoke(controller));
             } else if (isItem(dataSourceClass)
                     && component instanceof Item.Viewer) {

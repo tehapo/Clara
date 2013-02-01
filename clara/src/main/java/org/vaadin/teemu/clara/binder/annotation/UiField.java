@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import com.vaadin.ui.Component;
 
 /**
- * Indicates that a field decorated with this annotation should be assigned a
+ * Indicates that a field annotated with this annotation should be assigned a
  * {@link Component} instance from the created component hierarchy.
  */
 @Retention(RetentionPolicy.RUNTIME)
