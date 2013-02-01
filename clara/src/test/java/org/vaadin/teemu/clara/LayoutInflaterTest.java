@@ -134,7 +134,7 @@ public class LayoutInflaterTest {
 
         // check that the id my-button returns a Button
         assertEquals(com.vaadin.ui.Button.class,
-                Clara.findComponentById(view, "my-button").getClass());
+                Clara.findComponentById(view, "myButton").getClass());
 
         // check that non-existing id returns null
         assertEquals(null, Clara.findComponentById(view, "non-existing-id"));
