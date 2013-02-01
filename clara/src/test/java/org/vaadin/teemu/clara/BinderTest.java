@@ -23,131 +23,153 @@ import com.vaadin.ui.DateField;
 
 public class BinderTest {
 
-    private LayoutInflater inflater;
+	private LayoutInflater inflater;
 
-    @Before
-    public void setUp() {
-        inflater = new LayoutInflater();
-    }
+	@Before
+	public void setUp() {
+		inflater = new LayoutInflater();
+	}
 
-    private InputStream getXml(String fileName) {
-        return getClass().getClassLoader().getResourceAsStream(fileName);
-    }
+	private InputStream getXml(String fileName) {
+		return getClass().getClassLoader().getResourceAsStream(fileName);
+	}
 
-    @Test
-    public void bind_clickListener_clickListenerInvoked() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+	@Test
+	public void bind_clickListener_clickListenerInvoked() {
+		Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-        ControllerWithClickHandler controller = new ControllerWithClickHandler();
-        Binder binder = new Binder();
-        binder.bind(button, controller);
+		ControllerWithClickHandler controller = new ControllerWithClickHandler();
+		Binder binder = new Binder();
+		binder.bind(button, controller);
 
-        simulateButtonClick(button);
+		simulateButtonClick(button);
 
-        // check that the handler was called
-        assertTrue("Annotated handler method was not called.",
-                controller.clickCalled);
-    }
+		// check that the handler was called
+		assertTrue("Annotated handler method was not called.",
+				controller.clickCalled);
+	}
 
-    @Test
-    public void bind_field_fieldSetCorrectly() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+	@Test
+	public void bind_field_fieldSetCorrectly() {
+		Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-        ControllerWithFieldBinding controller = new ControllerWithFieldBinding();
-        Binder binder = new Binder();
-        binder.bind(button, controller);
+		ControllerWithFieldBinding controller = new ControllerWithFieldBinding();
+		Binder binder = new Binder();
+		binder.bind(button, controller);
 
-        // check that the field is correctly set
-        assertEquals(Button.class, controller.getMyButton().getClass());
-        assertEquals("My Button", controller.getMyButton().getCaption());
-    }
+		// check that the field is correctly set
+		assertTrue(controller.myButton == button);
+	}
 
-    @Test(expected = BinderException.class)
-    public void bind_fieldWithMissingId_exceptionThrown() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+	@Test(expected = BinderException.class)
+	public void bind_fieldWithMissingId_exceptionThrown() {
+		Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-        ControllerWithMissingIdBinding controller = new ControllerWithMissingIdBinding();
-        Binder binder = new Binder();
-        binder.bind(button, controller);
-    }
+		ControllerWithMissingIdBinding controller = new ControllerWithMissingIdBinding();
+		Binder binder = new Binder();
+		binder.bind(button, controller);
+	}
 
-    @Test
-    public void bind_dataSource_dataSourceAttached() {
-        DateField view = (DateField) inflater
-                .inflate(getXml("single-datefield.xml"));
+	@Test
+	public void bind_dataSource_dataSourceAttached() {
+		DateField view = (DateField) inflater
+				.inflate(getXml("single-datefield.xml"));
 
-        Binder binder = new Binder();
-        binder.bind(view, new ControllerWithDataSource());
+		Binder binder = new Binder();
+		binder.bind(view, new ControllerWithDataSource());
 
-        Date value = (Date) view.getValue();
-        assertEquals(1337337477578L, value.getTime());
-    }
+		Date value = (Date) view.getValue();
+		assertEquals(1337337477578L, value.getTime());
+	}
 
-    @Test(expected = BinderException.class)
-    public void bind_nonExistingId_exceptionThrown() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+	@Test(expected = BinderException.class)
+	public void bind_nonExistingId_exceptionThrown() {
+		Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-        Binder binder = new Binder();
-        binder.bind(button, new ControllerWithMissingIdBinding());
-    }
+		Binder binder = new Binder();
+		binder.bind(button, new ControllerWithMissingIdBinding());
+	}
 
-    private void simulateButtonClick(Button button) {
-        Method fireClick;
-        try {
-            fireClick = Button.class.getDeclaredMethod("fireClick");
-            fireClick.setAccessible(true);
-            fireClick.invoke(button);
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't simulate button click.", e);
-        }
-    }
+	@Test
+	public void bind_withoutId_fieldSetCorrectly() {
+		Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-    public static class ControllerWithMissingIdBinding {
+		ControllerWithFieldBindingWithoutId controller = new ControllerWithFieldBindingWithoutId();
+		Binder binder = new Binder();
+		binder.bind(button, controller);
 
-        @UiHandler("non-existing-id")
-        public void handleButtonClick(ClickEvent event) {
-            // NOP
-        }
+		// check that the field is correctly set
+		assertTrue(controller.myButton == button);
+	}
 
-    }
+	private void simulateButtonClick(Button button) {
+		Method fireClick;
+		try {
+			fireClick = Button.class.getDeclaredMethod("fireClick");
+			fireClick.setAccessible(true);
+			fireClick.invoke(button);
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't simulate button click.", e);
+		}
+	}
 
-    public static class ControllerWithDataSource {
+	/*
+	 * Static controller classes to be used to test different bindings.
+	 */
 
-        @UiDataSource("my-datefield")
-        public Property<Date> getDataSource() {
-            Date date = new Date(1337337477578L);
-            return new com.vaadin.data.util.ObjectProperty<Date>(date);
-        }
+	public static class ControllerWithMissingIdBinding {
 
-    }
+		@UiHandler("non-existing-id")
+		public void handleButtonClick(ClickEvent event) {
+			// NOP
+		}
 
-    public static class ControllerWithClickHandler {
+	}
 
-        boolean clickCalled;
+	public static class ControllerWithDataSource {
 
-        @UiHandler("my-button")
-        public void handleButtonClick(ClickEvent event) {
-            clickCalled = true;
-        }
+		@UiDataSource("my-datefield")
+		public Property<Date> getDataSource() {
+			Date date = new Date(1337337477578L);
+			return new com.vaadin.data.util.ObjectProperty<Date>(date);
+		}
 
-    }
+	}
 
-    public static class ControllerWithFieldBinding {
+	public static class ControllerWithClickHandler {
 
-        @UiField("my-button")
-        private Button myButton;
+		boolean clickCalled;
 
-        public Button getMyButton() {
-            return myButton;
-        }
+		@UiHandler("myButton")
+		public void handleButtonClick(ClickEvent event) {
+			clickCalled = true;
+		}
 
-    }
+	}
 
-    public static class ControllerWithFieldBindingOfMissingId {
+	public static class ControllerWithFieldBinding {
 
-        @UiField("non-existing-id")
-        private Button myButton;
+		@UiField("myButton")
+		private Button myButton;
 
-    }
+		public Button getMyButton() {
+			return myButton;
+		}
+
+	}
+
+	public static class ControllerWithFieldBindingOfMissingId {
+
+		@UiField("non-existing-id")
+		private Button myButton;
+
+	}
+
+	public static class ControllerWithFieldBindingWithoutId {
+
+		@UiField
+		private Button myButton;
+
+	}
 
 }
