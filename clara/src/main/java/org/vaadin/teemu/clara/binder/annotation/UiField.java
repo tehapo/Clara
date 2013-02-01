@@ -15,6 +15,6 @@ import com.vaadin.ui.Component;
 @Target(ElementType.FIELD)
 public @interface UiField {
 
-	String value() default "";
+    String value() default "";
 
 }
