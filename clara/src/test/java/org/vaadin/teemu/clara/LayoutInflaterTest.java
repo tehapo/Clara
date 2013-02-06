@@ -15,8 +15,10 @@ import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class LayoutInflaterTest {
@@ -92,6 +94,15 @@ public class LayoutInflaterTest {
         Button button200px = (Button) Clara.findComponentById(layout,
                 "button200px");
         assertEquals(200.0f, button200px.getWidth(), 0.0f);
+    }
+
+    @Test
+    public void inflate_componentWithEnumAttribute_attributeApplied() {
+        Label htmlModeLabel = (Label) inflater
+                .inflate(getXml("enum-label.xml"));
+
+        // check width
+        assertEquals(ContentMode.HTML, htmlModeLabel.getContentMode());
     }
 
     @Test

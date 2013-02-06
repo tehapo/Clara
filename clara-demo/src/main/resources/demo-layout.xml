@@ -20,7 +20,7 @@
     margin="true"
     spacing="true">
 
-    <Label id="label" value="Welcome to Clara demo application." />
+    <Label id="label" contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
 
     <HorizontalLayout caption="Horizontal button row" spacing="true">
         <Button id="button" caption="Click to invoke the controller" />

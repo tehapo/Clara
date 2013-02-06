@@ -27,6 +27,7 @@ public class DefaultComponentManager implements ComponentManager {
         // Setup the default AttributeHandlers.
         addAttributeParser(new PrimitiveAttributeParser());
         addAttributeParser(new VaadinAttributeParser());
+        addAttributeParser(new EnumAttributeParser());
     }
 
     public void addAttributeParser(AttributeParser handler) {
