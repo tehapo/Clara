@@ -26,11 +26,13 @@ public class VaadinAttributeParser implements AttributeParser {
         alignmentMap.put("TOP_RIGHT", Alignment.TOP_RIGHT);
     }
 
+    @Override
     public boolean isSupported(Class<?> valueType) {
         return valueType != null
                 && (valueType == MarginInfo.class || valueType == Alignment.class);
     }
 
+    @Override
     public Object getValueAs(String value, Class<?> valueType) {
         if (valueType == MarginInfo.class) {
             return parseMarginInfo(value);

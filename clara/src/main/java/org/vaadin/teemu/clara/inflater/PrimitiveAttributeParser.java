@@ -15,12 +15,14 @@ public class PrimitiveAttributeParser implements AttributeParser {
             Byte.class, Short.class, Long.class, Character.class, Float.class,
             Double.class);
 
+    @Override
     public boolean isSupported(Class<?> valueType) {
         return valueType != null
                 && (valueType.isPrimitive() || supportedClasses
                         .contains(valueType));
     }
 
+    @Override
     public Object getValueAs(String value, Class<?> type) {
         if (type == String.class || type == Object.class) {
             return value;

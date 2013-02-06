@@ -37,6 +37,7 @@ public class DefaultComponentManager implements ComponentManager {
         attributeParsers.remove(handler);
     }
 
+    @Override
     public Component createComponent(String namespace, String name,
             Map<String, String> attributes)
             throws ComponentInstantiationException {
@@ -165,6 +166,7 @@ public class DefaultComponentManager implements ComponentManager {
         return null;
     }
 
+    @Override
     public void applyLayoutAttributes(ComponentContainer container,
             Component component, Map<String, String> attributes) {
         if (!component.getParent().equals(container)) {
