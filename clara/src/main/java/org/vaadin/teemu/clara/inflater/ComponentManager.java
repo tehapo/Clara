@@ -2,7 +2,6 @@ package org.vaadin.teemu.clara.inflater;
 
 import java.util.Map;
 
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
