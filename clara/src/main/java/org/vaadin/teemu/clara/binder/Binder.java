@@ -25,6 +25,19 @@ public class Binder {
         return Logger.getLogger(Binder.class.getName());
     }
 
+    /**
+     * Binds fields and methods of the given {@code controller} instance to
+     * {@link Component}s found in the given {@code componentRoot} component
+     * hierarchy. The binding is defined using the annotations {@link UiField},
+     * {@link UiHandler} and {@link UiDataSource}.
+     * 
+     * @param componentRoot
+     * @param controller
+     * 
+     * @see UiField
+     * @see UiHandler
+     * @see UiDataSource
+     */
     public void bind(Component componentRoot, Object controller) {
         bindFields(componentRoot, controller);
         bindMethods(componentRoot, controller);
@@ -34,8 +47,7 @@ public class Binder {
         Field[] fields = controller.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(UiField.class)) {
-                bindField(componentRoot, controller, field,
-                        field.getAnnotation(UiField.class));
+                bindField(componentRoot, controller, field);
             }
         }
     }
@@ -44,20 +56,18 @@ public class Binder {
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(UiDataSource.class)) {
-                bindDataSource(componentRoot, controller, method,
-                        method.getAnnotation(UiDataSource.class));
+                bindDataSource(componentRoot, controller, method);
             }
 
             if (method.isAnnotationPresent(UiHandler.class)) {
-                bindEventHandler(componentRoot, controller, method,
-                        method.getAnnotation(UiHandler.class));
+                bindEventHandler(componentRoot, controller, method);
             }
         }
     }
 
     private void bindField(Component componentRoot, Object controller,
-            Field field, UiField annotation) {
-        String componentId = annotation.value();
+            Field field) {
+        String componentId = extractComponentId(field);
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
         if (component == null) {
@@ -76,9 +86,36 @@ public class Binder {
         }
     }
 
+    /**
+     * Returns id of the {@link Component} that the given {@link Field} should
+     * be bound to. Assumes that the given {@code field} has {@link UiField}
+     * annotation. This should be checked before calling this method.
+     * 
+     * @return id of the component to bind the field.
+     */
+    private String extractComponentId(Field field) {
+        // Try the id from UiField annotation.
+        UiField annotation = field.getAnnotation(UiField.class);
+        String componentId = annotation.value();
+
+        if (componentId.length() == 0) {
+            // Default to the field name instead of annotated id.
+            componentId = field.getName();
+        }
+        return componentId;
+    }
+
+    /**
+     * Expects that the given {@link Method} is annotated with {@link UiHandler}
+     * annotation.
+     * 
+     * @param componentRoot
+     * @param controller
+     * @param method
+     */
     private void bindEventHandler(Component componentRoot, Object controller,
-            Method method, UiHandler eventListener) {
-        String componentId = eventListener.value();
+            Method method) {
+        String componentId = method.getAnnotation(UiHandler.class).value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
         if (component == null) {
@@ -167,9 +204,17 @@ public class Binder {
         return null;
     }
 
+    /**
+     * Expects that the given {@link Method} is annotated with
+     * {@link UiDataSource} annotation.
+     * 
+     * @param componentRoot
+     * @param controller
+     * @param method
+     */
     private void bindDataSource(Component componentRoot, Object controller,
-            Method method, UiDataSource dataSource) {
-        String componentId = dataSource.value();
+            Method method) {
+        String componentId = method.getAnnotation(UiDataSource.class).value();
         Component component = Clara.findComponentById(componentRoot,
                 componentId);
         Class<?> dataSourceClass = method.getReturnType();
@@ -185,7 +230,7 @@ public class Binder {
             } else if (isProperty(dataSourceClass)
                     && component instanceof Property.Viewer) {
                 ((Property.Viewer) component)
-                        .setPropertyDataSource((Property) method
+                        .setPropertyDataSource((Property<?>) method
                                 .invoke(controller));
             } else if (isItem(dataSourceClass)
                     && component instanceof Item.Viewer) {

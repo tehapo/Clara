@@ -9,7 +9,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 
 /**
- * Indicates that a method decorated with this annotation can act as an event
+ * Indicates that a method annotated with this annotation can act as an event
  * handler for UI components.
  * 
  * <br />

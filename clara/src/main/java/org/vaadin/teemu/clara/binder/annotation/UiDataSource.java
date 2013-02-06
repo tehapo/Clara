@@ -10,7 +10,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Indicates that the return value of a method decorated with this annotation
+ * Indicates that the return value of a method annotated with this annotation
  * can be used as a data source for UI components.
  * 
  * <br />

@@ -58,8 +58,7 @@ public class BinderTest {
         binder.bind(button, controller);
 
         // check that the field is correctly set
-        assertEquals(Button.class, controller.getMyButton().getClass());
-        assertEquals("My Button", controller.getMyButton().getCaption());
+        assertTrue(controller.myButton == button);
     }
 
     @Test(expected = BinderException.class)
@@ -91,6 +90,18 @@ public class BinderTest {
         binder.bind(button, new ControllerWithMissingIdBinding());
     }
 
+    @Test
+    public void bind_withoutId_fieldSetCorrectly() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        ControllerWithFieldBindingWithoutId controller = new ControllerWithFieldBindingWithoutId();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
+
+        // check that the field is correctly set
+        assertTrue(controller.myButton == button);
+    }
+
     private void simulateButtonClick(Button button) {
         Method fireClick;
         try {
@@ -101,6 +112,10 @@ public class BinderTest {
             throw new RuntimeException("Couldn't simulate button click.", e);
         }
     }
+
+    /*
+     * Static controller classes to be used to test different bindings.
+     */
 
     public static class ControllerWithMissingIdBinding {
 
@@ -125,7 +140,7 @@ public class BinderTest {
 
         boolean clickCalled;
 
-        @UiHandler("my-button")
+        @UiHandler("myButton")
         public void handleButtonClick(ClickEvent event) {
             clickCalled = true;
         }
@@ -134,7 +149,7 @@ public class BinderTest {
 
     public static class ControllerWithFieldBinding {
 
-        @UiField("my-button")
+        @UiField("myButton")
         private Button myButton;
 
         public Button getMyButton() {
@@ -146,6 +161,13 @@ public class BinderTest {
     public static class ControllerWithFieldBindingOfMissingId {
 
         @UiField("non-existing-id")
+        private Button myButton;
+
+    }
+
+    public static class ControllerWithFieldBindingWithoutId {
+
+        @UiField
         private Button myButton;
 
     }
