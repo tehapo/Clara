@@ -10,9 +10,9 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.inflater.AttributeContext;
-import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
+import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;

@@ -3,8 +3,8 @@ package org.vaadin.teemu.clara;
 import java.io.InputStream;
 
 import org.vaadin.teemu.clara.binder.Binder;
-import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;

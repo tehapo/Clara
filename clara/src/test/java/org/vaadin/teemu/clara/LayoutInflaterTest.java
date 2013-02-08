@@ -1,8 +1,6 @@
 package org.vaadin.teemu.clara;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,12 +8,14 @@ import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.teemu.clara.inflater.AttributeContext;
-import org.vaadin.teemu.clara.inflater.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
+import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -63,14 +63,37 @@ public class LayoutInflaterTest {
     public void inflate_singleLayout_layoutWithMarginsInstantiated() {
         Component layout = inflater.inflate(getXml("single-layout.xml"));
 
-        // check that the composition root is actually a VerticalLayout
-        assertEquals(com.vaadin.ui.VerticalLayout.class, layout.getClass());
-
         // check margin="true false false true"
-        assertTrue(((VerticalLayout) layout).getMargin().hasTop());
-        assertFalse(((VerticalLayout) layout).getMargin().hasRight());
-        assertFalse(((VerticalLayout) layout).getMargin().hasBottom());
-        assertTrue(((VerticalLayout) layout).getMargin().hasLeft());
+        assertEquals(new MarginInfo(true, false, false, true),
+                ((VerticalLayout) layout).getMargin());
+    }
+
+    @Test
+    public void inflate_simpleMargin_layoutMarginTrue() {
+        Component layout = inflater.inflate(getXml("simple-margin.xml"));
+
+        // check margin="true"
+        assertEquals(new MarginInfo(true),
+                ((VerticalLayout) layout).getMargin());
+    }
+
+    @Test
+    public void inflate_simpleMargin_innerLayoutMarginFalse() {
+        VerticalLayout layout = (VerticalLayout) inflater
+                .inflate(getXml("simple-margin.xml"));
+
+        // check margin="false"
+        assertEquals(new MarginInfo(false),
+                ((VerticalLayout) layout.getComponent(0)).getMargin());
+    }
+
+    @Test
+    public void inflate_alignmentTest_alignmentAssignedCorrectly() {
+        VerticalLayout layout = (VerticalLayout) inflater
+                .inflate(getXml("alignment-test.xml"));
+
+        Component child = layout.getComponent(0);
+        assertEquals(Alignment.TOP_RIGHT, layout.getComponentAlignment(child));
     }
 
     @Test

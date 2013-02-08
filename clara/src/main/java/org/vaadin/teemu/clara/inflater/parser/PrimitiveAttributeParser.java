@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.parser;
 
 import java.util.Arrays;
 import java.util.List;
