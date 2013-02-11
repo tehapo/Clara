@@ -7,7 +7,8 @@ import com.vaadin.ui.Embedded;
 public class ClaraLogoEmbedded extends Embedded {
 
     public ClaraLogoEmbedded() {
-        super(null, new ThemeResource("clara-logo-90x90.png"));
+        super(null, new ThemeResource("clara-logo-180x180.png"));
+        // Reduce the size to support retina resolution.
         setHeight("90px");
         setWidth("90px");
     }
