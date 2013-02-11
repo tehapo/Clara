@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.parser;
 
 public class EnumAttributeParser implements AttributeParser {
 

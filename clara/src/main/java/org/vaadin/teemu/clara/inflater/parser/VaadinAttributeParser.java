@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.parser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,16 +47,14 @@ public class VaadinAttributeParser implements AttributeParser {
     }
 
     protected MarginInfo parseMarginInfo(String margin) {
-        if (margin.length() > 4) {
-            String[] margins = margin.split(" ");
-            if (margins.length == 4) {
-                return new MarginInfo(Boolean.valueOf(margins[0]),
-                        Boolean.valueOf(margins[1]),
-                        Boolean.valueOf(margins[2]),
-                        Boolean.valueOf(margins[3]));
-            }
+        String[] margins = margin.split(" ");
+        if (margins.length == 4) {
+            return new MarginInfo(Boolean.valueOf(margins[0]),
+                    Boolean.valueOf(margins[1]), Boolean.valueOf(margins[2]),
+                    Boolean.valueOf(margins[3]));
+        } else {
+            return new MarginInfo(Boolean.valueOf(margin));
         }
-        return new MarginInfo(Boolean.valueOf(margin));
     }
 
 }

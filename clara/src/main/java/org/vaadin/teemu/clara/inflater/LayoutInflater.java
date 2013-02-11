@@ -3,6 +3,7 @@ package org.vaadin.teemu.clara.inflater;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

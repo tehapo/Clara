@@ -1,7 +1,9 @@
 package org.vaadin.teemu.clara.inflater;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -17,13 +19,14 @@ class LayoutInflaterContentHandler extends DefaultHandler {
     private static final String DEFAULT_NAMESPACE = "urn:" + URN_NAMESPACE_ID
             + ":com.vaadin.ui";
     private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:layout";
+    private static final String ID_ATTRIBUTE = "id";
 
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
     private Component currentComponent;
     private Component root;
     private final ComponentManager componentFactory;
-    private final Map<String, Component> idMap = new HashMap<String, Component>();
+    private final Set<String> assignedIds = new HashSet<String>();
 
     public LayoutInflaterContentHandler(ComponentManager componentFactory) {
         this.componentFactory = componentFactory;
@@ -31,6 +34,12 @@ class LayoutInflaterContentHandler extends DefaultHandler {
 
     public Component getRoot() {
         return root;
+    }
+
+    @Override
+    public void startDocument() throws SAXException {
+        super.startDocument();
+        assignedIds.clear();
     }
 
     @Override
@@ -48,12 +57,19 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                     .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
             String className = localName;
 
-            Map<String, String> attributeMap = getAttributeMap(attributes);
-            Map<String, String> layoutAttributeMap = getLayoutAttributeMap(attributes);
+            // Get a Map of the attributes and throw an exception if the id it
+            // not unique.
+            Map<String, String> attributeMap = getAttributeMap(attributes,
+                    false);
+            verifyUniqueId(attributeMap);
+
+            Map<String, String> layoutAttributeMap = getAttributeMap(
+                    attributes, true);
+
             currentComponent = componentFactory.createComponent(packageName,
                     className, attributeMap);
             if (currentComponent.getId() != null) {
-                idMap.put(currentComponent.getId(), currentComponent);
+                assignedIds.add(currentComponent.getId());
             }
             if (root == null) {
                 // This was the first Component created -> root.
@@ -71,30 +87,29 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
     }
 
-    private Map<String, String> getAttributeMap(Attributes attributes) {
-        Map<String, String> attributeMap = new HashMap<String, String>(
-                attributes.getLength());
-        for (int i = 0; i < attributes.getLength(); i++) {
-            if (!attributes.getURI(i).equals(LAYOUT_ATTRIBUTE_NAMESPACE)) {
-                String value = attributes.getValue(i);
-                String name = attributes.getLocalName(i);
-                if (name.equals("id")) {
-                    if (idMap.containsKey(value)) {
-                        throw new LayoutInflaterException(String.format(
-                                "Duplicate id: %s.", value));
-                    }
-                }
-                attributeMap.put(name, value);
+    private void verifyUniqueId(Map<String, String> attributes)
+            throws LayoutInflaterException {
+        String id = attributes.get(ID_ATTRIBUTE);
+        if (id != null && id.length() > 0) {
+            if (assignedIds.contains(id)) {
+                throw new LayoutInflaterException(String.format(
+                        "Given id %s has already been assigned.", id));
             }
         }
-        return attributeMap;
     }
 
-    private Map<String, String> getLayoutAttributeMap(Attributes attributes) {
+    private Map<String, String> getAttributeMap(Attributes attributes,
+            boolean layoutAttributes) {
         Map<String, String> attributeMap = new HashMap<String, String>(
                 attributes.getLength());
         for (int i = 0; i < attributes.getLength(); i++) {
-            if (attributes.getURI(i).equals(LAYOUT_ATTRIBUTE_NAMESPACE)) {
+            // Is this attribute from the layout namespace.
+            boolean isLayoutAttribute = attributes.getURI(i).equals(
+                    LAYOUT_ATTRIBUTE_NAMESPACE);
+
+            // Inclusion depends on the layoutAttributes parameter value.
+            if ((layoutAttributes && isLayoutAttribute)
+                    || (!layoutAttributes && !isLayoutAttribute)) {
                 String value = attributes.getValue(i);
                 String name = attributes.getLocalName(i);
                 attributeMap.put(name, value);
@@ -111,10 +126,6 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         if (component instanceof ComponentContainer) {
             currentContainer = (ComponentContainer) component.getParent();
         }
-    }
-
-    public Map<String, Component> getIdMap() {
-        return idMap;
     }
 
 }

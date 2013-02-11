@@ -1,7 +1,6 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.filter;
 
 import java.lang.reflect.Method;
-
 
 public abstract class AttributeContext {
 
@@ -15,9 +14,9 @@ public abstract class AttributeContext {
 
     /**
      * Continue processing of the attribute by passing on to the next
-     * {@link AttributeFilter} or finally to the setter method if there is
-     * no more {@link AttributeFilter}s. If you do not call this method,
-     * the value is never set to the component.
+     * {@link AttributeFilter} or finally to the setter method if there is no
+     * more {@link AttributeFilter}s. If you do not call this method, the value
+     * is never set to the component.
      * 
      * @throws Exception
      */

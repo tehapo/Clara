@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VerticalLayout xmlns="urn:package:com.vaadin.ui" xmlns:layout="urn:vaadin:layout">
+	<Button layout:componentAlignment="TOP_RIGHT" />
+</VerticalLayout>
