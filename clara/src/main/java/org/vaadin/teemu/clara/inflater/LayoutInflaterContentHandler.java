@@ -25,11 +25,13 @@ class LayoutInflaterContentHandler extends DefaultHandler {
     private ComponentContainer currentContainer;
     private Component currentComponent;
     private Component root;
-    private final ComponentManager componentFactory;
+    private final ComponentFactory componentFactory;
+    private final AttributeHandler attributeHandler;
     private final Set<String> assignedIds = new HashSet<String>();
 
-    public LayoutInflaterContentHandler(ComponentManager componentFactory) {
-        this.componentFactory = componentFactory;
+    public LayoutInflaterContentHandler() {
+        componentFactory = new ComponentFactory();
+        attributeHandler = new AttributeHandler();
     }
 
     public Component getRoot() {
@@ -63,21 +65,21 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                     false);
             verifyUniqueId(attributeMap);
 
-            Map<String, String> layoutAttributeMap = getAttributeMap(
-                    attributes, true);
-
             currentComponent = componentFactory.createComponent(packageName,
-                    className, attributeMap);
-            if (currentComponent.getId() != null) {
-                assignedIds.add(currentComponent.getId());
-            }
+                    className);
+            attributeHandler.assignAttributes(currentComponent, attributeMap);
+
             if (root == null) {
                 // This was the first Component created -> root.
                 root = currentComponent;
             }
             if (currentContainer != null) {
                 currentContainer.addComponent(currentComponent);
-                componentFactory.applyLayoutAttributes(currentContainer,
+
+                // Handle layout attributes.
+                Map<String, String> layoutAttributeMap = getAttributeMap(
+                        attributes, true);
+                attributeHandler.assignLayoutAttributes(currentContainer,
                         currentComponent, layoutAttributeMap);
             }
             if (currentComponent instanceof ComponentContainer) {
@@ -87,11 +89,26 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
     }
 
+    @Override
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
+        super.endElement(uri, localName, qName);
+        Component component = componentStack.pop();
+        if (component instanceof ComponentContainer) {
+            currentContainer = (ComponentContainer) component.getParent();
+        }
+    }
+
+    AttributeHandler getAttributeHandler() {
+        return attributeHandler;
+    }
+
     private void verifyUniqueId(Map<String, String> attributes)
             throws LayoutInflaterException {
         String id = attributes.get(ID_ATTRIBUTE);
         if (id != null && id.length() > 0) {
-            if (assignedIds.contains(id)) {
+            boolean unique = assignedIds.add(id);
+            if (!unique) {
                 throw new LayoutInflaterException(String.format(
                         "Given id %s has already been assigned.", id));
             }
@@ -117,15 +134,4 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
         return attributeMap;
     }
-
-    @Override
-    public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-        super.endElement(uri, localName, qName);
-        Component component = componentStack.pop();
-        if (component instanceof ComponentContainer) {
-            currentContainer = (ComponentContainer) component.getParent();
-        }
-    }
-
 }

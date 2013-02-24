@@ -20,16 +20,16 @@ import org.vaadin.teemu.clara.util.ReflectionUtils;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
-public class DefaultComponentManager implements ComponentManager {
+public class AttributeHandler {
 
     private List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
     private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
     private Logger getLogger() {
-        return Logger.getLogger(DefaultComponentManager.class.getName());
+        return Logger.getLogger(AttributeHandler.class.getName());
     }
 
-    public DefaultComponentManager() {
+    public AttributeHandler() {
         // Setup the default AttributeHandlers.
         addAttributeParser(new PrimitiveAttributeParser());
         addAttributeParser(new VaadinAttributeParser());
@@ -44,60 +44,30 @@ public class DefaultComponentManager implements ComponentManager {
         attributeParsers.remove(handler);
     }
 
-    @Override
-    public Component createComponent(String namespace, String name,
-            Map<String, String> attributes)
-            throws ComponentInstantiationException {
-        try {
-            Class<? extends Component> componentClass = resolveComponentClass(
-                    namespace, name);
-            Component newComponent = componentClass.newInstance();
-            handleAttributes(newComponent, attributes);
-            return newComponent;
-        } catch (Exception e) {
-            throw createException(e, namespace, name);
-        }
+    public void addAttributeFilter(AttributeFilter attributeFilter) {
+        attributeFilters.add(attributeFilter);
     }
 
-    protected ComponentInstantiationException createException(Exception e,
-            String namespace, String name) {
-        String message = String
-                .format("Couldn't instantiate a component for namespace %s and name %s.",
-                        namespace, name);
-        if (e != null) {
-            return new ComponentInstantiationException(message, e);
-        } else {
-            return new ComponentInstantiationException(message);
-        }
+    public void removeAttributeFilter(AttributeFilter attributeFilter) {
+        attributeFilters.remove(attributeFilter);
     }
 
-    @SuppressWarnings("unchecked")
-    protected Class<? extends Component> resolveComponentClass(
-            String namespace, String name) throws ClassNotFoundException {
-        String qualifiedClassName = namespace + "." + name;
-        Class<?> componentClass = null;
-        componentClass = Class.forName(qualifiedClassName);
-
-        // Check that we're dealing with a Component.
-        if (ReflectionUtils.isComponent(componentClass)) {
-            return (Class<? extends Component>) componentClass;
-        } else {
-            throw new IllegalArgumentException(String.format(
-                    "Resolved class %s is not a %s.", componentClass.getName(),
-                    Component.class.getName()));
-        }
-    }
-
-    protected void handleAttributes(Component component,
+    /**
+     * Assigns the given attributes to the given {@link Component}.
+     * 
+     * @param component
+     * @param attributes
+     */
+    public void assignAttributes(Component component,
             Map<String, String> attributes) {
         getLogger().fine(attributes.toString());
 
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                Method setter = getSetter(attribute.getKey(),
+                Method setter = resolveSetterMethod(attribute.getKey(),
                         component.getClass());
                 if (setter != null) {
-                    AttributeParser handler = getHandlerFor(setter
+                    AttributeParser handler = getParserFor(setter
                             .getParameterTypes()[0]);
                     if (handler != null) {
                         // We have a handler that knows how to handle conversion
@@ -131,7 +101,49 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    protected void invokeWithAttributeFilters(final Method methodToInvoke,
+    /**
+     * Assigns the layout related attributes (for example alignment and expand
+     * ratio) of the given {@link Component} in the given
+     * {@link ComponentContainer}.
+     * 
+     * @param layout
+     * @param component
+     * @param attributes
+     * @throws IllegalStateException
+     *             if the given {@code container} isn't the parent of the given
+     *             {@code component}.
+     */
+    public void assignLayoutAttributes(ComponentContainer container,
+            Component component, Map<String, String> attributes) {
+        if (!component.getParent().equals(container)) {
+            throw new IllegalStateException(
+                    "The given container must be the parent of given component.");
+        }
+        try {
+            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+                Method layoutMethod = resolveLayoutSetterMethod(
+                        container.getClass(), attribute.getKey());
+                if (layoutMethod != null) {
+                    AttributeParser handler = getParserFor(layoutMethod
+                            .getParameterTypes()[1]);
+                    if (handler != null) {
+                        invokeWithAttributeFilters(layoutMethod, container,
+                                component, handler.getValueAs(
+                                        attribute.getValue(),
+                                        layoutMethod.getParameterTypes()[1]));
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void invokeWithAttributeFilters(final Method methodToInvoke,
             final Object obj, final Object... args)
             throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
@@ -164,52 +176,13 @@ public class DefaultComponentManager implements ComponentManager {
         }
     }
 
-    protected AttributeParser getHandlerFor(Class<?> type) {
-        for (AttributeParser handler : attributeParsers) {
-            if (handler.isSupported(type)) {
-                return handler;
+    private AttributeParser getParserFor(Class<?> type) {
+        for (AttributeParser parser : attributeParsers) {
+            if (parser.isSupported(type)) {
+                return parser;
             }
         }
         return null;
-    }
-
-    @Override
-    public void applyLayoutAttributes(ComponentContainer container,
-            Component component, Map<String, String> attributes) {
-        if (!component.getParent().equals(container)) {
-            throw new IllegalStateException(
-                    "The given container must be the parent of given component.");
-        }
-        try {
-            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                Method layoutMethod = getLayoutMethod(container.getClass(),
-                        attribute.getKey());
-                if (layoutMethod != null) {
-                    AttributeParser handler = getHandlerFor(layoutMethod
-                            .getParameterTypes()[1]);
-                    if (handler != null) {
-                        invokeWithAttributeFilters(layoutMethod, container,
-                                component, handler.getValueAs(
-                                        attribute.getValue(),
-                                        layoutMethod.getParameterTypes()[1]));
-                    }
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Method getSetter(String propertyName,
-            Class<? extends Component> componentClass) {
-        Set<Method> writeMethods = ReflectionUtils
-                .getMethodsByNameAndParamCount(componentClass, "set"
-                        + capitalize(propertyName), 1);
-        return selectPreferredMethod(writeMethods, 0);
     }
 
     private static String capitalize(String propertyName) {
@@ -220,11 +193,17 @@ public class DefaultComponentManager implements ComponentManager {
         return "";
     }
 
-    private Method getLayoutMethod(
+    private Method resolveSetterMethod(String propertyName,
+            Class<? extends Component> componentClass) {
+        Set<Method> writeMethods = ReflectionUtils
+                .getMethodsByNameAndParamCount(componentClass, "set"
+                        + capitalize(propertyName), 1);
+        return selectPreferredMethod(writeMethods, 0);
+    }
+
+    private Method resolveLayoutSetterMethod(
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
-        String methodToLookFor = "set"
-                + propertyName.substring(0, 1).toUpperCase()
-                + propertyName.substring(1);
+        String methodToLookFor = "set" + capitalize(propertyName);
         Set<Method> settersWithTwoParams = ReflectionUtils
                 .getMethodsByNameAndParamCount(layoutClass, methodToLookFor, 2);
         return selectPreferredMethod(settersWithTwoParams, 1);
@@ -241,7 +220,7 @@ public class DefaultComponentManager implements ComponentManager {
             }
 
             Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
-            AttributeParser handler = getHandlerFor(parameterType);
+            AttributeParser handler = getParserFor(parameterType);
 
             if (handler != null
                     && !(handler instanceof PrimitiveAttributeParser)) {
@@ -263,16 +242,6 @@ public class DefaultComponentManager implements ComponentManager {
         }
         // Did not found a perfect method -> fallback to the candidate.
         return candidate;
-    }
-
-    @Override
-    public void addAttributeFilter(AttributeFilter attributeFilter) {
-        attributeFilters.add(attributeFilter);
-    }
-
-    @Override
-    public void removeAttributeFilter(AttributeFilter attributeFilter) {
-        attributeFilters.remove(attributeFilter);
     }
 
 }

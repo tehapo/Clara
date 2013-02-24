@@ -13,25 +13,17 @@ import com.vaadin.ui.Component;
 
 public class LayoutInflater {
 
-    private ComponentManager componentManager = new DefaultComponentManager();
-
-    public void setComponentManager(ComponentManager componentManager) {
-        this.componentManager = componentManager;
-    }
+    private final LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler();
 
     public Component inflate(InputStream xml) throws LayoutInflaterException {
         try {
-            // initialize content handler
-            LayoutInflaterContentHandler handler = new LayoutInflaterContentHandler(
-                    componentManager);
-
             // parse the XML
             XMLReader parser = XMLReaderFactory.createXMLReader();
-            parser.setContentHandler(handler);
+            parser.setContentHandler(contentHandler);
             parser.parse(new InputSource(xml));
 
             // construct the result
-            return handler.getRoot();
+            return contentHandler.getRoot();
         } catch (SAXException e) {
             throw new LayoutInflaterException(e);
         } catch (IOException e) {
@@ -42,11 +34,11 @@ public class LayoutInflater {
     }
 
     public void addAttributeFilter(AttributeFilter attributeFilter) {
-        componentManager.addAttributeFilter(attributeFilter);
+        contentHandler.getAttributeHandler().addAttributeFilter(attributeFilter);
     }
 
     public void removeAttributeFilter(AttributeFilter attributeFilter) {
-        componentManager.removeAttributeFilter(attributeFilter);
+        contentHandler.getAttributeHandler().removeAttributeFilter(attributeFilter);
     }
 
 }
