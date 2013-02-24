@@ -23,7 +23,6 @@ class LayoutInflaterContentHandler extends DefaultHandler {
 
     private Stack<Component> componentStack = new Stack<Component>();
     private ComponentContainer currentContainer;
-    private Component currentComponent;
     private Component root;
     private final ComponentFactory componentFactory;
     private final AttributeHandler attributeHandler;
@@ -53,7 +52,6 @@ class LayoutInflaterContentHandler extends DefaultHandler {
             uri = DEFAULT_NAMESPACE;
         }
 
-        currentComponent = null;
         if (uri.startsWith("urn:" + URN_NAMESPACE_ID + ":")) {
             String packageName = uri
                     .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
@@ -65,27 +63,27 @@ class LayoutInflaterContentHandler extends DefaultHandler {
                     false);
             verifyUniqueId(attributeMap);
 
-            currentComponent = componentFactory.createComponent(packageName,
+            Component component = componentFactory.createComponent(packageName,
                     className);
-            attributeHandler.assignAttributes(currentComponent, attributeMap);
+            attributeHandler.assignAttributes(component, attributeMap);
 
             if (root == null) {
                 // This was the first Component created -> root.
-                root = currentComponent;
+                root = component;
             }
             if (currentContainer != null) {
-                currentContainer.addComponent(currentComponent);
+                currentContainer.addComponent(component);
 
                 // Handle layout attributes.
                 Map<String, String> layoutAttributeMap = getAttributeMap(
                         attributes, true);
                 attributeHandler.assignLayoutAttributes(currentContainer,
-                        currentComponent, layoutAttributeMap);
+                        component, layoutAttributeMap);
             }
-            if (currentComponent instanceof ComponentContainer) {
-                currentContainer = (ComponentContainer) currentComponent;
+            if (component instanceof ComponentContainer) {
+                currentContainer = (ComponentContainer) component;
             }
-            componentStack.push(currentComponent);
+            componentStack.push(component);
         }
     }
 
