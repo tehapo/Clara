@@ -1,5 +1,8 @@
 package org.vaadin.teemu.clara.binder;
 
+import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCount;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByParamTypes;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +15,6 @@ import org.vaadin.teemu.clara.Clara;
 import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -155,6 +157,7 @@ public class Binder {
         Object proxy = Proxy.newProxyInstance(listenerClass.getClassLoader(),
                 new Class<?>[] { listenerClass }, new InvocationHandler() {
 
+                    @Override
                     public Object invoke(Object proxy, Method method,
                             Object[] args) throws Throwable {
 
@@ -184,21 +187,19 @@ public class Binder {
 
     private Method getAddListenerMethod(
             Class<? extends Component> componentClass, Class<?> eventClass) {
-        Set<Method> methods = ReflectionUtils.getMethodsByNameAndParamCount(
-                componentClass, "addListener", 1);
-        for (Method method : methods) {
+        Set<Method> addListenerCandidates = getMethodsByNameAndParamCount(
+                componentClass, "add(.*)Listener", 1);
+
+        for (Method addListenerCandidate : addListenerCandidates) {
             // Check if this method accepts correct type of listeners.
-            Class<?> listenerClass = method.getParameterTypes()[0];
-            Method[] listenerMethods = listenerClass.getMethods();
-            for (Method listenerMethod : listenerMethods) {
-                if (listenerMethod.getParameterTypes().length == 1
-                        && listenerMethod.getParameterTypes()[0]
-                                .equals(eventClass)) {
-                    // Found a method from the listener interface
-                    // that accepts the eventClass instance as
-                    // a sole parameter.
-                    return method;
-                }
+            Class<?> listenerInterface = addListenerCandidate
+                    .getParameterTypes()[0];
+
+            if (getMethodsByParamTypes(listenerInterface, eventClass).size() == 1) {
+                // There exist a single method in the listener interface that
+                // accepts our eventClass as its sole parameter -> our candidate
+                // is accepted.
+                return addListenerCandidate;
             }
         }
         return null;

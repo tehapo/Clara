@@ -1,5 +1,9 @@
 package org.vaadin.teemu.clara.inflater;
 
+import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCount;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCountRange;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -15,7 +19,6 @@ import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
-import org.vaadin.teemu.clara.util.ReflectionUtils;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -189,9 +192,10 @@ public class AttributeHandler {
         return null;
     }
 
-    private static String capitalize(String propertyName) {
+    private static String setterNameFor(String propertyName) {
         if (propertyName.length() > 0) {
-            return propertyName.substring(0, 1).toUpperCase()
+            // For example: "sizeFull" -> "setSizeFull"
+            return "set" + propertyName.substring(0, 1).toUpperCase()
                     + propertyName.substring(1);
         }
         return "";
@@ -199,60 +203,51 @@ public class AttributeHandler {
 
     private Method resolveSetterMethod(String propertyName,
             Class<? extends Component> componentClass) {
-        String methodToLookFor = "set" + capitalize(propertyName);
-        Set<Method> writeMethods = ReflectionUtils
-                .getMethodsByNameAndParamCount(componentClass, methodToLookFor,
-                        1);
-        if (!writeMethods.isEmpty()) {
-            return selectPreferredMethod(writeMethods, 0);
-        } else {
-            // Try with setters without any parameters, like
-            // setSizeFull, setSizeUndefined, etc.
-            writeMethods = ReflectionUtils.getMethodsByNameAndParamCount(
-                    componentClass, methodToLookFor, 0);
-            if (writeMethods.size() == 1) {
-                return writeMethods.iterator().next();
-            }
-        }
-        return null;
+        Set<Method> writeMethods = getMethodsByNameAndParamCountRange(
+                componentClass, setterNameFor(propertyName), 0, 1);
+        return selectPreferredMethod(writeMethods, 0);
     }
 
     private Method resolveLayoutSetterMethod(
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
-        String methodToLookFor = "set" + capitalize(propertyName);
-        Set<Method> settersWithTwoParams = ReflectionUtils
-                .getMethodsByNameAndParamCount(layoutClass, methodToLookFor, 2);
+        Set<Method> settersWithTwoParams = getMethodsByNameAndParamCount(
+                layoutClass, setterNameFor(propertyName), 2);
         return selectPreferredMethod(settersWithTwoParams, 1);
     }
 
     private Method selectPreferredMethod(Set<Method> methods, int dataParamIndex) {
-        Method candidate = null;
+        if (methods == null || methods.isEmpty()) {
+            return null;
+        }
+
+        Method candidate = methods.iterator().next();
         for (Method method : methods) {
             if (dataParamIndex > 0
-                    && !ReflectionUtils
-                            .isComponent(method.getParameterTypes()[0])) {
+                    && !isComponent(method.getParameterTypes()[0])) {
                 // First parameter must be a Component.
                 continue;
             }
 
-            Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
-            AttributeParser handler = getParserFor(parameterType);
+            if (method.getParameterTypes().length > 0) {
+                Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
+                AttributeParser handler = getParserFor(parameterType);
 
-            if (handler != null
-                    && !(handler instanceof PrimitiveAttributeParser)) {
-                // We found a setter method that we have a special
-                // AttributeParser for.
-                return method;
-            }
+                if (handler != null
+                        && !(handler instanceof PrimitiveAttributeParser)) {
+                    // We found a setter method that we have a special
+                    // AttributeParser for.
+                    return method;
+                }
 
-            if (method.isAnnotationPresent(Deprecated.class)
-                    || !parameterType.equals(String.class)) {
-                // Prefer non-deprecated setters and those that directly
-                // accept String as their parameters without any
-                // conversion.
-                candidate = method;
-            } else {
-                return method;
+                if (method.isAnnotationPresent(Deprecated.class)
+                        || !parameterType.equals(String.class)) {
+                    // Prefer non-deprecated setters and those that directly
+                    // accept String as their parameters without any
+                    // conversion.
+                    candidate = method;
+                } else {
+                    return method;
+                }
             }
 
         }
