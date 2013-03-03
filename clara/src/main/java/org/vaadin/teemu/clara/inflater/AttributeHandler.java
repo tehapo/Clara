@@ -143,11 +143,9 @@ public class AttributeHandler {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            throw new AttributeHandlerException(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AttributeHandlerException(e);
         }
     }
 
@@ -226,7 +224,7 @@ public class AttributeHandler {
                 expectedParameterTypes);
         if (settersWithTwoParams.size() > 0) {
             Collections.sort(settersWithTwoParams,
-                    new ParserAwareMethodComparator(2));
+                    new ParserAwareMethodComparator(1));
             return settersWithTwoParams.get(0);
         }
         return null;

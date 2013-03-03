@@ -1,6 +1,7 @@
 package org.vaadin.teemu.clara.inflater;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,8 +10,6 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.Clara;
-import org.vaadin.teemu.clara.inflater.LayoutInflater;
-import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
@@ -34,6 +33,15 @@ public class LayoutInflaterTest {
 
     private InputStream getXml(String fileName) {
         return getClass().getClassLoader().getResourceAsStream(fileName);
+    }
+
+    @Test
+    public void inflate_customComponent_deprecatedMethodNeverCalled() {
+        try {
+            inflater.inflate(getXml("custom-component.xml"));
+        } catch (AttributeHandlerException e) {
+            fail();
+        }
     }
 
     @Test
