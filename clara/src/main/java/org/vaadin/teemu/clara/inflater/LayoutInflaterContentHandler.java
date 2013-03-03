@@ -53,15 +53,16 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
 
         if (uri.startsWith("urn:" + URN_NAMESPACE_ID + ":")) {
-            String packageName = uri
-                    .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
-            String className = localName;
-
             // Get a Map of the attributes and throw an exception if the id it
             // not unique.
             Map<String, String> attributeMap = getAttributeMap(attributes,
                     false);
             verifyUniqueId(attributeMap);
+
+            // Extract the package and class names.
+            String packageName = uri
+                    .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
+            String className = localName;
 
             Component component = componentFactory.createComponent(packageName,
                     className);
