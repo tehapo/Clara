@@ -18,8 +18,8 @@ import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
+import org.vaadin.teemu.clara.util.AnyClassOrPrimitive;
 import org.vaadin.teemu.clara.util.MethodComparator;
-import org.vaadin.teemu.clara.util.ReflectionUtils.AnyClassOrPrimitive;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
