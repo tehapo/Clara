@@ -1,3 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VerticalLayout xmlns="urn:package:com.vaadin.ui" margin="true false false true">
+<VerticalLayout xmlns="urn:package:com.vaadin.ui" margin="true false false true" sizeFull="">
 </VerticalLayout>

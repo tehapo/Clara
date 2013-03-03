@@ -67,25 +67,29 @@ public class AttributeHandler {
                 Method setter = resolveSetterMethod(attribute.getKey(),
                         component.getClass());
                 if (setter != null) {
-                    AttributeParser handler = getParserFor(setter
-                            .getParameterTypes()[0]);
-                    if (handler != null) {
-                        // We have a handler that knows how to handle conversion
-                        // for this property.
-                        String attributeValue = attribute.getValue();
-                        if (attributeValue == null
-                                || attributeValue.length() == 0) {
-                            // No need for conversion.
-                            invokeWithAttributeFilters(setter, component,
-                                    attributeValue);
-                        } else {
-                            // Ask the AttributeHandler to convert the
-                            // value.
-                            invokeWithAttributeFilters(
-                                    setter,
-                                    component,
-                                    handler.getValueAs(attributeValue,
-                                            setter.getParameterTypes()[0]));
+                    if (setter.getParameterTypes().length == 0) {
+                        // Setter method without any parameters.
+                        setter.invoke(component);
+                    } else {
+                        AttributeParser handler = getParserFor(setter
+                                .getParameterTypes()[0]);
+                        if (handler != null) {
+                            // We have a handler that knows how to handle
+                            // conversion
+                            // for this property.
+                            String attributeValue = attribute.getValue();
+                            if (attributeValue == null
+                                    || attributeValue.length() == 0) {
+                                // No need for conversion.
+                                invokeWithAttributeFilters(setter, component,
+                                        attributeValue);
+                            } else {
+                                // Ask the AttributeHandler to convert the
+                                // value.
+                                invokeWithAttributeFilters(setter, component,
+                                        handler.getValueAs(attributeValue,
+                                                setter.getParameterTypes()[0]));
+                            }
                         }
                     }
                 }
@@ -195,10 +199,22 @@ public class AttributeHandler {
 
     private Method resolveSetterMethod(String propertyName,
             Class<? extends Component> componentClass) {
+        String methodToLookFor = "set" + capitalize(propertyName);
         Set<Method> writeMethods = ReflectionUtils
-                .getMethodsByNameAndParamCount(componentClass, "set"
-                        + capitalize(propertyName), 1);
-        return selectPreferredMethod(writeMethods, 0);
+                .getMethodsByNameAndParamCount(componentClass, methodToLookFor,
+                        1);
+        if (!writeMethods.isEmpty()) {
+            return selectPreferredMethod(writeMethods, 0);
+        } else {
+            // Try with setters without any parameters, like
+            // setSizeFull, setSizeUndefined, etc.
+            writeMethods = ReflectionUtils.getMethodsByNameAndParamCount(
+                    componentClass, methodToLookFor, 0);
+            if (writeMethods.size() == 1) {
+                return writeMethods.iterator().next();
+            }
+        }
+        return null;
     }
 
     private Method resolveLayoutSetterMethod(

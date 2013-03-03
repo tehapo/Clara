@@ -13,6 +13,7 @@ import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -66,6 +67,16 @@ public class LayoutInflaterTest {
         // check margin="true false false true"
         assertEquals(new MarginInfo(true, false, false, true),
                 ((VerticalLayout) layout).getMargin());
+    }
+
+    @Test
+    public void inflate_singleLayout_sizeFull() {
+        Component layout = inflater.inflate(getXml("single-layout.xml"));
+
+        assertEquals(100, layout.getWidth(), 0);
+        assertEquals(100, layout.getHeight(), 0);
+        assertEquals(Unit.PERCENTAGE, layout.getWidthUnits());
+        assertEquals(Unit.PERCENTAGE, layout.getHeightUnits());
     }
 
     @Test
