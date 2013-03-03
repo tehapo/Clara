@@ -1,16 +1,15 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCount;
 import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCountRange;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamTypes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
@@ -19,6 +18,8 @@ import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
+import org.vaadin.teemu.clara.util.MethodComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils.AnyClassOrPrimitive;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -203,56 +204,70 @@ public class AttributeHandler {
 
     private Method resolveSetterMethod(String propertyName,
             Class<? extends Component> componentClass) {
-        Set<Method> writeMethods = getMethodsByNameAndParamCountRange(
+        List<Method> writeMethods = getMethodsByNameAndParamCountRange(
                 componentClass, setterNameFor(propertyName), 0, 1);
-        return selectPreferredMethod(writeMethods, 0);
+
+        if (writeMethods.size() > 0) {
+            Collections.sort(writeMethods, new ParserAwareMethodComparator(0));
+            return writeMethods.get(0);
+        }
+        return null;
     }
 
     private Method resolveLayoutSetterMethod(
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
-        Set<Method> settersWithTwoParams = getMethodsByNameAndParamCount(
-                layoutClass, setterNameFor(propertyName), 2);
-        return selectPreferredMethod(settersWithTwoParams, 1);
+        // We need the first parameter to be a Component, the other one can be
+        // anything.
+        Class<?>[] expectedParameterTypes = { Component.class,
+                AnyClassOrPrimitive.class };
+
+        List<Method> settersWithTwoParams = getMethodsByNameAndParamTypes(
+                layoutClass, setterNameFor(propertyName),
+                expectedParameterTypes);
+        if (settersWithTwoParams.size() > 0) {
+            Collections.sort(settersWithTwoParams,
+                    new ParserAwareMethodComparator(2));
+            return settersWithTwoParams.get(0);
+        }
+        return null;
     }
 
-    private Method selectPreferredMethod(Set<Method> methods, int dataParamIndex) {
-        if (methods == null || methods.isEmpty()) {
-            return null;
+    /**
+     * Comparator to sort {@link Method}s into a preferred ordering taking into
+     * account available parsers in addition to method deprecation.
+     */
+    private class ParserAwareMethodComparator extends MethodComparator {
+
+        private final int propertyParameterIndex;
+
+        public ParserAwareMethodComparator(int propertyParameterIndex) {
+            this.propertyParameterIndex = propertyParameterIndex;
         }
 
-        Method candidate = methods.iterator().next();
-        for (Method method : methods) {
-            if (dataParamIndex > 0
-                    && !isComponent(method.getParameterTypes()[0])) {
-                // First parameter must be a Component.
-                continue;
-            }
-
-            if (method.getParameterTypes().length > 0) {
-                Class<?> parameterType = method.getParameterTypes()[dataParamIndex];
-                AttributeParser handler = getParserFor(parameterType);
-
-                if (handler != null
-                        && !(handler instanceof PrimitiveAttributeParser)) {
-                    // We found a setter method that we have a special
-                    // AttributeParser for.
-                    return method;
-                }
-
-                if (method.isAnnotationPresent(Deprecated.class)
-                        || !parameterType.equals(String.class)) {
-                    // Prefer non-deprecated setters and those that directly
-                    // accept String as their parameters without any
-                    // conversion.
-                    candidate = method;
-                } else {
-                    return method;
-                }
-            }
-
+        private Class<?> getPropertyClass(Method method) {
+            return method.getParameterTypes()[propertyParameterIndex];
         }
-        // Did not found a perfect method -> fallback to the candidate.
-        return candidate;
+
+        private boolean isSpecialAttributeParser(AttributeParser parser) {
+            return parser != null
+                    && !(parser instanceof PrimitiveAttributeParser);
+        }
+
+        @Override
+        public int compare(Method method1, Method method2) {
+            // Check for parsers.
+            AttributeParser parser1 = getParserFor(getPropertyClass(method1));
+            AttributeParser parser2 = getParserFor(getPropertyClass(method2));
+            if (isSpecialAttributeParser(parser1)
+                    && !isSpecialAttributeParser(parser2)) {
+                return -1;
+            }
+            if (isSpecialAttributeParser(parser2)
+                    && !isSpecialAttributeParser(parser1)) {
+                return 1;
+            }
+            return super.compare(method1, method2);
+        }
     }
 
 }

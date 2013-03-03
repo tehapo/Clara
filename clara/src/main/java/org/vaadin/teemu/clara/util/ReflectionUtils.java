@@ -1,9 +1,9 @@
 package org.vaadin.teemu.clara.util;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.vaadin.ui.Component;
@@ -28,7 +28,7 @@ public class ReflectionUtils {
      * @param numberOfParams
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static Set<Method> getMethodsByNameAndParamCount(Class<?> clazz,
+    public static List<Method> getMethodsByNameAndParamCount(Class<?> clazz,
             String methodNameRegex, int numberOfParams) {
         return getMethodsByNameAndParamCountRange(clazz, methodNameRegex,
                 numberOfParams, numberOfParams);
@@ -46,10 +46,10 @@ public class ReflectionUtils {
      * @param maxNumberOfParams
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static Set<Method> getMethodsByNameAndParamCountRange(
+    public static List<Method> getMethodsByNameAndParamCountRange(
             Class<?> clazz, String methodNameRegex, int minNumberOfParams,
             int maxNumberOfParams) {
-        Set<Method> methods = new HashSet<Method>();
+        List<Method> methods = new ArrayList<Method>();
         for (Method method : clazz.getMethods()) {
             if (method.getName().matches(methodNameRegex)
                     && method.getParameterTypes().length >= minNumberOfParams
@@ -69,7 +69,7 @@ public class ReflectionUtils {
      * @param paramTypes
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static Set<Method> getMethodsByParamTypes(Class<?> clazz,
+    public static List<Method> getMethodsByParamTypes(Class<?> clazz,
             Class<?>... paramTypes) {
         return getMethodsByNameAndParamTypes(clazz, ".*", paramTypes);
     }
@@ -84,16 +84,23 @@ public class ReflectionUtils {
      * @param paramTypes
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static Set<Method> getMethodsByNameAndParamTypes(Class<?> clazz,
+    public static List<Method> getMethodsByNameAndParamTypes(Class<?> clazz,
             String methodNameRegex, Class<?>... paramTypes) {
-        Set<Method> candidates = getMethodsByNameAndParamCount(clazz,
+        List<Method> candidates = getMethodsByNameAndParamCount(clazz,
                 methodNameRegex, paramTypes.length);
 
         // Iterate candidate methods to remove ones with wrong parameter types.
-        for (Iterator<Method> i = candidates.iterator(); i.hasNext();) {
-            Class<?>[] actualParamTypes = i.next().getParameterTypes();
-            if (!Arrays.equals(paramTypes, actualParamTypes)) {
-                i.remove();
+        for (Iterator<Method> it = candidates.iterator(); it.hasNext();) {
+            Class<?>[] actualParamTypes = it.next().getParameterTypes();
+
+            // Check that each parameter type is what we expected.
+            for (int j = 0; j < actualParamTypes.length; j++) {
+                Class<?> expected = paramTypes[j];
+                Class<?> actual = actualParamTypes[j];
+                if (!(expected == AnyClassOrPrimitive.class)
+                        && !expected.isAssignableFrom(actual)) {
+                    it.remove();
+                }
             }
         }
         return candidates;

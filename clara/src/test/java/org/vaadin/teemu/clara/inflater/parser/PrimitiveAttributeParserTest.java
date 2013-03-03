@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.inflater.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

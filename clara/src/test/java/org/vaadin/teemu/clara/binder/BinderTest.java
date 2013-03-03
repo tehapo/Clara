@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara;
+package org.vaadin.teemu.clara.binder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

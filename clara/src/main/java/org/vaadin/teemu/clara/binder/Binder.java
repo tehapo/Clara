@@ -8,13 +8,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.Clara;
 import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
+import org.vaadin.teemu.clara.util.MethodComparator;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -187,8 +189,9 @@ public class Binder {
 
     private Method getAddListenerMethod(
             Class<? extends Component> componentClass, Class<?> eventClass) {
-        Set<Method> addListenerCandidates = getMethodsByNameAndParamCount(
+        List<Method> addListenerCandidates = getMethodsByNameAndParamCount(
                 componentClass, "add(.*)Listener", 1);
+        Collections.sort(addListenerCandidates, new MethodComparator());
 
         for (Method addListenerCandidate : addListenerCandidates) {
             // Check if this method accepts correct type of listeners.
