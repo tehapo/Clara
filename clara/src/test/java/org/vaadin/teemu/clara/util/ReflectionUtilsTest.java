@@ -79,7 +79,7 @@ public class ReflectionUtilsTest {
     public void test_findMethodsByConstantParamCount_constant1() {
         assertEquals(
                 2,
-                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                findMethods(ClassToExamine.class, "setFooBar",
                         ParamCount.constant(1)).size());
     }
 
@@ -87,7 +87,7 @@ public class ReflectionUtilsTest {
     public void test_findMethodsByConstantParamCount_constant2() {
         assertEquals(
                 1,
-                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                findMethods(ClassToExamine.class, "setFooBar",
                         ParamCount.constant(2)).size());
     }
 
@@ -95,7 +95,7 @@ public class ReflectionUtilsTest {
     public void test_findMethodsByConstantParamCount_constant3() {
         assertEquals(
                 0,
-                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                findMethods(ClassToExamine.class, "setFooBar",
                         ParamCount.constant(3)).size());
     }
 
