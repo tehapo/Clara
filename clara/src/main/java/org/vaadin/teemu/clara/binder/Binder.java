@@ -1,7 +1,6 @@
 package org.vaadin.teemu.clara.binder;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCount;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByParamTypes;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -17,6 +16,7 @@ import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.util.MethodComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -189,8 +189,8 @@ public class Binder {
 
     private Method getAddListenerMethod(
             Class<? extends Component> componentClass, Class<?> eventClass) {
-        List<Method> addListenerCandidates = getMethodsByNameAndParamCount(
-                componentClass, "add(.*)Listener", 1);
+        List<Method> addListenerCandidates = findMethods(componentClass,
+                "add(.*)Listener", ParamCount.constant(1));
         Collections.sort(addListenerCandidates, new MethodComparator());
 
         for (Method addListenerCandidate : addListenerCandidates) {
@@ -198,7 +198,7 @@ public class Binder {
             Class<?> listenerInterface = addListenerCandidate
                     .getParameterTypes()[0];
 
-            if (getMethodsByParamTypes(listenerInterface, eventClass).size() == 1) {
+            if (findMethods(listenerInterface, ".*", eventClass).size() == 1) {
                 // There exist a single method in the listener interface that
                 // accepts our eventClass as its sole parameter -> our candidate
                 // is accepted.

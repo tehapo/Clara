@@ -3,13 +3,11 @@ package org.vaadin.teemu.clara.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCount;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCountRange;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamTypes;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByParamTypes;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
 
 import org.junit.Test;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.ui.Button;
 
@@ -36,66 +34,69 @@ public class ReflectionUtilsTest {
     }
 
     @Test
-    public void test_getMethodsByRegexAndParamTypes() {
-        assertEquals(
-                1,
-                getMethodsByNameAndParamTypes(ClassToExamine.class,
-                        "setFoo(.*)", String.class).size());
-    }
-
-    @Test
-    public void test_getMethodsByParamTypes() {
+    public void test_findMethodsByRegexAndType() {
         assertEquals(1,
-                getMethodsByParamTypes(ClassToExamine.class, String.class)
+                findMethods(ClassToExamine.class, "setFoo(.*)", String.class)
                         .size());
     }
 
     @Test
-    public void test_getMethodsByRegexAndParamCountRange() {
+    public void test_findMethodsByRegexAndTypeUsingAny() {
+        assertEquals(
+                1,
+                findMethods(
+                        ClassToExamine.class,
+                        "setFoo(.*)",
+                        new Class<?>[] { String.class,
+                                AnyClassOrPrimitive.class }).size());
+    }
+
+    @Test
+    public void test_findMethodsByRegexAndTypeAsNull() {
+        assertEquals(
+                1,
+                findMethods(ClassToExamine.class, "setFoo(.*)",
+                        (Class<?>[]) null).size());
+    }
+
+    @Test
+    public void test_findMethodsByRegExAndParamCount() {
         assertEquals(
                 4,
-                getMethodsByNameAndParamCountRange(ClassToExamine.class,
-                        "setFoo(.*)", 0, 2).size());
+                findMethods(ClassToExamine.class, "setFoo(.*)",
+                        ParamCount.fromTo(0, 2)).size());
     }
 
     @Test
-    public void test_getMethodsByNameAndParamCount_methodsWithZeroParams() {
+    public void test_findMethodsByConstantParamCount_constant0() {
         assertEquals(
                 1,
-                getMethodsByNameAndParamCount(ClassToExamine.class,
-                        "setFooBar", 0).size());
+                findMethods(ClassToExamine.class, "setFooBar",
+                        ParamCount.constant(0)).size());
     }
 
     @Test
-    public void test_getMethodsByNameAndParamCount_methodsWithOneParam() {
+    public void test_findMethodsByConstantParamCount_constant1() {
         assertEquals(
                 2,
-                ReflectionUtils.getMethodsByNameAndParamCount(
-                        ClassToExamine.class, "setFooBar", 1).size());
+                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                        ParamCount.constant(1)).size());
     }
 
     @Test
-    public void test_getMethodsByNameAndParamCount_methodsWithTwoParams() {
+    public void test_findMethodsByConstantParamCount_constant2() {
         assertEquals(
                 1,
-                getMethodsByNameAndParamCount(ClassToExamine.class,
-                        "setFooBar", 2).size());
+                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                        ParamCount.constant(2)).size());
     }
 
     @Test
-    public void test_getMethodsByNameAndParamCount_methodsWithThreeParams() {
+    public void test_findMethodsByConstantParamCount_constant3() {
         assertEquals(
                 0,
-                getMethodsByNameAndParamCount(ClassToExamine.class,
-                        "setFooBar", 3).size());
-    }
-
-    @Test
-    public void test_getMethodsByNameAndParamCount_methodsWithNonExistingName() {
-        assertEquals(
-                0,
-                getMethodsByNameAndParamCount(ClassToExamine.class,
-                        "nonExistingMethod", 1).size());
+                ReflectionUtils.findMethods(ClassToExamine.class, "setFooBar",
+                        ParamCount.constant(3)).size());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamCountRange;
-import static org.vaadin.teemu.clara.util.ReflectionUtils.getMethodsByNameAndParamTypes;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,6 +19,7 @@ import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
 import org.vaadin.teemu.clara.util.AnyClassOrPrimitive;
 import org.vaadin.teemu.clara.util.MethodComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
@@ -202,8 +202,8 @@ public class AttributeHandler {
 
     private Method resolveSetterMethod(String propertyName,
             Class<? extends Component> componentClass) {
-        List<Method> writeMethods = getMethodsByNameAndParamCountRange(
-                componentClass, setterNameFor(propertyName), 0, 1);
+        List<Method> writeMethods = findMethods(componentClass,
+                setterNameFor(propertyName), ParamCount.fromTo(0, 1));
 
         if (writeMethods.size() > 0) {
             Collections.sort(writeMethods, new ParserAwareMethodComparator(0));
@@ -216,16 +216,15 @@ public class AttributeHandler {
             Class<? extends ComponentContainer> layoutClass, String propertyName) {
         // We need the first parameter to be a Component, the other one can be
         // anything.
-        Class<?>[] expectedParameterTypes = { Component.class,
+        Class<?>[] expectedParamTypes = { Component.class,
                 AnyClassOrPrimitive.class };
 
-        List<Method> settersWithTwoParams = getMethodsByNameAndParamTypes(
-                layoutClass, setterNameFor(propertyName),
-                expectedParameterTypes);
-        if (settersWithTwoParams.size() > 0) {
-            Collections.sort(settersWithTwoParams,
+        List<Method> layoutSetters = findMethods(layoutClass,
+                setterNameFor(propertyName), expectedParamTypes);
+        if (layoutSetters.size() > 0) {
+            Collections.sort(layoutSetters,
                     new ParserAwareMethodComparator(1));
-            return settersWithTwoParams.get(0);
+            return layoutSetters.get(0);
         }
         return null;
     }

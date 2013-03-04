@@ -18,20 +18,24 @@ public class ReflectionUtils {
         throw new AssertionError();
     }
 
-    /**
-     * Returns a {@link Set} of {@link Method}s from the given {@code clazz}
-     * {@link Class} that match the given {@code methodNameRegex} by method name
-     * and have {@code numberOfParams} number of parameters.
-     * 
-     * @param clazz
-     * @param methodNameRegex
-     * @param numberOfParams
-     * @return {@link Set} of methods or an empty {@link Set}.
-     */
-    public static List<Method> getMethodsByNameAndParamCount(Class<?> clazz,
-            String methodNameRegex, int numberOfParams) {
-        return getMethodsByNameAndParamCountRange(clazz, methodNameRegex,
-                numberOfParams, numberOfParams);
+    public static class ParamCount {
+
+        final int min;
+        final int max;
+
+        private ParamCount(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public static ParamCount fromTo(int from, int to) {
+            return new ParamCount(from, to);
+        }
+
+        public static ParamCount constant(int minAndMax) {
+            return new ParamCount(minAndMax, minAndMax);
+        }
+
     }
 
     /**
@@ -46,14 +50,13 @@ public class ReflectionUtils {
      * @param maxNumberOfParams
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static List<Method> getMethodsByNameAndParamCountRange(
-            Class<?> clazz, String methodNameRegex, int minNumberOfParams,
-            int maxNumberOfParams) {
+    public static List<Method> findMethods(Class<?> clazz,
+            String methodNameRegex, ParamCount numberOfParams) {
         List<Method> methods = new ArrayList<Method>();
         for (Method method : clazz.getMethods()) {
             if (method.getName().matches(methodNameRegex)
-                    && method.getParameterTypes().length >= minNumberOfParams
-                    && method.getParameterTypes().length <= maxNumberOfParams) {
+                    && method.getParameterTypes().length >= numberOfParams.min
+                    && method.getParameterTypes().length <= numberOfParams.max) {
                 methods.add(method);
             }
         }
@@ -62,32 +65,20 @@ public class ReflectionUtils {
 
     /**
      * Returns a {@link Set} of {@link Method}s from the given {@code clazz}
-     * {@link Class} that have the given {@code paramTypes} as method
-     * parameters.
-     * 
-     * @param clazz
-     * @param paramTypes
-     * @return {@link Set} of methods or an empty {@link Set}.
-     */
-    public static List<Method> getMethodsByParamTypes(Class<?> clazz,
-            Class<?>... paramTypes) {
-        return getMethodsByNameAndParamTypes(clazz, ".*", paramTypes);
-    }
-
-    /**
-     * Returns a {@link Set} of {@link Method}s from the given {@code clazz}
      * {@link Class} that match the given {@code methodNameRegex} by method name
-     * and have the given {@code paramTypes} as method parameters.
+     * and have the given {@code paramTypes} as method parameters. Use
+     * {@link AnyClassOrPrimitive} to mark any parameter type.
      * 
      * @param clazz
      * @param methodNameRegex
      * @param paramTypes
      * @return {@link Set} of methods or an empty {@link Set}.
      */
-    public static List<Method> getMethodsByNameAndParamTypes(Class<?> clazz,
+    public static List<Method> findMethods(Class<?> clazz,
             String methodNameRegex, Class<?>... paramTypes) {
-        List<Method> candidates = getMethodsByNameAndParamCount(clazz,
-                methodNameRegex, paramTypes.length);
+        int numberOfParams = paramTypes != null ? paramTypes.length : 0;
+        List<Method> candidates = findMethods(clazz, methodNameRegex,
+                ParamCount.constant(numberOfParams));
 
         // Iterate candidate methods to remove ones with wrong parameter types.
         for (Iterator<Method> it = candidates.iterator(); it.hasNext();) {
