@@ -1,6 +1,6 @@
 package org.vaadin.teemu.clara.inflater;
 
-import org.vaadin.teemu.clara.util.ReflectionUtils;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
 
 import com.vaadin.ui.Component;
 
@@ -38,7 +38,7 @@ public class ComponentFactory {
         componentClass = Class.forName(qualifiedClassName);
 
         // Check that we're dealing with a Component.
-        if (ReflectionUtils.isComponent(componentClass)) {
+        if (isComponent(componentClass)) {
             return (Class<? extends Component>) componentClass;
         } else {
             throw new IllegalArgumentException(String.format(
