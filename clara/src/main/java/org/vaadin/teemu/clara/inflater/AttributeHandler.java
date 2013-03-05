@@ -26,8 +26,8 @@ import com.vaadin.ui.ComponentContainer;
 
 public class AttributeHandler {
 
-    private List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
-    private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
+    private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
+    private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
     private Logger getLogger() {
         return Logger.getLogger(AttributeHandler.class.getName());
@@ -68,16 +68,16 @@ public class AttributeHandler {
 
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                Method setter = resolveSetterMethod(attribute.getKey(),
+                Method setter = getWriteMethod(attribute.getKey(),
                         component.getClass());
                 if (setter != null) {
                     if (setter.getParameterTypes().length == 0) {
                         // Setter method without any parameters.
                         setter.invoke(component);
                     } else {
-                        AttributeParser handler = getParserFor(setter
+                        AttributeParser parser = getParserFor(setter
                                 .getParameterTypes()[0]);
-                        if (handler != null) {
+                        if (parser != null) {
                             // We have a handler that knows how to handle
                             // conversion
                             // for this property.
@@ -91,7 +91,7 @@ public class AttributeHandler {
                                 // Ask the AttributeHandler to convert the
                                 // value.
                                 invokeWithAttributeFilters(setter, component,
-                                        handler.getValueAs(attributeValue,
+                                        parser.getValueAs(attributeValue,
                                                 setter.getParameterTypes()[0]));
                             }
                         }
@@ -129,14 +129,14 @@ public class AttributeHandler {
         }
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                Method layoutMethod = resolveLayoutSetterMethod(
-                        container.getClass(), attribute.getKey());
+                Method layoutMethod = getLayoutWriteMethod(attribute.getKey(),
+                        container.getClass());
                 if (layoutMethod != null) {
-                    AttributeParser handler = getParserFor(layoutMethod
+                    AttributeParser parser = getParserFor(layoutMethod
                             .getParameterTypes()[1]);
-                    if (handler != null) {
+                    if (parser != null) {
                         invokeWithAttributeFilters(layoutMethod, container,
-                                component, handler.getValueAs(
+                                component, parser.getValueAs(
                                         attribute.getValue(),
                                         layoutMethod.getParameterTypes()[1]));
                     }
@@ -159,8 +159,8 @@ public class AttributeHandler {
         } else {
             final LinkedList<AttributeFilter> filtersCopy = new LinkedList<AttributeFilter>(
                     attributeFilters);
-            AttributeFilter filter = filtersCopy.pop();
-            filter.filter(new AttributeContext(methodToInvoke,
+            AttributeFilter firstFilter = filtersCopy.pop();
+            firstFilter.filter(new AttributeContext(methodToInvoke,
                     args.length > 1 ? args[1] : args[0]) {
 
                 @Override
@@ -191,7 +191,7 @@ public class AttributeHandler {
         return null;
     }
 
-    private static String setterNameFor(String propertyName) {
+    private static String getWriteMethodName(String propertyName) {
         if (propertyName.length() > 0) {
             // For example: "sizeFull" -> "setSizeFull"
             return "set" + propertyName.substring(0, 1).toUpperCase()
@@ -200,33 +200,33 @@ public class AttributeHandler {
         return "";
     }
 
-    private Method resolveSetterMethod(String propertyName,
+    private Method getWriteMethod(String propertyName,
             Class<? extends Component> componentClass) {
         List<Method> writeMethods = findMethods(componentClass,
-                setterNameFor(propertyName), ParamCount.fromTo(0, 1));
-
-        if (writeMethods.size() > 0) {
-            Collections.sort(writeMethods, new ParserAwareMethodComparator(0));
-            return writeMethods.get(0);
-        }
-        return null;
+                getWriteMethodName(propertyName), ParamCount.fromTo(0, 1));
+        return getPreferredMethod(writeMethods);
     }
 
-    private Method resolveLayoutSetterMethod(
-            Class<? extends ComponentContainer> layoutClass, String propertyName) {
+    private Method getLayoutWriteMethod(String propertyName,
+            Class<? extends ComponentContainer> layoutClass) {
         // We need the first parameter to be a Component, the other one can be
         // anything.
         Class<?>[] expectedParamTypes = { Component.class,
                 AnyClassOrPrimitive.class };
 
         List<Method> layoutSetters = findMethods(layoutClass,
-                setterNameFor(propertyName), expectedParamTypes);
-        if (layoutSetters.size() > 0) {
-            Collections.sort(layoutSetters,
-                    new ParserAwareMethodComparator(1));
-            return layoutSetters.get(0);
+                getWriteMethodName(propertyName), expectedParamTypes);
+        return getPreferredMethod(layoutSetters);
+    }
+
+    private Method getPreferredMethod(List<Method> methods) {
+        if (methods == null || methods.isEmpty()) {
+            return null;
         }
-        return null;
+
+        // Sort to find the preferred method.
+        Collections.sort(methods, new ParserAwareMethodComparator());
+        return methods.get(0);
     }
 
     /**
@@ -235,14 +235,15 @@ public class AttributeHandler {
      */
     private class ParserAwareMethodComparator extends MethodComparator {
 
-        private final int propertyParameterIndex;
-
-        public ParserAwareMethodComparator(int propertyParameterIndex) {
-            this.propertyParameterIndex = propertyParameterIndex;
-        }
-
         private Class<?> getPropertyClass(Method method) {
-            return method.getParameterTypes()[propertyParameterIndex];
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (parameterTypes.length > 1
+                    && parameterTypes[0] == Component.class) {
+                // First parameter is the Component -> use the second one for
+                // the property.
+                return parameterTypes[1];
+            }
+            return parameterTypes[0];
         }
 
         private boolean isSpecialAttributeParser(AttributeParser parser) {

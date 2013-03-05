@@ -55,8 +55,7 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         if (uri.startsWith("urn:" + URN_NAMESPACE_ID + ":")) {
             // Get a Map of the attributes and throw an exception if the id it
             // not unique.
-            Map<String, String> attributeMap = getAttributeMap(attributes,
-                    false);
+            Map<String, String> attributeMap = getAttributeMap(attributes);
             verifyUniqueId(attributeMap);
 
             // Extract the package and class names.
@@ -77,7 +76,7 @@ class LayoutInflaterContentHandler extends DefaultHandler {
 
                 // Handle layout attributes.
                 Map<String, String> layoutAttributeMap = getAttributeMap(
-                        attributes, true);
+                        attributes, LAYOUT_ATTRIBUTE_NAMESPACE);
                 attributeHandler.assignLayoutAttributes(currentContainer,
                         component, layoutAttributeMap);
             }
@@ -114,18 +113,20 @@ class LayoutInflaterContentHandler extends DefaultHandler {
         }
     }
 
+    private Map<String, String> getAttributeMap(Attributes attributes) {
+        return getAttributeMap(attributes, null);
+    }
+
     private Map<String, String> getAttributeMap(Attributes attributes,
-            boolean layoutAttributes) {
+            String namespace) {
         Map<String, String> attributeMap = new HashMap<String, String>(
                 attributes.getLength());
         for (int i = 0; i < attributes.getLength(); i++) {
-            // Is this attribute from the layout namespace.
-            boolean isLayoutAttribute = attributes.getURI(i).equals(
-                    LAYOUT_ATTRIBUTE_NAMESPACE);
+            boolean matchesNamespace = (namespace == null || attributes.getURI(
+                    i).equals(namespace));
 
             // Inclusion depends on the layoutAttributes parameter value.
-            if ((layoutAttributes && isLayoutAttribute)
-                    || (!layoutAttributes && !isLayoutAttribute)) {
+            if (matchesNamespace) {
                 String value = attributes.getValue(i);
                 String name = attributes.getLocalName(i);
                 attributeMap.put(name, value);
