@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.vaadin.teemu.clara.Clara;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.handler.AttributeHandlerException;
 
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;

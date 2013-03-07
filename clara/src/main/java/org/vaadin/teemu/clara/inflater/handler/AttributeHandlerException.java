@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.handler;
 
 @SuppressWarnings("serial")
 public class AttributeHandlerException extends RuntimeException {

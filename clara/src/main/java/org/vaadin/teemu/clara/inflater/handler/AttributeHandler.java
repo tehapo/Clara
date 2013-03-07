@@ -1,4 +1,4 @@
-package org.vaadin.teemu.clara.inflater;
+package org.vaadin.teemu.clara.inflater.handler;
 
 import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
@@ -17,35 +16,21 @@ import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
-import org.vaadin.teemu.clara.util.AnyClassOrPrimitive;
 import org.vaadin.teemu.clara.util.MethodComparator;
 import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 
 public class AttributeHandler {
 
     private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
     private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
-    private Logger getLogger() {
-        return Logger.getLogger(AttributeHandler.class.getName());
-    }
-
     public AttributeHandler() {
         // Setup the default AttributeHandlers.
-        addAttributeParser(new PrimitiveAttributeParser());
-        addAttributeParser(new VaadinAttributeParser());
-        addAttributeParser(new EnumAttributeParser());
-    }
-
-    public void addAttributeParser(AttributeParser handler) {
-        attributeParsers.add(handler);
-    }
-
-    public void removeAttributeParser(AttributeParser handler) {
-        attributeParsers.remove(handler);
+        attributeParsers.add(new PrimitiveAttributeParser());
+        attributeParsers.add(new VaadinAttributeParser());
+        attributeParsers.add(new EnumAttributeParser());
     }
 
     public void addAttributeFilter(AttributeFilter attributeFilter) {
@@ -57,6 +42,16 @@ public class AttributeHandler {
     }
 
     /**
+     * Returns the namespace of attributes this {@link AttributeHandler} is
+     * interested in.
+     * 
+     * @return
+     */
+    public String getNamespace() {
+        return ""; // default namespace
+    }
+
+    /**
      * Assigns the given attributes to the given {@link Component}.
      * 
      * @param component
@@ -64,7 +59,10 @@ public class AttributeHandler {
      */
     public void assignAttributes(Component component,
             Map<String, String> attributes) {
-        getLogger().fine(attributes.toString());
+
+        if (attributes.isEmpty()) {
+            return;
+        }
 
         try {
             for (Map.Entry<String, String> attribute : attributes.entrySet()) {
@@ -99,49 +97,9 @@ public class AttributeHandler {
                 }
             }
         } catch (SecurityException e) {
-            e.printStackTrace();
+            throw new AttributeHandlerException(e);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Assigns the layout related attributes (for example alignment and expand
-     * ratio) of the given {@link Component} in the given
-     * {@link ComponentContainer}.
-     * 
-     * @param layout
-     * @param component
-     * @param attributes
-     * @throws IllegalStateException
-     *             if the given {@code container} isn't the parent of the given
-     *             {@code component}.
-     */
-    public void assignLayoutAttributes(ComponentContainer container,
-            Component component, Map<String, String> attributes) {
-        if (!component.getParent().equals(container)) {
-            throw new IllegalStateException(
-                    "The given container must be the parent of given component.");
-        }
-        try {
-            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-                Method layoutMethod = getLayoutWriteMethod(attribute.getKey(),
-                        container.getClass());
-                if (layoutMethod != null) {
-                    AttributeParser parser = getParserFor(layoutMethod
-                            .getParameterTypes()[1]);
-                    if (parser != null) {
-                        invokeWithAttributeFilters(layoutMethod, container,
-                                component, parser.getValueAs(
-                                        attribute.getValue(),
-                                        layoutMethod.getParameterTypes()[1]));
-                    }
-                }
-            }
+            throw new AttributeHandlerException(e);
         } catch (IllegalAccessException e) {
             throw new AttributeHandlerException(e);
         } catch (InvocationTargetException e) {
@@ -149,7 +107,7 @@ public class AttributeHandler {
         }
     }
 
-    private void invokeWithAttributeFilters(final Method methodToInvoke,
+    protected void invokeWithAttributeFilters(final Method methodToInvoke,
             final Object obj, final Object... args)
             throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
@@ -182,7 +140,7 @@ public class AttributeHandler {
         }
     }
 
-    private AttributeParser getParserFor(Class<?> type) {
+    protected AttributeParser getParserFor(Class<?> type) {
         for (AttributeParser parser : attributeParsers) {
             if (parser.isSupported(type)) {
                 return parser;
@@ -191,7 +149,7 @@ public class AttributeHandler {
         return null;
     }
 
-    private static String getWriteMethodName(String propertyName) {
+    protected static String getWriteMethodName(String propertyName) {
         if (propertyName.length() > 0) {
             // For example: "sizeFull" -> "setSizeFull"
             return "set" + propertyName.substring(0, 1).toUpperCase()
@@ -200,26 +158,14 @@ public class AttributeHandler {
         return "";
     }
 
-    private Method getWriteMethod(String propertyName,
+    protected Method getWriteMethod(String propertyName,
             Class<? extends Component> componentClass) {
         List<Method> writeMethods = findMethods(componentClass,
                 getWriteMethodName(propertyName), ParamCount.fromTo(0, 1));
         return getPreferredMethod(writeMethods);
     }
 
-    private Method getLayoutWriteMethod(String propertyName,
-            Class<? extends ComponentContainer> layoutClass) {
-        // We need the first parameter to be a Component, the other one can be
-        // anything.
-        Class<?>[] expectedParamTypes = { Component.class,
-                AnyClassOrPrimitive.class };
-
-        List<Method> layoutSetters = findMethods(layoutClass,
-                getWriteMethodName(propertyName), expectedParamTypes);
-        return getPreferredMethod(layoutSetters);
-    }
-
-    private Method getPreferredMethod(List<Method> methods) {
+    protected Method getPreferredMethod(List<Method> methods) {
         if (methods == null || methods.isEmpty()) {
             return null;
         }
