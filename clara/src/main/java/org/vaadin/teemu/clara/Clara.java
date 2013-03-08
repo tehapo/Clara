@@ -50,6 +50,8 @@ public class Clara {
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
+        Binder binder = new Binder();
+
         // Inflate the XML to a component (tree).
         LayoutInflater inflater = new LayoutInflater();
         if (attributeFilters != null) {
@@ -57,13 +59,11 @@ public class Clara {
                 inflater.addAttributeFilter(filter);
             }
         }
-        Component result = inflater.inflate(xml);
+        Component result = inflater.inflate(xml,
+                binder.getAlreadyAssignedFields(controller));
 
-        // Bind to controller if one is given.
-        if (controller != null) {
-            Binder binder = new Binder();
-            binder.bind(result, controller);
-        }
+        // Bind to controller.
+        binder.bind(result, controller);
         return result;
     }
 

@@ -3,12 +3,14 @@ package org.vaadin.teemu.clara.inflater;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
@@ -25,10 +27,24 @@ import com.vaadin.ui.ComponentContainer;
 
 public class LayoutInflater {
 
-    private final LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler();
+    private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
+
+    protected Logger getLogger() {
+        return Logger.getLogger(LayoutInflater.class.getName());
+    }
 
     public Component inflate(InputStream xml) throws LayoutInflaterException {
+        Map<String, Component> empty = Collections.emptyMap();
+        return inflate(xml, empty);
+    }
+
+    public Component inflate(InputStream xml,
+            Map<String, Component> componentOverrideMap)
+            throws LayoutInflaterException {
         try {
+            LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
+                    componentOverrideMap);
+
             // Parse the XML and return root Component.
             XMLReader parser = XMLReaderFactory.createXMLReader();
             parser.setContentHandler(contentHandler);
@@ -44,15 +60,11 @@ public class LayoutInflater {
     }
 
     public void addAttributeFilter(AttributeFilter attributeFilter) {
-        for (AttributeHandler attributeHandler : contentHandler.attributeHandlers) {
-            attributeHandler.addAttributeFilter(attributeFilter);
-        }
+        attributeFilters.add(attributeFilter);
     }
 
     public void removeAttributeFilter(AttributeFilter attributeFilter) {
-        for (AttributeHandler attributeHandler : contentHandler.attributeHandlers) {
-            attributeHandler.removeAttributeFilter(attributeFilter);
-        }
+        attributeFilters.remove(attributeFilter);
     }
 
     private class LayoutInflaterContentHandler extends DefaultHandler {
@@ -68,12 +80,16 @@ public class LayoutInflater {
         private final ComponentFactory componentFactory;
         private final List<AttributeHandler> attributeHandlers;
         private final Set<String> assignedIds = new HashSet<String>();
+        private final Map<String, Component> componentOverrideMap;
 
-        public LayoutInflaterContentHandler() {
+        public LayoutInflaterContentHandler(
+                Map<String, Component> componentOverrideMap) {
+            this.componentOverrideMap = componentOverrideMap;
+
             componentFactory = new ComponentFactory();
             attributeHandlers = new ArrayList<AttributeHandler>();
-            attributeHandlers.add(new AttributeHandler());
-            attributeHandlers.add(new LayoutAttributeHandler());
+            attributeHandlers.add(new AttributeHandler(attributeFilters));
+            attributeHandlers.add(new LayoutAttributeHandler(attributeFilters));
         }
 
         @Override
@@ -95,7 +111,8 @@ public class LayoutInflater {
                 // Throw an exception if the id is already used.
                 verifyUniqueId(attributes);
 
-                Component component = instantiateComponent(uri, localName);
+                Component component = instantiateComponent(uri, localName,
+                        attributes.getValue(ID_ATTRIBUTE));
 
                 if (root == null) {
                     // This was the first Component created -> root.
@@ -124,7 +141,13 @@ public class LayoutInflater {
             }
         }
 
-        private Component instantiateComponent(String uri, String localName) {
+        private Component instantiateComponent(String uri, String localName,
+                String id) {
+            // Check if we should use an override.
+            if (componentOverrideMap.containsKey(id)) {
+                return componentOverrideMap.get(id);
+            }
+
             // Extract the package and class names.
             String packageName = uri
                     .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
