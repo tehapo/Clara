@@ -37,6 +37,10 @@ The project is licensed under the [Apache License, Version 2.0](http://www.apach
 
 The project is still very experimental and documentation is minimal at this point. If you still are interested to try things out you should see the [demo application](http://teemu.virtuallypreinstalled.com/clara) demonstrating the current version of the project.
 
+## Examples
+
+See the forked [SimpleAddressbook example](https://github.com/tehapo/SimpleAddressbook) that is modified to use Clara.
+
 ## Quickstart
 
 **Quickstart is written for Clara 0.5.0. Please notice that at this point anything and everything can change in future releases.**
