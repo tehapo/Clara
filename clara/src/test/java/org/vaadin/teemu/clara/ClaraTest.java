@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
@@ -32,6 +33,16 @@ public class ClaraTest {
         @UiHandler("button200px")
         public void clicked(Button.ClickEvent event) {
             clicked = true;
+        }
+    }
+
+    public static class ControllerWithAlreadyAssignedField {
+
+        @UiField("button200px")
+        private Button button = new Button();
+
+        public ControllerWithAlreadyAssignedField() {
+            button.setWidth("10px"); // this will be overridden
         }
     }
 
@@ -62,6 +73,22 @@ public class ClaraTest {
         assertFalse(controller.clicked);
         button200px.click();
         assertTrue(controller.clicked);
+    }
+
+    @Test
+    public void testCreateMethod_controllerHasAlreadyAssignedField_assignedFieldIsUsedInsteadOfNew() {
+        ControllerWithAlreadyAssignedField controller = new ControllerWithAlreadyAssignedField();
+        Button javaButton = controller.button;
+
+        Component layout = Clara.create(xml, controller);
+
+        // check that the instance from controller is used
+        Button button200px = (Button) Clara.findComponentById(layout,
+                "button200px");
+        assertTrue(button200px == javaButton);
+
+        // check width (should be assigned from XML)
+        assertEquals(200.0f, button200px.getWidth(), 0);
     }
 
     @Test

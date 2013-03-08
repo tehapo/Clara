@@ -8,7 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vaadin.teemu.clara.Clara;
@@ -43,8 +46,49 @@ public class Binder {
      * @see UiDataSource
      */
     public void bind(Component componentRoot, Object controller) {
+        if (controller == null) {
+            return;
+        }
+
         bindFields(componentRoot, controller);
         bindMethods(componentRoot, controller);
+    }
+
+    /**
+     * Returns a {@link Map} from {@link String} id to {@link Component} of all
+     * controller fields decorated with the {@link UiField} annotation that
+     * already have a {@link Component} reference assigned. If the given
+     * controller is {@code null}, an empty {@link Map} is returned.
+     * 
+     * @param controller
+     * 
+     * @see UiField
+     */
+    public Map<String, Component> getAlreadyAssignedFields(Object controller) {
+        if (controller == null) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, Component> assignedFields = new HashMap<String, Component>();
+        Field[] fields = controller.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(UiField.class)) {
+                try {
+                    field.setAccessible(true);
+                    Object value = field.get(controller);
+                    if (value instanceof Component) {
+                        assignedFields.put(extractComponentId(field),
+                                (Component) value);
+                    }
+                } catch (IllegalAccessException e) {
+                    getLogger()
+                            .log(Level.WARNING,
+                                    "Exception while accessing controller object fields.",
+                                    e);
+                }
+            }
+        }
+        return assignedFields;
     }
 
     private void bindFields(Component componentRoot, Object controller) {
@@ -81,7 +125,9 @@ public class Binder {
 
         try {
             field.setAccessible(true);
-            field.set(controller, component);
+            if (field.get(controller) == null) {
+                field.set(controller, component);
+            }
             // TODO exception handling
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

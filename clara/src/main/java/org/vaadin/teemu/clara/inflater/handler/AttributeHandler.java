@@ -24,21 +24,15 @@ import com.vaadin.ui.Component;
 public class AttributeHandler {
 
     private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
-    private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
+    private final List<AttributeFilter> attributeFilters;
 
-    public AttributeHandler() {
+    public AttributeHandler(List<AttributeFilter> attributeFilters) {
+        this.attributeFilters = attributeFilters;
+
         // Setup the default AttributeHandlers.
         attributeParsers.add(new PrimitiveAttributeParser());
         attributeParsers.add(new VaadinAttributeParser());
         attributeParsers.add(new EnumAttributeParser());
-    }
-
-    public void addAttributeFilter(AttributeFilter attributeFilter) {
-        attributeFilters.add(attributeFilter);
-    }
-
-    public void removeAttributeFilter(AttributeFilter attributeFilter) {
-        attributeFilters.remove(attributeFilter);
     }
 
     /**

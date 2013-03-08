@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.vaadin.teemu.clara.util.AnyClassOrPrimitive;
 
@@ -16,6 +17,10 @@ import com.vaadin.ui.ComponentContainer;
 public class LayoutAttributeHandler extends AttributeHandler {
 
     private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:layout";
+
+    public LayoutAttributeHandler(List<AttributeFilter> attributeFilters) {
+        super(attributeFilters);
+    }
 
     @Override
     public String getNamespace() {
