@@ -16,7 +16,7 @@
 <VerticalLayout 
     xmlns="urn:import:com.vaadin.ui"
     xmlns:a="urn:import:org.vaadin.teemu.ratingstars"
-    xmlns:l="urn:vaadin:layout"
+    xmlns:l="urn:vaadin:parent"
     margin="true"
     spacing="true">
 

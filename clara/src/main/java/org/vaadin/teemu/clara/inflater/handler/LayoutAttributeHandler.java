@@ -16,7 +16,7 @@ import com.vaadin.ui.ComponentContainer;
 
 public class LayoutAttributeHandler extends AttributeHandler {
 
-    private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:layout";
+    private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:parent";
 
     public LayoutAttributeHandler(List<AttributeFilter> attributeFilters) {
         super(attributeFilters);
