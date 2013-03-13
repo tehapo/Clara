@@ -1,4 +1,4 @@
-<HorizontalSplitPanel xmlns:demo="urn:package:org.vaadin.teemu.clara.demo" xmlns:l="urn:vaadin:layout">
+<HorizontalSplitPanel xmlns:demo="urn:import:org.vaadin.teemu.clara.demo" xmlns:l="urn:vaadin:layout">
 
 	<!-- Left side: the editor -->
 	<HorizontalLayout margin="true" spacing="true" sizeFull="">

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VerticalLayout xmlns="urn:package:com.vaadin.ui" margin="true">
+<VerticalLayout xmlns="urn:import:com.vaadin.ui" margin="true">
 	<VerticalLayout margin="false" />
 </VerticalLayout>

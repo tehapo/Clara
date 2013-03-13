@@ -69,7 +69,7 @@ public class LayoutInflater {
 
     private class LayoutInflaterContentHandler extends DefaultHandler {
 
-        private static final String URN_NAMESPACE_ID = "package";
+        private static final String URN_NAMESPACE_ID = "import";
         private static final String DEFAULT_NAMESPACE = "urn:"
                 + URN_NAMESPACE_ID + ":com.vaadin.ui";
         private static final String ID_ATTRIBUTE = "id";
