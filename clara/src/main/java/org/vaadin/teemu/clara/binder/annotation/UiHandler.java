@@ -7,21 +7,24 @@ import java.lang.annotation.Target;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 
 /**
- * Indicates that a method annotated with this annotation can act as an event
- * handler for UI components.
+ * Indicates that a method with this annotation will be assigned to handle
+ * events from a {@link Component}.
  * 
- * <br />
- * <br />
- * The type of events that the method will be invoked on is derived from the
+ * The type of events that this method will be invoked on is derived from the
  * parameter type. For example a method with {@link ClickEvent} parameter can
- * act as a click listener for a {@link Button}.
+ * act as a click listener for a {@link Button} .
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface UiHandler {
 
+    /**
+     * The {@code id} property value of the {@link Component} to bind with the
+     * event handler method.
+     */
     String value();
 
 }

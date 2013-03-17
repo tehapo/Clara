@@ -8,13 +8,21 @@ import java.lang.annotation.Target;
 import com.vaadin.ui.Component;
 
 /**
- * Indicates that a field annotated with this annotation should be assigned a
- * {@link Component} instance from the created component hierarchy.
+ * Indicates that a {@code null}-valued field with this annotation will be
+ * assigned to a {@link Component} instance.
+ * 
+ * If the field is already assigned to a non-{@code null} value, the previously
+ * assigned {@link Component} instance will be used in the component hierarchy
+ * instead of creating a new {@link Component} instance.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface UiField {
 
+    /**
+     * The {@code id} property value of the {@link Component} to assign. Field
+     * name is used if this value is not defined.
+     */
     String value() default "";
 
 }
