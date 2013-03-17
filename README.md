@@ -7,7 +7,7 @@ Purpose of this project is to define a declarative XML-based syntax for defining
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
 com/addon/xmlui). A lot of the functionality is also inspired by GWT UiBinder.
 
-Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester)). [Travis CI](http://travis-ci.org/) is used for automated testing.
+Maven is used to build the add-on and the demo application modules (thanks to [vdemeester](https://github.com/vdemeester) for help). [Travis CI](http://travis-ci.org/) is used for automated testing.
 
 To package and install the Clara add-on to your local repository, just run the following command:
 ```bash
@@ -43,7 +43,7 @@ See the forked [SimpleAddressbook example](https://github.com/tehapo/SimpleAddre
 
 ## Quickstart
 
-**Quickstart is written for Clara 0.5.0. Please notice that at this point anything and everything can change in future releases.**
+**Quickstart is written for Clara 1.0.0-beta1.**
 
 1) Create a new Vaadin 7 project.
 
@@ -51,11 +51,11 @@ See the forked [SimpleAddressbook example](https://github.com/tehapo/SimpleAddre
 
 3) Create a new Java package that will contain the XML layout definition and the controller class (see steps 4 and 5).
 
-4) Create a new XML file (name it ```MyFirstClaraLayout.xml```) for the layout definition and save it to the Java package you just created. You can copy the example below. Notice the special "urn:vaadin:layout" namespace on the componentAlignment attribute which means that the componentAlignment property belongs to the containing layout instead of the component itself.
+4) Create a new XML file (name it ```MyFirstClaraLayout.xml```) for the layout definition and save it to the Java package you just created. You can copy the example below. Notice the special "urn:vaadin:parent" namespace on the componentAlignment attribute which means that the componentAlignment property belongs to the containing layout instead of the component itself.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<VerticalLayout xmlns="urn:package:com.vaadin.ui" xmlns:l="urn:vaadin:layout">
+<VerticalLayout xmlns="urn:import:com.vaadin.ui" xmlns:l="urn:vaadin:parent">
     <Label id="my-label" value="Hello Clara!" />
     <Button id="my-button" caption="Click me!" width="200px" l:componentAlignment="MIDDLE_CENTER" />
 </VerticalLayout>
@@ -99,7 +99,7 @@ setContent(layout);
 
 ## Internationalization with Attribute Filters
 
-Clara 0.2.0 introduced concept of attribute filters (renamed from attribute interceptors). Attribute filters enable runtime modification of any attributes read from the declarative XML layout file. The most obvious use case for this is to provide internationalization of text displayed in the user interface.
+Attribute filters enable runtime modification of any attributes read from the declarative XML layout file. The most obvious use case for this is to provide internationalization of text displayed in the user interface.
 
 To create an attribute filter, you must implement the single-method ```AttributeFilter``` interface and pass it to the ```Clara.create``` method. The sole method in the interface is called ```filter``` and it takes a single argument of type ```AttributeContext```. You can modify the value before it's assigned  by calling the ```setValue``` method of the ```AttributeContext```. You should always call the ```proceed``` method to pass the value forward to next filter (or to finally assign the value). If you do not call the ```proceed``` method, the attribute value will never be assigned (which might sometimes be the desired effect).
 
