@@ -3,6 +3,7 @@ package org.vaadin.teemu.clara;
 import java.io.InputStream;
 
 import org.vaadin.teemu.clara.binder.Binder;
+import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
@@ -47,6 +48,9 @@ public class Clara {
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
+     * 
+     * @throws BinderException
+     *             if an error is encountered during the binding.
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
@@ -97,6 +101,9 @@ public class Clara {
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
+     * 
+     * @throws BinderException
+     *             if an error is encountered during the binding.
      */
     public static Component create(String xmlClassResourceFileName,
             Object controller, AttributeFilter... attributeFilters) {
@@ -106,26 +113,26 @@ public class Clara {
     }
 
     /**
-     * Searches the given component hierarchy {@code root} for the
-     * {@link Component} with a given {@code componentId} as its debugId (see
-     * {@link Component#setDebugId(String)}).
+     * Searches the given component hierarchy {@code root} for a
+     * {@link Component} with the given {@code componentId} as its {@code id}
+     * property (see {@link Component#setId(String)}).
      * 
      * <br />
      * <br />
      * If the given {@code root} is a {@link ComponentContainer}, this method
-     * will iterate the component hierarchy in search for the correct
-     * {@link Component}. Otherwise if the given {@code root} is a single
-     * {@link Component}, only it is checked for its debugId value.
+     * will recursively iterate the component hierarchy in search for the
+     * correct {@link Component}. Otherwise if the given {@code root} is a
+     * single {@link Component}, only it is checked for its {@code id} value.
      * 
      * @param root
      *            root of a component tree (non-{@code null}).
      * @param componentId
-     *            debugId of a component to search for (non-{@code null}).
-     * @return {@link Component} with a given {@code componentId} as its debugId
-     *         or {@code null} if no such component is found.
+     *            {@code id} of a component to search for (non-{@code null}).
+     * @return {@link Component} with a given {@code componentId} as its
+     *         {@code id} or {@code null} if no such component is found.
      * @throws IllegalArgumentException
      *             if either of the given parameters is {@code null}.
-     * @see Component#setDebugId(String)
+     * @see Component#setId(String)
      */
     public static Component findComponentById(Component root, String componentId) {
         // Check for null before doing anything.
