@@ -7,4 +7,8 @@ public class BinderException extends RuntimeException {
         super(message);
     }
 
+    public BinderException(Throwable cause) {
+        super(cause);
+    }
+
 }

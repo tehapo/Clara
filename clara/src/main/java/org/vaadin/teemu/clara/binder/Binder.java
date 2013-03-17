@@ -35,11 +35,14 @@ public class Binder {
     /**
      * Binds fields and methods of the given {@code controller} instance to
      * {@link Component}s found in the given {@code componentRoot} component
-     * hierarchy. The binding is defined using the annotations {@link UiField},
+     * hierarchy. The binding is defined by the annotations {@link UiField},
      * {@link UiHandler} and {@link UiDataSource}.
      * 
      * @param componentRoot
      * @param controller
+     * 
+     * @throws BinderException
+     *             if an error is encountered during the binding.
      * 
      * @see UiField
      * @see UiHandler
@@ -116,23 +119,17 @@ public class Binder {
     private void bindField(Component componentRoot, Object controller,
             Field field) {
         String componentId = extractComponentId(field);
-        Component component = Clara.findComponentById(componentRoot,
-                componentId);
-        if (component == null) {
-            throw new BinderException("No component found for id: "
-                    + componentId + ".");
-        }
+        Component component = tryToFindComponentById(componentRoot, componentId);
 
         try {
             field.setAccessible(true);
             if (field.get(controller) == null) {
                 field.set(controller, component);
             }
-            // TODO exception handling
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            throw new BinderException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new BinderException(e);
         }
     }
 
@@ -166,12 +163,7 @@ public class Binder {
     private void bindEventHandler(Component componentRoot, Object controller,
             Method method) {
         String componentId = method.getAnnotation(UiHandler.class).value();
-        Component component = Clara.findComponentById(componentRoot,
-                componentId);
-        if (component == null) {
-            throw new BinderException("No component found for id: "
-                    + componentId + ".");
-        }
+        Component component = tryToFindComponentById(componentRoot, componentId);
 
         Class<?> eventType = (method.getParameterTypes().length > 0 ? method
                 .getParameterTypes()[0] : null);
@@ -188,13 +180,10 @@ public class Binder {
                         addListenerMethod.getParameterTypes()[0], eventType,
                         method, controller);
                 addListenerMethod.invoke(component, listener);
-                // TODO exception handling
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                throw new BinderException(e);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                throw new BinderException(e);
             }
         }
     }
@@ -265,8 +254,7 @@ public class Binder {
     private void bindDataSource(Component componentRoot, Object controller,
             Method method) {
         String componentId = method.getAnnotation(UiDataSource.class).value();
-        Component component = Clara.findComponentById(componentRoot,
-                componentId);
+        Component component = tryToFindComponentById(componentRoot, componentId);
         Class<?> dataSourceClass = method.getReturnType();
 
         try {
@@ -287,14 +275,19 @@ public class Binder {
                 ((Item.Viewer) component).setItemDataSource((Item) method
                         .invoke(controller));
             }
-            // TODO exception handling
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            throw new BinderException(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new BinderException(e);
         }
+    }
+
+    private Component tryToFindComponentById(Component root, String id) {
+        Component component = Clara.findComponentById(root, id);
+        if (component == null) {
+            throw new BinderException("No component found for id: " + id + ".");
+        }
+        return component;
     }
 
     private boolean isContainer(Class<?> dataSourceClass) {
