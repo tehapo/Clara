@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
+import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
 import com.vaadin.ui.Component;
@@ -49,6 +50,8 @@ public class Clara {
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
      * 
+     * @throws LayoutInflaterException
+     *             if an error is encountered during the layout inflation.
      * @throws BinderException
      *             if an error is encountered during the binding.
      */
@@ -102,6 +105,8 @@ public class Clara {
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
      * 
+     * @throws LayoutInflaterException
+     *             if an error is encountered during the layout inflation.
      * @throws BinderException
      *             if an error is encountered during the binding.
      */

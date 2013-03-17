@@ -33,14 +33,34 @@ public class LayoutInflater {
         return Logger.getLogger(LayoutInflater.class.getName());
     }
 
-    public Component inflate(InputStream xml) throws LayoutInflaterException {
+    /**
+     * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+     * 
+     * @param xml
+     * @return the inflated {@link Component} (hierarchy).
+     * 
+     * @throws LayoutInflaterException
+     *             in case of an error in the inflation process.
+     */
+    public Component inflate(InputStream xml) {
         Map<String, Component> empty = Collections.emptyMap();
         return inflate(xml, empty);
     }
 
+    /**
+     * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+     * 
+     * @param xml
+     * @param componentOverrideMap
+     *            {@link Map} of already existing {@link Component} instances
+     *            from their {@code id} properties.
+     * @return the inflated {@link Component} (hierarchy).
+     * 
+     * @throws LayoutInflaterException
+     *             in case of an error in the inflation process.
+     */
     public Component inflate(InputStream xml,
-            Map<String, Component> componentOverrideMap)
-            throws LayoutInflaterException {
+            Map<String, Component> componentOverrideMap) {
         try {
             LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
                     componentOverrideMap);
