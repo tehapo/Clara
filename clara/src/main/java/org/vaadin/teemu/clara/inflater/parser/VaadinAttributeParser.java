@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
  * {@link AttributeParser} that parses Vaadin specific types (like
@@ -33,7 +34,8 @@ public class VaadinAttributeParser implements AttributeParser {
     }
 
     @Override
-    public Object getValueAs(String value, Class<?> valueType) {
+    public Object getValueAs(String value, Class<?> valueType,
+            Component component) {
         if (valueType == MarginInfo.class) {
             return parseMarginInfo(value);
         } else if (valueType == Alignment.class) {

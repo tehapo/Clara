@@ -52,7 +52,8 @@ public class LayoutAttributeHandler extends AttributeHandler {
                         invokeWithAttributeFilters(writeMethod, container,
                                 component, parser.getValueAs(
                                         attribute.getValue(),
-                                        writeMethod.getParameterTypes()[1]));
+                                        writeMethod.getParameterTypes()[1],
+                                        component));
                     }
                 }
             }

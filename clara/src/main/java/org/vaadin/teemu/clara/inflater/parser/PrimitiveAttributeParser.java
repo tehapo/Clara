@@ -3,6 +3,8 @@ package org.vaadin.teemu.clara.inflater.parser;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vaadin.ui.Component;
+
 /**
  * {@link AttributeParser} that handles all primitive types (including boxed
  * representations), {@link String} and {@link Object}.
@@ -23,7 +25,7 @@ public class PrimitiveAttributeParser implements AttributeParser {
     }
 
     @Override
-    public Object getValueAs(String value, Class<?> type) {
+    public Object getValueAs(String value, Class<?> type, Component component) {
         if (type == String.class || type == Object.class) {
             return value;
         }

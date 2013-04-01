@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns="urn:import:com.vaadin.ui" xmlns:l="urn:vaadin:parent">
+   	<Button l:position="top:20px;left:10%" />
+</AbsoluteLayout>

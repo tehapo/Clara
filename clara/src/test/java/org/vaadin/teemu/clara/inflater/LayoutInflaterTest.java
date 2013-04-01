@@ -17,6 +17,7 @@ import org.vaadin.teemu.clara.inflater.handler.AttributeHandlerException;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -55,6 +56,20 @@ public class LayoutInflaterTest {
         // check attributes
         assertEquals("My Button", button.getCaption());
         assertEquals(true, button.isReadOnly());
+    }
+
+    @Test
+    public void inflate_absoluteLayout() {
+        AbsoluteLayout layout = (AbsoluteLayout) inflater
+                .inflate(getXml("absolutelayout.xml"));
+
+        Button button = (Button) layout.getComponentIterator().next();
+
+        // check position attributes
+        assertEquals(20, layout.getPosition(button).getTopValue(), 0);
+        assertEquals(10, layout.getPosition(button).getLeftValue(), 0);
+        assertEquals(Unit.PIXELS, layout.getPosition(button).getTopUnits());
+        assertEquals(Unit.PERCENTAGE, layout.getPosition(button).getLeftUnits());
     }
 
     @Test

@@ -13,6 +13,7 @@ import java.util.Map;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
+import org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
@@ -33,6 +34,7 @@ public class AttributeHandler {
         attributeParsers.add(new PrimitiveAttributeParser());
         attributeParsers.add(new VaadinAttributeParser());
         attributeParsers.add(new EnumAttributeParser());
+        attributeParsers.add(new ComponentPositionParser());
     }
 
     /**
@@ -84,7 +86,8 @@ public class AttributeHandler {
                                 // value.
                                 invokeWithAttributeFilters(setter, component,
                                         parser.getValueAs(attributeValue,
-                                                setter.getParameterTypes()[0]));
+                                                setter.getParameterTypes()[0],
+                                                component));
                             }
                         }
                     }
