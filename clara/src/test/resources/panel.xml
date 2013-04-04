@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Panel xmlns="urn:import:com.vaadin.ui">
+    <Button width="200px" id="button200px" />
+</Panel>

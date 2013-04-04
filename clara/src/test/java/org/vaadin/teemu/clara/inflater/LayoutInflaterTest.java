@@ -22,6 +22,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 public class LayoutInflaterTest {
@@ -56,6 +57,15 @@ public class LayoutInflaterTest {
         // check attributes
         assertEquals("My Button", button.getCaption());
         assertEquals(true, button.isReadOnly());
+    }
+
+    @Test
+    public void inflate_panel() {
+        Panel panel = (Panel) inflater.inflate(getXml("panel.xml"));
+
+        // check Panel content
+        assertEquals(1, panel.getComponentCount());
+        assertEquals(Button.class, panel.getContent().getClass());
     }
 
     @Test
