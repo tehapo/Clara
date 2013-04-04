@@ -24,6 +24,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.SingleComponentContainer;
 
 public class LayoutInflater {
 
@@ -138,7 +139,11 @@ public class LayoutInflater {
                     // This was the first Component created -> root.
                     root = component;
                 }
-                if (currentContainer != null) {
+                
+                Component topComponent = componentStack.isEmpty() ? null : componentStack.peek();
+                if (topComponent instanceof SingleComponentContainer) {
+                	((SingleComponentContainer) topComponent).setContent(component);
+                } else if (currentContainer != null) {
                     currentContainer.addComponent(component);
                 }
 
@@ -157,7 +162,11 @@ public class LayoutInflater {
             super.endElement(uri, localName, qName);
             Component component = componentStack.pop();
             if (component instanceof ComponentContainer) {
-                currentContainer = (ComponentContainer) component.getParent();
+            	Component parent = component.getParent();
+            	while (parent != null && !(parent instanceof ComponentContainer)) {
+            		parent = parent.getParent();
+            	}
+                currentContainer = (ComponentContainer) parent;
             }
         }
 
