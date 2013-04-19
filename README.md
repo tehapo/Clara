@@ -2,7 +2,7 @@
 
 ## Clara - Declarative UI and Bindings for Vaadin Framework
 
-Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers. Starting from version 0.5.0 Clara supports only Vaadin 7. A separate [branch](https://github.com/tehapo/Clara/tree/vaadin-6) exist for Vaadin 6, but it is not guaranteed to be maintained.
+Purpose of this project is to define a declarative XML-based syntax for defining [Vaadin](https://vaadin.com) user interfaces. Also another goal is to provide support annotation-based binding of data sources and event handlers. Starting from version 0.5.0 Clara supports only Vaadin 7. A separate [branch](https://github.com/tehapo/Clara/tree/vaadin-6) exist for Vaadin 6, but it is not maintained anymore.
 
 Project also serves as a part of my Master's thesis at the University of Turku and also derives from the work done by Joonas Lehtinen on his [xmlui Vaadin add-on](http://vaadin.
 com/addon/xmlui). A lot of the functionality is also inspired by GWT UiBinder.
@@ -43,7 +43,7 @@ See the forked [SimpleAddressbook example](https://github.com/tehapo/SimpleAddre
 
 ## Quickstart
 
-**Quickstart is written for Clara 1.0.0-beta1.**
+**Quickstart is written for Clara 1.0.0.**
 
 1) Create a new Vaadin 7 project.
 
