@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabSheet>
+    <Label caption="caption-tab1" value="Foo" />
+    <Label caption="caption-tab1" value="Bar" />
+</TabSheet>

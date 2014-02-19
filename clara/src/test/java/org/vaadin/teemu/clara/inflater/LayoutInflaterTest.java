@@ -23,6 +23,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
 public class LayoutInflaterTest {
@@ -66,6 +67,15 @@ public class LayoutInflaterTest {
         // check Panel content
         assertEquals(1, panel.getComponentCount());
         assertEquals(Button.class, panel.getContent().getClass());
+    }
+
+    @Test
+    public void inflate_tabSheet_captionsAssigned() {
+        TabSheet layout = (TabSheet) inflater.inflate(getXml("tabsheet.xml"));
+
+        // check tab captions
+        assertEquals("caption-tab1", layout.getTab(0).getCaption());
+        assertEquals("caption-tab2", layout.getTab(1).getCaption());
     }
 
     @Test
