@@ -9,8 +9,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.teemu.clara.binder.Binder;
-import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
 import org.vaadin.teemu.clara.binder.annotation.UiHandler;
@@ -60,6 +58,18 @@ public class BinderTest {
         // check that the field is correctly set
         assertTrue(controller.myButton == button);
     }
+
+	@Test
+	public void bind_field_fieldOfSuperclassSetCorrectly() {
+		Button button= (Button) inflater.inflate(getXml("single-button.xml"));
+
+		ControllerWithFieldBinding controller= new SubcontrollerWithoutFieldBinding();
+		Binder binder= new Binder();
+		binder.bind(button, controller);
+
+		// check that the field is correctly set
+		assertTrue(controller.myButton == button);
+	}
 
     @Test(expected = BinderException.class)
     public void bind_fieldWithMissingId_exceptionThrown() {
@@ -157,6 +167,10 @@ public class BinderTest {
         }
 
     }
+
+	public static class SubcontrollerWithoutFieldBinding extends ControllerWithFieldBinding {
+
+	}
 
     public static class ControllerWithFieldBindingOfMissingId {
 
