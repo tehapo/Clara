@@ -35,7 +35,11 @@ The project is licensed under the [Apache License, Version 2.0](http://www.apach
 
 ## Online Demo
 
-The project is still very experimental and documentation is minimal at this point. If you still are interested to try things out you should see the [demo application](http://teemu.virtuallypreinstalled.com/clara) demonstrating the current version of the project.
+A good starting point to try things out is the online [demo application](http://teemu.virtuallypreinstalled.com/clara) demonstrating the current version of the project.
+
+## Tools
+
+ * [claraxsd-maven-plugin](https://github.com/kumm/claraxsd-maven-plugin) – A Maven plugin to generate XML schemas to enable code completion and validation.
 
 ## Examples
 
