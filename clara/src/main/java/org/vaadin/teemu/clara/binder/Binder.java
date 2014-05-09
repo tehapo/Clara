@@ -53,7 +53,7 @@ public class Binder {
             return;
         }
 
-		bindFields(componentRoot, controller, controller.getClass());
+        bindFields(componentRoot, controller, controller.getClass());
         bindMethods(componentRoot, controller);
     }
 
@@ -94,17 +94,18 @@ public class Binder {
         return assignedFields;
     }
 
-	private void bindFields(Component componentRoot, Object controller, Class<?> clazz) {
-		Field[] fields= clazz.getDeclaredFields();
+    private void bindFields(Component componentRoot, Object controller,
+            Class<?> clazz) {
+        Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(UiField.class)) {
                 bindField(componentRoot, controller, field);
             }
         }
-		Class<?> superclass= clazz.getSuperclass();
-		if (superclass != null) {
-			bindFields(componentRoot, controller, superclass);
-		}
+        Class<?> superclass = clazz.getSuperclass();
+        if (superclass != null) {
+            bindFields(componentRoot, controller, superclass);
+        }
     }
 
     private void bindMethods(Component componentRoot, Object controller) {

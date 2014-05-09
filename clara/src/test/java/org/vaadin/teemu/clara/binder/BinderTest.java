@@ -59,17 +59,17 @@ public class BinderTest {
         assertTrue(controller.myButton == button);
     }
 
-	@Test
-	public void bind_field_fieldOfSuperclassSetCorrectly() {
-		Button button= (Button) inflater.inflate(getXml("single-button.xml"));
+    @Test
+    public void bind_field_fieldOfSuperclassSetCorrectly() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-		ControllerWithFieldBinding controller= new SubcontrollerWithoutFieldBinding();
-		Binder binder= new Binder();
-		binder.bind(button, controller);
+        ControllerWithFieldBinding controller = new SubcontrollerWithoutFieldBinding();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
 
-		// check that the field is correctly set
-		assertTrue(controller.myButton == button);
-	}
+        // check that the field is correctly set
+        assertTrue(controller.myButton == button);
+    }
 
     @Test(expected = BinderException.class)
     public void bind_fieldWithMissingId_exceptionThrown() {
@@ -168,9 +168,10 @@ public class BinderTest {
 
     }
 
-	public static class SubcontrollerWithoutFieldBinding extends ControllerWithFieldBinding {
+    public static class SubcontrollerWithoutFieldBinding extends
+            ControllerWithFieldBinding {
 
-	}
+    }
 
     public static class ControllerWithFieldBindingOfMissingId {
 
