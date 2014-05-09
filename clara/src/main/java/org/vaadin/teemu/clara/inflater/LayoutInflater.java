@@ -99,7 +99,8 @@ public class LayoutInflater {
         private ComponentContainer currentContainer;
         private Component root;
         private final ComponentFactory componentFactory;
-        private final List<AttributeHandler> attributeHandlers;
+        private final AttributeHandler attributeHandler;
+        private final LayoutAttributeHandler layoutAttributeHandler;
         private final Set<String> assignedIds = new HashSet<String>();
         private final Map<String, Component> componentOverrideMap;
 
@@ -108,9 +109,9 @@ public class LayoutInflater {
             this.componentOverrideMap = componentOverrideMap;
 
             componentFactory = new ComponentFactory();
-            attributeHandlers = new ArrayList<AttributeHandler>();
-            attributeHandlers.add(new AttributeHandler(attributeFilters));
-            attributeHandlers.add(new LayoutAttributeHandler(attributeFilters));
+            attributeHandler = new AttributeHandler(attributeFilters);
+            layoutAttributeHandler = new LayoutAttributeHandler(
+                    attributeFilters);
         }
 
         @Override
@@ -140,21 +141,25 @@ public class LayoutInflater {
                     root = component;
                 }
 
-                Component topComponent = componentStack.isEmpty() ? null
-                        : componentStack.peek();
-                if (topComponent instanceof SingleComponentContainer) {
-                    ((SingleComponentContainer) topComponent)
-                            .setContent(component);
-                } else if (currentContainer != null) {
-                    currentContainer.addComponent(component);
-                }
-
-                handleAttributes(component, attributes);
+                // Basic attributes -> attach -> layout attributes.
+                handleAttributes(component, attributes, attributeHandler);
+                attachComponent(component);
+                handleAttributes(component, attributes, layoutAttributeHandler);
 
                 if (component instanceof ComponentContainer) {
                     currentContainer = (ComponentContainer) component;
                 }
                 componentStack.push(component);
+            }
+        }
+
+        private void attachComponent(Component component) {
+            Component topComponent = componentStack.isEmpty() ? null
+                    : componentStack.peek();
+            if (topComponent instanceof SingleComponentContainer) {
+                ((SingleComponentContainer) topComponent).setContent(component);
+            } else if (currentContainer != null) {
+                currentContainer.addComponent(component);
             }
         }
 
@@ -188,14 +193,13 @@ public class LayoutInflater {
             return componentFactory.createComponent(packageName, className);
         }
 
-        private void handleAttributes(Component component, Attributes attributes) {
-            for (AttributeHandler attributeHandler : attributeHandlers) {
-                // Get attributes for the namespace this AttributeHandler is
-                // interested in.
-                Map<String, String> attributeMap = getAttributeMap(attributes,
-                        attributeHandler.getNamespace());
-                attributeHandler.assignAttributes(component, attributeMap);
-            }
+        private void handleAttributes(Component component,
+                Attributes attributes, AttributeHandler attributeHandler) {
+            // Get attributes for the namespace this AttributeHandler is
+            // interested in.
+            Map<String, String> attributeMap = getAttributeMap(attributes,
+                    attributeHandler.getNamespace());
+            attributeHandler.assignAttributes(component, attributeMap);
         }
 
         private void verifyUniqueId(Attributes attributes)
