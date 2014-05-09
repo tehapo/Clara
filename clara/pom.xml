@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.vaadin.addons</groupId>
         <artifactId>clara-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>clara</artifactId>
