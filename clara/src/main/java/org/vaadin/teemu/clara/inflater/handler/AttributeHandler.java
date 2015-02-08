@@ -4,6 +4,7 @@ import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import org.vaadin.teemu.clara.util.MethodComparator;
 import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 
 public class AttributeHandler {
 
@@ -84,10 +86,20 @@ public class AttributeHandler {
                             } else {
                                 // Ask the AttributeHandler to convert the
                                 // value.
+                                Class<?> valueType = setter.getParameterTypes()[0];
+                                if (component instanceof Field
+                                        && valueType == Object.class
+                                        && setter.getName().equals("setValue")) {
+                                    // Special handling for Field.setValue with
+                                    // unknown type -> get the actual generic
+                                    // type of the field.
+                                    valueType = (Class<?>) (((ParameterizedType) component
+                                            .getClass().getGenericSuperclass())
+                                            .getActualTypeArguments()[0]);
+                                }
                                 invokeWithAttributeFilters(setter, component,
                                         parser.getValueAs(attributeValue,
-                                                setter.getParameterTypes()[0],
-                                                component));
+                                                valueType, component));
                             }
                         }
                     }

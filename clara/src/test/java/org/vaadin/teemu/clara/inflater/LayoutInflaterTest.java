@@ -20,6 +20,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -228,6 +229,12 @@ public class LayoutInflaterTest {
 
         // check that non-existing id returns null
         assertEquals(null, Clara.findComponentById(view, "non-existing-id"));
+    }
+
+    @Test
+    public void inflate_checkBox_valueTrue() {
+        CheckBox checkBox = (CheckBox) inflater.inflate(getXml("checkbox.xml"));
+        assertEquals(true, checkBox.getValue());
     }
 
     @Test(expected = LayoutInflaterException.class)
