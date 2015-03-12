@@ -1,17 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.logging.Logger;
-
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.SingleComponentContainer;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
 import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
@@ -22,9 +13,18 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.SingleComponentContainer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.logging.Logger;
 
 public class LayoutInflater {
 
@@ -36,11 +36,11 @@ public class LayoutInflater {
 
     /**
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
-     * 
+     *
      * @param xml
      *            {@link InputStream} for the XML.
      * @return the inflated {@link Component} (hierarchy).
-     * 
+     *
      * @throws LayoutInflaterException
      *             in case of an error in the inflation process.
      */
@@ -51,37 +51,53 @@ public class LayoutInflater {
 
     /**
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
-     * 
+     *
      * @param xml
      *            {@link InputStream} for the XML.
      * @param componentOverrideMap
      *            {@link Map} of already existing {@link Component} instances
      *            from their {@code id} properties.
      * @return the inflated {@link Component} (hierarchy).
-     * 
+     *
      * @throws LayoutInflaterException
      *             in case of an error in the inflation process.
      */
     public Component inflate(InputStream xml,
             Map<String, Component> componentOverrideMap) {
-        try {
-            LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
-                    componentOverrideMap);
-
-            // Parse the XML and return root Component.
-            XMLReader parser = XMLReaderFactory.createXMLReader();
-            parser.setContentHandler(contentHandler);
-            parser.parse(new InputSource(xml));
-            return contentHandler.root;
-        } catch (SAXException e) {
-            throw new LayoutInflaterException(e);
-        } catch (IOException e) {
-            throw new LayoutInflaterException(e);
-        } catch (ComponentInstantiationException e) {
-            throw new LayoutInflaterException(e.getMessage(), e);
-        }
+        return inflate(xml, new OverrideMapComponentProvider(componentOverrideMap),
+            new ReflectionComponentProvider());
     }
 
+
+  /**
+   * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+   *
+   * @param xml the xml to inflate.
+   * @param componentProviders the {@link ComponentProvider}s to apply in given order to inflate
+   *                           xml to components.
+   * @return the inflated {@link Component} (hierarchy).
+   *
+   * @throws LayoutInflaterException
+   *             in case of an error in the inflation process.
+   */
+  public Component inflate(InputStream xml, ComponentProvider... componentProviders) {
+    try {
+      LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
+          componentProviders);
+
+      // Parse the XML and return root Component.
+      XMLReader parser = XMLReaderFactory.createXMLReader();
+      parser.setContentHandler(contentHandler);
+      parser.parse(new InputSource(xml));
+      return contentHandler.root;
+    } catch (SAXException e) {
+      throw new LayoutInflaterException(e);
+    } catch (IOException e) {
+      throw new LayoutInflaterException(e);
+    } catch (ComponentInstantiationException e) {
+      throw new LayoutInflaterException(e.getMessage(), e);
+    }
+  }
     public void addAttributeFilter(AttributeFilter attributeFilter) {
         attributeFilters.add(attributeFilter);
     }
@@ -100,17 +116,14 @@ public class LayoutInflater {
         private Stack<Component> componentStack = new Stack<Component>();
         private ComponentContainer currentContainer;
         private Component root;
-        private final ComponentFactory componentFactory;
         private final AttributeHandler attributeHandler;
         private final LayoutAttributeHandler layoutAttributeHandler;
         private final Set<String> assignedIds = new HashSet<String>();
-        private final Map<String, Component> componentOverrideMap;
+        private final List<ComponentProvider> componentProviders;
 
-        public LayoutInflaterContentHandler(
-                Map<String, Component> componentOverrideMap) {
-            this.componentOverrideMap = componentOverrideMap;
+        public LayoutInflaterContentHandler(ComponentProvider... componentProviders) {
+            this.componentProviders = Arrays.asList(componentProviders);
 
-            componentFactory = new ComponentFactory();
             attributeHandler = new AttributeHandler(attributeFilters);
             layoutAttributeHandler = new LayoutAttributeHandler(
                     attributeFilters);
@@ -182,17 +195,15 @@ public class LayoutInflater {
 
         private Component instantiateComponent(String uri, String localName,
                 String id) {
-            // Check if we should use an override.
-            if (componentOverrideMap.containsKey(id)) {
-                return componentOverrideMap.get(id);
+            for (ComponentProvider provider : componentProviders) {
+                Component component = provider.getComponent(uri, localName, id);
+                if (component != null) {
+                    return component;
+                }
             }
 
-            // Extract the package and class names.
-            String packageName = uri
-                    .substring(("urn:" + URN_NAMESPACE_ID + ":").length());
-            String className = localName;
-
-            return componentFactory.createComponent(packageName, className);
+            throw new LayoutInflaterException(String.format("None of the component providers was "
+                + "able to provide component for uri=%s, localName=%s, id=%s", uri, localName, id));
         }
 
         private void handleAttributes(Component component,

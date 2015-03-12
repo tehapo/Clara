@@ -1,8 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
-
 import com.vaadin.ui.Component;
+
+import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
 
 public class ComponentFactory {
 
@@ -10,12 +10,9 @@ public class ComponentFactory {
      * Returns a new {@link Component} instance of given {@code namespace} and
      * {@code name}. If the component cannot be instantiated properly a
      * {@link ComponentInstantiationException} is thrown.
-     * 
-     * @param namespace
-     *            XML namespace.
-     * @param name
-     *            element name.
-     * 
+     *
+     * @param namespace the namespace of the component to create.
+     * @param name the name of the component to create.
      * @return a new {@link Component} instance.
      * @throws ComponentInstantiationException
      *             if the component cannot be instantiated.

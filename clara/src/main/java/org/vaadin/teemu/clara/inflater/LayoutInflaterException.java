@@ -7,12 +7,12 @@ public class LayoutInflaterException extends RuntimeException {
         super(message);
     }
 
-    public LayoutInflaterException(String message, Throwable e) {
-        super(message, e);
+    public LayoutInflaterException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public LayoutInflaterException(Throwable e) {
-        super(e);
+    public LayoutInflaterException(Throwable cause) {
+        super(cause);
     }
 
 }
