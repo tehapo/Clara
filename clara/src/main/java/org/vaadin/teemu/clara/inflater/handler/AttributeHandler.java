@@ -1,6 +1,17 @@
 package org.vaadin.teemu.clara.inflater.handler;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
+import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
+import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
+import org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser;
+import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
+import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
+import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
+import org.vaadin.teemu.clara.util.MethodComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,18 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
-import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
-import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
-import org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser;
-import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
-import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
-import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
-import org.vaadin.teemu.clara.util.MethodComparator;
-import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 public class AttributeHandler {
 
@@ -43,7 +43,7 @@ public class AttributeHandler {
      * Returns the namespace of attributes this {@link AttributeHandler} is
      * interested in.
      * 
-     * @return XML namespace this handler is responsible.
+     * @return XML namespace this handler is responsible for.
      */
     public String getNamespace() {
         return ""; // default namespace
@@ -51,7 +51,7 @@ public class AttributeHandler {
 
     /**
      * Assigns the given attributes to the given {@link Component}.
-     * 
+     *
      * @param component
      *            {@link Component} instance to assign the attributes.
      * @param attributes
@@ -133,17 +133,23 @@ public class AttributeHandler {
                     args.length > 1 ? args[1] : args[0]) {
 
                 @Override
-                public void proceed() throws Exception {
+                public void proceed() throws AttributeFilterException {
                     if (filtersCopy.size() > 0) {
                         // More filters -> invoke them.
                         filtersCopy.pop().filter(this);
                     } else {
                         // No more filters -> time to invoke the actual
                         // method.
-                        if (args.length > 1) {
-                            methodToInvoke.invoke(obj, args[0], this.getValue());
-                        } else {
-                            methodToInvoke.invoke(obj, this.getValue());
+                        try {
+                            if (args.length > 1) {
+                              methodToInvoke.invoke(obj, args[0], this.getValue());
+                            } else {
+                              methodToInvoke.invoke(obj, this.getValue());
+                            }
+                        } catch (IllegalAccessException e) {
+                            throw new AttributeFilterException(e);
+                        } catch (InvocationTargetException e) {
+                            throw new AttributeFilterException(e);
                         }
                     }
                 }

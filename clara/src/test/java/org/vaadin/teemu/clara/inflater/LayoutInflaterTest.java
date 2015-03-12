@@ -1,19 +1,5 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.vaadin.teemu.clara.Clara;
-import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
-import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
-import org.vaadin.teemu.clara.inflater.handler.AttributeHandlerException;
-
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -26,6 +12,19 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
+import org.junit.Before;
+import org.junit.Test;
+import org.vaadin.teemu.clara.Clara;
+import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.handler.AttributeHandlerException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class LayoutInflaterTest {
 
@@ -198,11 +197,7 @@ public class LayoutInflaterTest {
                         attributeContext.setValue("filteredValue");
                     }
                 }
-                try {
-                    attributeContext.proceed();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                attributeContext.proceed();
             }
         };
 
@@ -225,7 +220,7 @@ public class LayoutInflaterTest {
 
         // check that the id my-button returns a Button
         assertEquals(com.vaadin.ui.Button.class,
-                Clara.findComponentById(view, "myButton").getClass());
+            Clara.findComponentById(view, "myButton").getClass());
 
         // check that non-existing id returns null
         assertEquals(null, Clara.findComponentById(view, "non-existing-id"));

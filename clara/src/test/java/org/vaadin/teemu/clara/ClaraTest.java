@@ -1,12 +1,9 @@
 package org.vaadin.teemu.clara;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStream;
-
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
@@ -15,10 +12,12 @@ import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.VerticalLayout;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ClaraTest {
 
@@ -205,11 +204,7 @@ public class ClaraTest {
                         attributeContext.setValue("filteredValue");
                     }
                 }
-                try {
-                    attributeContext.proceed();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                attributeContext.proceed();
             }
         };
     }
@@ -225,11 +220,7 @@ public class ClaraTest {
                         attributeContext.setValue("filteredTwice");
                     }
                 }
-                try {
-                    attributeContext.proceed();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                attributeContext.proceed();
             }
         };
     }
