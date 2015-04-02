@@ -3,8 +3,13 @@ package org.vaadin.teemu.clara.binder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Date;
 
 import org.junit.Before;
@@ -18,12 +23,6 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.DateField;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 public class BinderTest {
 
@@ -127,17 +126,6 @@ public class BinderTest {
         assertTrue(controller.myButton == button);
     }
 
-    private void simulateButtonClick(Button button) {
-        Method fireClick;
-        try {
-            fireClick = Button.class.getDeclaredMethod("fireClick");
-            fireClick.setAccessible(true);
-            fireClick.invoke(button);
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't simulate button click.", e);
-        }
-    }
-
     private ButtonAndControllerWrapper buildAndBindButtonWithController() {
         Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
@@ -149,8 +137,7 @@ public class BinderTest {
     }
 
     private void simulateButtonClickAndAssert(ButtonAndControllerWrapper wrapper) {
-
-        simulateButtonClick(wrapper.button);
+        wrapper.button.click();
 
         // check that the handler was called
         assertTrue("Annotated handler method was not called.",
