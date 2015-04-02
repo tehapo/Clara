@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<v:Button xmlns:v="urn:import:com.vaadin.ui" tabIndex="1" id="myButton" caption="My Button" readOnly="true" />
+<v:Button xmlns:v="urn:import:com.vaadin.ui" tabIndex="1" id="myButton" caption="My Button" />

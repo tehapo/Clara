@@ -58,7 +58,7 @@ public class LayoutInflaterTest {
 
         // check attributes
         assertEquals("My Button", button.getCaption());
-        assertEquals(true, button.isReadOnly());
+        assertEquals(1, button.getTabIndex());
     }
 
     @Test
