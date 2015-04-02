@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
+
 ![Clara](https://github.com/tehapo/Clara/raw/99386831b5c2f3fc1e916180b1b60c796c2cd0ad/dist/img/clara-logo-150x174.png)
 
 ## Clara - Declarative UI and Bindings for Vaadin Framework
@@ -25,9 +27,6 @@ Packaging the distributable add-on zip (that can be uploaded to Vaadin Directory
 cd clara
 mvn clean package assembly:single
 ```
-
-
-[![Build Status](https://secure.travis-ci.org/tehapo/Clara.png)](http://travis-ci.org/tehapo/Clara)
 
 ## License
 
