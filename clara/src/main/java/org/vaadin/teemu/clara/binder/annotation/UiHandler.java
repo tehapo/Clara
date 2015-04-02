@@ -24,6 +24,8 @@ public @interface UiHandler {
     /**
      * The {@code id} property value of the {@link Component} to bind with the
      * event handler method.
+     * 
+     * @return {@code id} of the {@link Component}.
      */
     String value();
 

@@ -19,6 +19,7 @@ public abstract class AttributeContext {
      * is never set to the component.
      * 
      * @throws Exception
+     *             in case of an error.
      */
     public abstract void proceed() throws Exception;
 

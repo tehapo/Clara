@@ -18,6 +18,7 @@ public interface AttributeFilter {
      * for the {@link Component}.
      * 
      * @param attributeContext
+     *            context for the filtering.
      */
     void filter(AttributeContext attributeContext);
 

@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import com.vaadin.ui.Component;
 
@@ -38,14 +37,17 @@ public class ReflectionUtils {
     }
 
     /**
-     * Returns a {@link Set} of {@link Method}s from the given {@code clazz}
-     * {@link Class} that match the given {@code methodNameRegex} by method name
-     * and has parameter count matching the given {@code numberOfParams}.
+     * Returns a {@link List} of {@link Method}s from the given {@code clazz}
+     * {@link Class} that match the given {@code nameRegex} by method name and
+     * has parameter count matching the given {@code numberOfParams}.
      * 
      * @param clazz
+     *            {@link Class} to find the methods from.
      * @param nameRegex
+     *            a regular expression to match against method names.
      * @param numberOfParams
-     * @return {@link Set} of methods or an empty {@link Set}.
+     *            number of parameters expected.
+     * @return {@link List} of methods or an empty {@link List}.
      */
     public static List<Method> findMethods(Class<?> clazz, String nameRegex,
             ParamCount numberOfParams) {
@@ -61,15 +63,19 @@ public class ReflectionUtils {
     }
 
     /**
-     * Returns a {@link Set} of {@link Method}s from the given {@code clazz}
-     * {@link Class} that match the given {@code methodNameRegex} by method name
-     * and have the given {@code paramTypes} as method parameters. Use
+     * Returns a {@link List} of {@link Method}s from the given {@code clazz}
+     * {@link Class} that match the given {@code nameRegex} by method name and
+     * have the given {@code paramTypes} as method parameters. Use
      * {@link AnyClassOrPrimitive} to mark any parameter type.
      * 
      * @param clazz
+     *            {@link Class} to find the methods from.
      * @param nameRegex
+     *            a regular expression to match against method names.
      * @param paramTypes
-     * @return {@link Set} of methods or an empty {@link Set}.
+     *            types of parameters expected, use {@link AnyClassOrPrimitive}
+     *            for any parameter type.
+     * @return {@link List} of methods or an empty {@link List}.
      */
     public static List<Method> findMethods(Class<?> clazz, String nameRegex,
             Class<?>... paramTypes) {

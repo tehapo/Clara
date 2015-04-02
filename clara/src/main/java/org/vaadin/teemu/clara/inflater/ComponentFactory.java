@@ -8,15 +8,17 @@ public class ComponentFactory {
 
     /**
      * Returns a new {@link Component} instance of given {@code namespace} and
-     * {@code name} with fields populated from the {@code attributes} map. If
-     * the component cannot be instantiated properly a
+     * {@code name}. If the component cannot be instantiated properly a
      * {@link ComponentInstantiationException} is thrown.
      * 
      * @param namespace
+     *            XML namespace.
      * @param name
-     * @param attributes
+     *            element name.
+     * 
      * @return a new {@link Component} instance.
      * @throws ComponentInstantiationException
+     *             if the component cannot be instantiated.
      */
     public Component createComponent(String namespace, String name)
             throws ComponentInstantiationException {

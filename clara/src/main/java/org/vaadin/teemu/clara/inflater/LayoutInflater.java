@@ -38,6 +38,7 @@ public class LayoutInflater {
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
      * 
      * @param xml
+     *            {@link InputStream} for the XML.
      * @return the inflated {@link Component} (hierarchy).
      * 
      * @throws LayoutInflaterException
@@ -52,6 +53,7 @@ public class LayoutInflater {
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
      * 
      * @param xml
+     *            {@link InputStream} for the XML.
      * @param componentOverrideMap
      *            {@link Map} of already existing {@link Component} instances
      *            from their {@code id} properties.

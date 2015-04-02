@@ -22,6 +22,8 @@ public @interface UiField {
     /**
      * The {@code id} property value of the {@link Component} to assign. Field
      * name is used if this value is not defined.
+     * 
+     * @return {@code id} of the {@link Component}.
      */
     String value() default "";
 

@@ -43,7 +43,7 @@ public class AttributeHandler {
      * Returns the namespace of attributes this {@link AttributeHandler} is
      * interested in.
      * 
-     * @return
+     * @return XML namespace this handler is responsible.
      */
     public String getNamespace() {
         return ""; // default namespace
@@ -53,7 +53,9 @@ public class AttributeHandler {
      * Assigns the given attributes to the given {@link Component}.
      * 
      * @param component
+     *            {@link Component} instance to assign the attributes.
      * @param attributes
+     *            {@link Map} of attributes to assign.
      */
     public void assignAttributes(Component component,
             Map<String, String> attributes) {

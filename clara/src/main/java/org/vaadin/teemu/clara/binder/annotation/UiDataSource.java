@@ -26,6 +26,8 @@ public @interface UiDataSource {
     /**
      * The {@code id} property value of the {@link Component} to bind with the
      * data source.
+     * 
+     * @return {@code id} of the {@link Component}.
      */
     String value();
 

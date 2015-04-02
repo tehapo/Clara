@@ -43,7 +43,9 @@ public class Binder {
      * {@link UiHandler} and {@link UiDataSource}.
      * 
      * @param componentRoot
+     *            root of a {@link Component} hierarchy.
      * @param controller
+     *            controller instance with annotations defining some bindings.
      * 
      * @throws BinderException
      *             if an error is encountered during the binding.
@@ -68,6 +70,10 @@ public class Binder {
      * controller is {@code null}, an empty {@link Map} is returned.
      * 
      * @param controller
+     *            controller instance which can have {@link UiField} annotated
+     *            fields.
+     * @return a {@link Map} containing already assigned fields with
+     *         {@link UiField} annotation.
      * 
      * @see UiField
      */
