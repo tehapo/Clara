@@ -33,8 +33,8 @@ public class Clara {
      * given as {@link InputStream} and binds the resulting {@link Component} to
      * the given {@code controller} object.
      * 
-     * <br />
-     * <br />
+     * <br>
+     * <br>
      * Optionally you may also provide {@link AttributeFilter}s to do some
      * modifications (or example localized translations) to any attributes
      * present in the XML representation.
@@ -79,16 +79,16 @@ public class Clara {
      * classpath and binds the resulting {@link Component} to the given
      * {@code controller} object.
      * 
-     * <br />
-     * <br />
+     * <br>
+     * <br>
      * The filename is given either as a path relative to the class of the
      * {@code controller} object or as an absolute path. For example if you have
      * a {@code MyController.java} and {@code MyController.xml} files in the
      * same package, you can call this method like
      * {@code Clara.create("MyController.xml", new MyController())}.
      * 
-     * <br />
-     * <br />
+     * <br>
+     * <br>
      * Optionally you may also provide {@link AttributeFilter}s to do some
      * modifications (or example localized translations) to any attributes
      * present in the XML representation.
@@ -122,8 +122,8 @@ public class Clara {
      * {@link Component} with the given {@code componentId} as its {@code id}
      * property (see {@link Component#setId(String)}).
      * 
-     * <br />
-     * <br />
+     * <br>
+     * <br>
      * If the given {@code root} is a {@link ComponentContainer}, this method
      * will recursively iterate the component hierarchy in search for the
      * correct {@link Component}. Otherwise if the given {@code root} is a
