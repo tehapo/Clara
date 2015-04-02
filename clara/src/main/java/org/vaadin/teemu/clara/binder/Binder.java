@@ -2,6 +2,10 @@ package org.vaadin.teemu.clara.binder;
 
 import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -197,34 +201,76 @@ public class Binder {
             final Class<?> eventClass, final Method listenerMethod,
             final Object controller) {
         Object proxy = Proxy.newProxyInstance(listenerClass.getClassLoader(),
-                new Class<?>[] { listenerClass }, new InvocationHandler() {
-
-                    @Override
-                    public Object invoke(Object proxy, Method method,
-                            Object[] args) throws Throwable {
-
-                        if (args != null
-                                && args.length > 0
-                                && eventClass.isAssignableFrom(args[0]
-                                        .getClass())) {
-                            getLogger().fine(
-                                    String.format(
-                                            "Forwarding method call %s -> %s.",
-                                            method.getName(),
-                                            listenerMethod.getName()));
-                            return listenerMethod.invoke(controller, args);
-                        }
-                        getLogger()
-                                .fine(String.format(
-                                        "Forwarding method call %s to %s.",
-                                        method.getName(), controller.getClass()));
-                        return method.invoke(controller, args);
-                    }
-
-                });
+                new Class<?>[]{listenerClass},
+                new ListenerInvocationHandler(listenerMethod, eventClass, controller));
         getLogger().fine(
                 String.format("Created a proxy for %s.", listenerClass));
         return proxy;
+    }
+
+    private static class ListenerInvocationHandler implements InvocationHandler, Externalizable {
+
+        private Method listenerMethod;
+        private Class<?> eventClass;
+        private Object controller;
+
+        public ListenerInvocationHandler(Method listenerMethod, Class<?> eventClass, Object controller) {
+            this.listenerMethod = listenerMethod;
+            this.eventClass = eventClass;
+            this.controller = controller;
+        }
+
+        public ListenerInvocationHandler() {
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (args != null
+                    && args.length > 0
+                    && eventClass.isAssignableFrom(args[0]
+                            .getClass())) {
+                getLogger().fine(
+                        String.format(
+                                "Forwarding method call %s -> %s.",
+                                method.getName(),
+                                listenerMethod.getName()));
+                return listenerMethod.invoke(controller, args);
+            }
+            getLogger()
+                    .fine(String.format(
+                                    "Forwarding method call %s to %s.",
+                                    method.getName(), controller.getClass()));
+            return method.invoke(controller, args);
+        }
+
+        private Logger getLogger() {
+            return Logger.getLogger(ListenerInvocationHandler.class.getName());
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(controller);
+            out.writeObject(eventClass);
+            out.writeObject(listenerMethod.getParameterTypes());
+            out.writeObject(listenerMethod.getName());
+            out.writeObject(listenerMethod.getDeclaringClass());
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            controller = in.readObject();
+            eventClass = (Class<?>) in.readObject();
+            Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
+            String methodName = (String) in.readObject();
+            Class<?> declaringClass = (Class<?>) in.readObject();
+            try {
+                listenerMethod = declaringClass.getDeclaredMethod(methodName, parameterTypes);
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("Can't deserialize listener method " +
+                        declaringClass.getCanonicalName()+":"+methodName, ex);
+            }
+        }
+
     }
 
     private Method getAddListenerMethod(

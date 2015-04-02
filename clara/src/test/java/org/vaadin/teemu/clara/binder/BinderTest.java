@@ -18,6 +18,12 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.DateField;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 public class BinderTest {
 
@@ -34,17 +40,24 @@ public class BinderTest {
 
     @Test
     public void bind_clickListener_clickListenerInvoked() {
-        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+        ButtonAndControllerWrapper buttonAndController = buildAndBindButtonWithController();
+        simulateButtonClickAndAssert(buttonAndController);
+    }
 
-        ControllerWithClickHandler controller = new ControllerWithClickHandler();
-        Binder binder = new Binder();
-        binder.bind(button, controller);
+    @Test
+    public void bind_clickListener_clickListenerInvoked_after_deserialization()
+            throws IOException, ClassNotFoundException {
+        ButtonAndControllerWrapper original = buildAndBindButtonWithController();
 
-        simulateButtonClick(button);
+        ByteArrayOutputStream targetStream = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(targetStream);
+        out.writeObject(original);
+        out.close();
+        ByteArrayInputStream sourceStream = new ByteArrayInputStream(targetStream.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(sourceStream);
+        ButtonAndControllerWrapper deserialized = (ButtonAndControllerWrapper) in.readObject();
 
-        // check that the handler was called
-        assertTrue("Annotated handler method was not called.",
-                controller.clickCalled);
+        simulateButtonClickAndAssert(deserialized);
     }
 
     @Test
@@ -123,10 +136,28 @@ public class BinderTest {
         }
     }
 
+    private ButtonAndControllerWrapper buildAndBindButtonWithController() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        ControllerWithClickHandler controller = new ControllerWithClickHandler();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
+
+        return new ButtonAndControllerWrapper(controller, button);
+    }
+
+    private void simulateButtonClickAndAssert(ButtonAndControllerWrapper wrapper) {
+
+        simulateButtonClick(wrapper.button);
+
+        // check that the handler was called
+        assertTrue("Annotated handler method was not called.",
+                wrapper.controller.clickCalled);
+    }
+
     /*
      * Static controller classes to be used to test different bindings.
      */
-
     public static class ControllerWithMissingIdBinding {
 
         @UiHandler("non-existing-id")
@@ -146,13 +177,25 @@ public class BinderTest {
 
     }
 
-    public static class ControllerWithClickHandler {
+    public static class ControllerWithClickHandler implements Serializable {
 
         boolean clickCalled;
 
         @UiHandler("myButton")
         public void handleButtonClick(ClickEvent event) {
             clickCalled = true;
+        }
+
+    }
+
+    private static class ButtonAndControllerWrapper implements Serializable {
+
+        private final ControllerWithClickHandler controller;
+        private final Button button;
+
+        private ButtonAndControllerWrapper(ControllerWithClickHandler controller, Button button) {
+            this.controller = controller;
+            this.button = button;
         }
 
     }
