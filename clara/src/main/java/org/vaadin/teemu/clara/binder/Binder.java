@@ -201,20 +201,23 @@ public class Binder {
             final Class<?> eventClass, final Method listenerMethod,
             final Object controller) {
         Object proxy = Proxy.newProxyInstance(listenerClass.getClassLoader(),
-                new Class<?>[]{listenerClass},
-                new ListenerInvocationHandler(listenerMethod, eventClass, controller));
+                new Class<?>[] { listenerClass },
+                new ListenerInvocationHandler(listenerMethod, eventClass,
+                        controller));
         getLogger().fine(
                 String.format("Created a proxy for %s.", listenerClass));
         return proxy;
     }
 
-    private static class ListenerInvocationHandler implements InvocationHandler, Externalizable {
+    private static class ListenerInvocationHandler implements
+            InvocationHandler, Externalizable {
 
         private Method listenerMethod;
         private Class<?> eventClass;
         private Object controller;
 
-        public ListenerInvocationHandler(Method listenerMethod, Class<?> eventClass, Object controller) {
+        public ListenerInvocationHandler(Method listenerMethod,
+                Class<?> eventClass, Object controller) {
             this.listenerMethod = listenerMethod;
             this.eventClass = eventClass;
             this.controller = controller;
@@ -224,22 +227,18 @@ public class Binder {
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (args != null
-                    && args.length > 0
-                    && eventClass.isAssignableFrom(args[0]
-                            .getClass())) {
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
+            if (args != null && args.length > 0
+                    && eventClass.isAssignableFrom(args[0].getClass())) {
                 getLogger().fine(
-                        String.format(
-                                "Forwarding method call %s -> %s.",
-                                method.getName(),
-                                listenerMethod.getName()));
+                        String.format("Forwarding method call %s -> %s.",
+                                method.getName(), listenerMethod.getName()));
                 return listenerMethod.invoke(controller, args);
             }
-            getLogger()
-                    .fine(String.format(
-                                    "Forwarding method call %s to %s.",
-                                    method.getName(), controller.getClass()));
+            getLogger().fine(
+                    String.format("Forwarding method call %s to %s.",
+                            method.getName(), controller.getClass()));
             return method.invoke(controller, args);
         }
 
@@ -257,17 +256,20 @@ public class Binder {
         }
 
         @Override
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
             controller = in.readObject();
             eventClass = (Class<?>) in.readObject();
             Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
             String methodName = (String) in.readObject();
             Class<?> declaringClass = (Class<?>) in.readObject();
             try {
-                listenerMethod = declaringClass.getDeclaredMethod(methodName, parameterTypes);
+                listenerMethod = declaringClass.getDeclaredMethod(methodName,
+                        parameterTypes);
             } catch (NoSuchMethodException ex) {
-                throw new RuntimeException("Can't deserialize listener method " +
-                        declaringClass.getCanonicalName()+":"+methodName, ex);
+                throw new RuntimeException("Can't deserialize listener method "
+                        + declaringClass.getCanonicalName() + ":" + methodName,
+                        ex);
             }
         }
 

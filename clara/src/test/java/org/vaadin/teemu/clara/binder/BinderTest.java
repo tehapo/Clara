@@ -53,9 +53,11 @@ public class BinderTest {
         ObjectOutputStream out = new ObjectOutputStream(targetStream);
         out.writeObject(original);
         out.close();
-        ByteArrayInputStream sourceStream = new ByteArrayInputStream(targetStream.toByteArray());
+        ByteArrayInputStream sourceStream = new ByteArrayInputStream(
+                targetStream.toByteArray());
         ObjectInputStream in = new ObjectInputStream(sourceStream);
-        ButtonAndControllerWrapper deserialized = (ButtonAndControllerWrapper) in.readObject();
+        ButtonAndControllerWrapper deserialized = (ButtonAndControllerWrapper) in
+                .readObject();
 
         simulateButtonClickAndAssert(deserialized);
     }
@@ -193,7 +195,8 @@ public class BinderTest {
         private final ControllerWithClickHandler controller;
         private final Button button;
 
-        private ButtonAndControllerWrapper(ControllerWithClickHandler controller, Button button) {
+        private ButtonAndControllerWrapper(
+                ControllerWithClickHandler controller, Button button) {
             this.controller = controller;
             this.button = button;
         }
