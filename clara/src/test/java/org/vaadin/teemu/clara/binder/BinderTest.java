@@ -1,6 +1,10 @@
 package org.vaadin.teemu.clara.binder;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +14,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 
 import org.junit.Before;
@@ -126,6 +132,27 @@ public class BinderTest {
         assertTrue(controller.myButton == button);
     }
 
+    @Test
+    public void bound_event_exceptionHandling_noUndeclaredThrowableOrInvocationTargetException() {
+        Button button = (Button) inflater.inflate(getXml("single-button.xml"));
+
+        ControllerWithExceptionInClickHandler controller = new ControllerWithExceptionInClickHandler();
+        Binder binder = new Binder();
+        binder.bind(button, controller);
+
+        try {
+            button.click();
+        } catch (Exception ex) {
+            Throwable current = ex;
+            while (current != null) {
+                assertThat(current, allOf(
+                        not(instanceOf(UndeclaredThrowableException.class)),
+                        not(instanceOf(InvocationTargetException.class))));
+                current = current.getCause();
+            }
+        }
+    }
+
     private ButtonAndControllerWrapper buildAndBindButtonWithController() {
         Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
@@ -217,6 +244,15 @@ public class BinderTest {
 
         @UiField
         private Button myButton;
+
+    }
+
+    public static class ControllerWithExceptionInClickHandler implements Serializable {
+
+        @UiHandler("myButton")
+        public void handleButtonClick(ClickEvent event) {
+            throw new RuntimeException("A RuntimeException");
+        }
 
     }
 
