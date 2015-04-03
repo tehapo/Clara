@@ -198,7 +198,7 @@ public class Binder {
             } catch (IllegalAccessException e) {
                 throw new BinderException(e);
             } catch (InvocationTargetException e) {
-                throw new BinderException(e);
+                throw new BinderException(e.getCause());
             }
         }
     }
@@ -341,7 +341,7 @@ public class Binder {
         } catch (IllegalAccessException e) {
             throw new BinderException(e);
         } catch (InvocationTargetException e) {
-            throw new BinderException(e);
+            throw new BinderException(e.getCause());
         }
     }
 
