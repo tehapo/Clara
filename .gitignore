@@ -4,3 +4,5 @@ target/
 .settings
 widgetsets/
 gwt-unitCache/
+.idea/
+*.iml
