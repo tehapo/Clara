@@ -1,8 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import com.vaadin.ui.Component;
-
 import static org.vaadin.teemu.clara.util.ReflectionUtils.isComponent;
+
+import com.vaadin.ui.Component;
 
 public class ComponentFactory {
 

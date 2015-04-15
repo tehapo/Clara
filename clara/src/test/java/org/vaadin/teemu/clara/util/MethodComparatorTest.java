@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.vaadin.teemu.clara.util.MethodComparator;
 
 public class MethodComparatorTest {
 

@@ -1,7 +1,16 @@
 package org.vaadin.teemu.clara.inflater.handler;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
@@ -13,16 +22,8 @@ import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
 import org.vaadin.teemu.clara.util.MethodComparator;
 import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 
 public class AttributeHandler {
 

@@ -1,9 +1,12 @@
 package org.vaadin.teemu.clara;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.VerticalLayout;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
@@ -12,12 +15,10 @@ import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
-import java.io.InputStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
 
 public class ClaraTest {
 
