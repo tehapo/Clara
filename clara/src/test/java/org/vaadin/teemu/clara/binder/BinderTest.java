@@ -145,9 +145,10 @@ public class BinderTest {
         } catch (Exception ex) {
             Throwable current = ex;
             while (current != null) {
-                assertThat(current, allOf(
-                        not(instanceOf(UndeclaredThrowableException.class)),
-                        not(instanceOf(InvocationTargetException.class))));
+                assertThat(
+                        current,
+                        allOf(not(instanceOf(UndeclaredThrowableException.class)),
+                                not(instanceOf(InvocationTargetException.class))));
                 current = current.getCause();
             }
         }
@@ -247,7 +248,8 @@ public class BinderTest {
 
     }
 
-    public static class ControllerWithExceptionInClickHandler implements Serializable {
+    public static class ControllerWithExceptionInClickHandler implements
+            Serializable {
 
         @UiHandler("myButton")
         public void handleButtonClick(ClickEvent event) {

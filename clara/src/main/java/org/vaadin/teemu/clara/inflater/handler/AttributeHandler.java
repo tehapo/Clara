@@ -142,9 +142,10 @@ public class AttributeHandler {
                         // method.
                         try {
                             if (args.length > 1) {
-                              methodToInvoke.invoke(obj, args[0], this.getValue());
+                                methodToInvoke.invoke(obj, args[0],
+                                        this.getValue());
                             } else {
-                              methodToInvoke.invoke(obj, this.getValue());
+                                methodToInvoke.invoke(obj, this.getValue());
                             }
                         } catch (IllegalAccessException e) {
                             throw new AttributeFilterException(e);

@@ -11,8 +11,10 @@ public class ComponentFactory {
      * {@code name}. If the component cannot be instantiated properly a
      * {@link ComponentInstantiationException} is thrown.
      *
-     * @param namespace the namespace of the component to create.
-     * @param name the name of the component to create.
+     * @param namespace
+     *            the namespace of the component to create.
+     * @param name
+     *            the name of the component to create.
      * @return a new {@link Component} instance.
      * @throws ComponentInstantiationException
      *             if the component cannot be instantiated.

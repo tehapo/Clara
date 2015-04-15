@@ -238,8 +238,9 @@ public class Binder {
             try {
                 if (args != null && args.length > 0
                         && eventClass.isAssignableFrom(args[0].getClass())) {
-                    getLogger().fine(
-                            String.format("Forwarding method call %s -> %s.",
+                    getLogger()
+                            .fine(String.format(
+                                    "Forwarding method call %s -> %s.",
                                     method.getName(), listenerMethod.getName()));
                     return listenerMethod.invoke(controller, args);
                 }

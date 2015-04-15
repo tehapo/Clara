@@ -18,7 +18,8 @@ public abstract class AttributeContext {
      * more {@link AttributeFilter}s. If you do not call this method, the value
      * is never set to the component.
      *
-     * @throws AttributeFilterException on failure.
+     * @throws AttributeFilterException
+     *             on failure.
      */
     public abstract void proceed() throws AttributeFilterException;
 

@@ -64,40 +64,43 @@ public class LayoutInflater {
      */
     public Component inflate(InputStream xml,
             Map<String, Component> componentOverrideMap) {
-        return inflate(xml, new OverrideMapComponentProvider(componentOverrideMap),
-            new ReflectionComponentProvider());
+        return inflate(xml, new OverrideMapComponentProvider(
+                componentOverrideMap), new ReflectionComponentProvider());
     }
 
+    /**
+     * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+     *
+     * @param xml
+     *            the xml to inflate.
+     * @param componentProviders
+     *            the {@link ComponentProvider}s to apply in given order to
+     *            inflate xml to components.
+     * @return the inflated {@link Component} (hierarchy).
+     *
+     * @throws LayoutInflaterException
+     *             in case of an error in the inflation process.
+     */
+    public Component inflate(InputStream xml,
+            ComponentProvider... componentProviders) {
+        try {
+            LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
+                    componentProviders);
 
-  /**
-   * Inflates the given {@code xml} into a {@link Component} (hierarchy).
-   *
-   * @param xml the xml to inflate.
-   * @param componentProviders the {@link ComponentProvider}s to apply in given order to inflate
-   *                           xml to components.
-   * @return the inflated {@link Component} (hierarchy).
-   *
-   * @throws LayoutInflaterException
-   *             in case of an error in the inflation process.
-   */
-  public Component inflate(InputStream xml, ComponentProvider... componentProviders) {
-    try {
-      LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
-          componentProviders);
-
-      // Parse the XML and return root Component.
-      XMLReader parser = XMLReaderFactory.createXMLReader();
-      parser.setContentHandler(contentHandler);
-      parser.parse(new InputSource(xml));
-      return contentHandler.root;
-    } catch (SAXException e) {
-      throw new LayoutInflaterException(e);
-    } catch (IOException e) {
-      throw new LayoutInflaterException(e);
-    } catch (ComponentInstantiationException e) {
-      throw new LayoutInflaterException(e.getMessage(), e);
+            // Parse the XML and return root Component.
+            XMLReader parser = XMLReaderFactory.createXMLReader();
+            parser.setContentHandler(contentHandler);
+            parser.parse(new InputSource(xml));
+            return contentHandler.root;
+        } catch (SAXException e) {
+            throw new LayoutInflaterException(e);
+        } catch (IOException e) {
+            throw new LayoutInflaterException(e);
+        } catch (ComponentInstantiationException e) {
+            throw new LayoutInflaterException(e.getMessage(), e);
+        }
     }
-  }
+
     public void addAttributeFilter(AttributeFilter attributeFilter) {
         attributeFilters.add(attributeFilter);
     }
@@ -121,7 +124,8 @@ public class LayoutInflater {
         private final Set<String> assignedIds = new HashSet<String>();
         private final List<ComponentProvider> componentProviders;
 
-        public LayoutInflaterContentHandler(ComponentProvider... componentProviders) {
+        public LayoutInflaterContentHandler(
+                ComponentProvider... componentProviders) {
             this.componentProviders = Arrays.asList(componentProviders);
 
             attributeHandler = new AttributeHandler(attributeFilters);
@@ -202,8 +206,11 @@ public class LayoutInflater {
                 }
             }
 
-            throw new LayoutInflaterException(String.format("None of the component providers was "
-                + "able to provide component for uri=%s, localName=%s, id=%s", uri, localName, id));
+            throw new LayoutInflaterException(
+                    String.format(
+                            "None of the component providers was "
+                                    + "able to provide component for uri=%s, localName=%s, id=%s",
+                            uri, localName, id));
         }
 
         private void handleAttributes(Component component,
