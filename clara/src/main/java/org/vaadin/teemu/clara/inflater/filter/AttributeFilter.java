@@ -19,7 +19,8 @@ public interface AttributeFilter {
      * 
      * @param attributeContext
      *            context for the filtering.
+     * @throws AttributeFilterException on failures.
      */
-    void filter(AttributeContext attributeContext);
+    void filter(AttributeContext attributeContext) throws AttributeFilterException;
 
 }

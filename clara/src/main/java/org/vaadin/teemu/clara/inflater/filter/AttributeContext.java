@@ -17,11 +17,10 @@ public abstract class AttributeContext {
      * {@link AttributeFilter} or finally to the setter method if there is no
      * more {@link AttributeFilter}s. If you do not call this method, the value
      * is never set to the component.
-     * 
-     * @throws Exception
-     *             in case of an error.
+     *
+     * @throws AttributeFilterException on failure.
      */
-    public abstract void proceed() throws Exception;
+    public abstract void proceed() throws AttributeFilterException;
 
     public Object getValue() {
         return value;
