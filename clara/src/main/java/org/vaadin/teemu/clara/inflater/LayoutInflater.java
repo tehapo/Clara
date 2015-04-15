@@ -29,6 +29,10 @@ import com.vaadin.ui.SingleComponentContainer;
 
 public class LayoutInflater {
 
+    static final String URN_NAMESPACE_ID = "import";
+    static final String IMPORT_URN_PREFIX = "urn:" + URN_NAMESPACE_ID + ":";
+    static final String DEFAULT_NAMESPACE = IMPORT_URN_PREFIX + "com.vaadin.ui";
+
     private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
     protected Logger getLogger() {
@@ -112,9 +116,6 @@ public class LayoutInflater {
 
     private class LayoutInflaterContentHandler extends DefaultHandler {
 
-        private static final String URN_NAMESPACE_ID = "import";
-        private static final String DEFAULT_NAMESPACE = "urn:"
-                + URN_NAMESPACE_ID + ":com.vaadin.ui";
         private static final String ID_ATTRIBUTE = "id";
 
         private Stack<Component> componentStack = new Stack<Component>();
@@ -149,7 +150,7 @@ public class LayoutInflater {
                 uri = DEFAULT_NAMESPACE;
             }
 
-            if (uri.startsWith("urn:" + URN_NAMESPACE_ID + ":")) {
+            if (uri.startsWith(IMPORT_URN_PREFIX)) {
                 // Throw an exception if the id is already used.
                 verifyUniqueId(attributes);
 
