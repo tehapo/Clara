@@ -60,7 +60,7 @@ public class LayoutAttributeHandler extends AttributeHandler {
         } catch (IllegalAccessException e) {
             throw new AttributeHandlerException(e);
         } catch (InvocationTargetException e) {
-            throw new AttributeHandlerException(e);
+            throw new AttributeHandlerException(e.getCause());
         }
     }
 

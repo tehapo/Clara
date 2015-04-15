@@ -198,7 +198,7 @@ public class Binder {
             } catch (IllegalAccessException e) {
                 throw new BinderException(e);
             } catch (InvocationTargetException e) {
-                throw new BinderException(e);
+                throw new BinderException(e.getCause());
             }
         }
     }
@@ -235,17 +235,21 @@ public class Binder {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
-            if (args != null && args.length > 0
-                    && eventClass.isAssignableFrom(args[0].getClass())) {
+            try {
+                if (args != null && args.length > 0
+                        && eventClass.isAssignableFrom(args[0].getClass())) {
+                    getLogger().fine(
+                            String.format("Forwarding method call %s -> %s.",
+                                    method.getName(), listenerMethod.getName()));
+                    return listenerMethod.invoke(controller, args);
+                }
                 getLogger().fine(
-                        String.format("Forwarding method call %s -> %s.",
-                                method.getName(), listenerMethod.getName()));
-                return listenerMethod.invoke(controller, args);
+                        String.format("Forwarding method call %s to %s.",
+                                method.getName(), controller.getClass()));
+                return method.invoke(controller, args);
+            } catch (InvocationTargetException ex) {
+                throw ex.getCause();
             }
-            getLogger().fine(
-                    String.format("Forwarding method call %s to %s.",
-                            method.getName(), controller.getClass()));
-            return method.invoke(controller, args);
         }
 
         private Logger getLogger() {
@@ -337,7 +341,7 @@ public class Binder {
         } catch (IllegalAccessException e) {
             throw new BinderException(e);
         } catch (InvocationTargetException e) {
-            throw new BinderException(e);
+            throw new BinderException(e.getCause());
         }
     }
 
