@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
 import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
+import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -34,6 +35,7 @@ public class LayoutInflater {
     static final String DEFAULT_NAMESPACE = IMPORT_URN_PREFIX + "com.vaadin.ui";
 
     private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
+    private List<AttributeParser> extraAttributeParsers = new ArrayList<AttributeParser>();
 
     protected Logger getLogger() {
         return Logger.getLogger(LayoutInflater.class.getName());
@@ -114,6 +116,10 @@ public class LayoutInflater {
         attributeFilters.remove(attributeFilter);
     }
 
+    public void addAttributeParser(AttributeParser attributeParser) {
+        extraAttributeParsers.add(attributeParser);
+    }
+
     private class LayoutInflaterContentHandler extends DefaultHandler {
 
         private static final String ID_ATTRIBUTE = "id";
@@ -130,7 +136,8 @@ public class LayoutInflater {
                 ComponentProvider... componentProviders) {
             this.componentProviders = Arrays.asList(componentProviders);
 
-            attributeHandler = new AttributeHandler(attributeFilters);
+            attributeHandler = new AttributeHandler(attributeFilters,
+                    extraAttributeParsers);
             layoutAttributeHandler = new LayoutAttributeHandler(
                     attributeFilters);
         }

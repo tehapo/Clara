@@ -2,9 +2,7 @@ package org.vaadin.teemu.clara;
 
 import java.io.InputStream;
 
-import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
-import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
@@ -13,6 +11,16 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 
 public class Clara {
+
+    /**
+     * Creates an instance of {@link ClaraBuilder} that allows for more control
+     * over the way Clara instantiates a component.
+     *
+     * @return Builder object
+     */
+    public static ClaraBuilder build() {
+        return new ClaraBuilder();
+    }
 
     /**
      * Returns a {@link Component} that is read from the XML representation
@@ -57,21 +65,10 @@ public class Clara {
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
-        Binder binder = new Binder();
-
-        // Inflate the XML to a component (tree).
-        LayoutInflater inflater = new LayoutInflater();
-        if (attributeFilters != null) {
-            for (AttributeFilter filter : attributeFilters) {
-                inflater.addAttributeFilter(filter);
-            }
-        }
-        Component result = inflater.inflate(xml,
-                binder.getAlreadyAssignedFields(controller));
-
-        // Bind to controller.
-        binder.bind(result, controller);
-        return result;
+        return new ClaraBuilder()
+                .withController(controller)
+                .withAttributeFilters(attributeFilters)
+                .createFrom(xml);
     }
 
     /**
