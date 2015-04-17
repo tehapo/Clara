@@ -3,6 +3,7 @@ package org.vaadin.teemu.clara;
 import com.vaadin.ui.Component;
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
+import org.vaadin.teemu.clara.inflater.InflaterListener;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
@@ -24,6 +25,7 @@ public class ClaraBuilder {
     private Object controller;
     private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
     private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
+    private String idPrefix;
 
     /**
      * Assigns the controller to the builder.
@@ -39,6 +41,31 @@ public class ClaraBuilder {
 
     public Object getController() {
         return controller;
+    }
+
+    /**
+     * Prefix to add to ids of components.
+     * <p>
+     * You can, for example, use this in a {@link InflaterListener#componentInflated()}
+     * to initialize reusable components to ensure unique ids.
+     * </p>
+     * <p>
+     * Note: the {@link org.vaadin.teemu.clara.binder.annotation.UiField},
+     * {@link org.vaadin.teemu.clara.binder.annotation.UiDataSource} and
+     * {@link org.vaadin.teemu.clara.binder.annotation.UiHandler} should use the
+     * id <b>without prefix</b>.
+     * </p>
+     *
+     * @param idPrefix Prefix for ids
+     * @return this builder
+     */
+    public ClaraBuilder withIdPrefix(String idPrefix) {
+        this.idPrefix = idPrefix;
+        return this;
+    }
+
+    public String getIdPrefix() {
+        return idPrefix;
     }
 
     /**
@@ -128,7 +155,7 @@ public class ClaraBuilder {
      *         if an error is encountered during the binding.
      */
     public Component createFrom(InputStream xml) {
-        Binder binder = new Binder();
+        Binder binder = new Binder(idPrefix);
 
         // Inflate the XML to a component (tree).
         LayoutInflater inflater = createInflater();
@@ -140,6 +167,35 @@ public class ClaraBuilder {
         return result;
     }
 
+    /**
+     * Returns a {@link Component} that is read from an XML file in the
+     * classpath and binds the resulting {@link Component} to the
+     * {@code controller} object set in this builder.
+     * <p>
+     * The filename is given either as a path relative to the class of the
+     * {@code controller} object (if set, or otherwise relative to this class)
+     * or as an absolute path.
+     * </p>
+     *
+     * @param xmlClassResourceFileName
+     *            filename of the XML representation (within classpath, relative
+     *            to {@code controller}'s class (if set, else relative to this
+     *            object) or absolute path).
+     * @return a {@link Component} that is read from the XML representation and
+     *         bound to the given {@code controller}.
+     *
+     * @throws LayoutInflaterException
+     *             if an error is encountered during the layout inflation.
+     * @throws BinderException
+     *             if an error is encountered during the binding.
+     */
+    public Component createFrom(String xmlClassResourceFileName) {
+        Object resourceRoot = controller != null ? controller : this;
+        InputStream xml = resourceRoot.getClass().getResourceAsStream(
+                xmlClassResourceFileName);
+        return createFrom(xml);
+    }
+
     LayoutInflater createInflater() {
         LayoutInflater inflater = new LayoutInflater();
         for (AttributeFilter filter : attributeFilters) {
@@ -149,6 +205,8 @@ public class ClaraBuilder {
         for (AttributeParser parser : attributeParsers) {
             inflater.addAttributeParser(parser);
         }
+
+        inflater.setIdPrefix(idPrefix);
 
         return inflater;
     }

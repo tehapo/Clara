@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VerticalLayout id="id1" xmlns="urn:import:com.vaadin.ui">
+    <Button id="id1_1" width="200px" />
+    <Panel id="id1_2">
+        <Label id="id1_2_1"/>
+    </Panel>
+    <HorizontalLayout>
+        <!-- intentionally no id -->
+    </HorizontalLayout>
+</VerticalLayout>

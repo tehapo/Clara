@@ -1,13 +1,19 @@
 package org.vaadin.teemu.clara;
 
-import com.vaadin.ui.Component;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.*;
 import org.junit.Test;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -149,6 +155,91 @@ public class ClaraBuilderTest {
 
     // ClaraBuilder#create(InputStream) is tested through ClaraTest
 
+    @Test
+    public void withIdPrefix_setsIdPrefix() {
+        assertNull("idPrefix should initially be empty", builder.getIdPrefix());
+        final String idPrefix = "someIdPrefix";
+
+        ClaraBuilder returnedBuilder = builder.withIdPrefix(idPrefix);
+
+        assertEquals("Unexpected idPrefix", idPrefix, builder.getIdPrefix());
+        assertSameBuilder(returnedBuilder);
+    }
+
+    /**
+     * This tests if a controller (annotated without id prefixes) is
+     * correctly wired up if an id prefix is used
+     */
+    @Test
+    public void testFieldBinding_withIdPrefix() {
+        final SimpleTestController testController = new SimpleTestController();
+        final String idPrefix = "myIdPrefix_";
+
+        VerticalLayout layout = (VerticalLayout) Clara.build()
+                .withController(testController)
+                .withIdPrefix(idPrefix)
+                .createFrom(getXml("hierarchy-with-ids.xml"));
+
+        assertSame("Unexpected layout", layout, testController.verticalLayout);
+        assertEquals("Unexpected layout id", idPrefix + "id1", layout.getId());
+        // Other ids tested in LayoutInflaterTest
+        assertSame("Unexpected button", layout.getComponent(0),
+                testController.button);
+        assertSame("Unexpected label",
+                ((Panel) layout.getComponent(1)).getContent(),
+                testController.label);
+        assertFalse("Button shouldn't have been pressed yet",
+                testController.buttonPressed);
+        testController.button.click();
+        assertTrue("Expected click event handler to have been called",
+                testController.buttonPressed);
+        assertSame("Expected label to have property datasource set",
+                testController.property,
+                testController.label.getPropertyDataSource());
+    }
+
+    /**
+     * Tests if a preassigned field in a controller (annotated without id prefix)
+     * is correctly inserted in the component tree.
+     */
+    @Test
+    public void preassignedField_withIdPrefix() {
+        final SimpleTestController testController = new SimpleTestController();
+        final Button testButton = new Button();
+        testController.button = testButton;
+        final String idPrefix = "myIdPrefix_";
+
+        VerticalLayout layout = (VerticalLayout) Clara.build()
+                .withController(testController)
+                .withIdPrefix(idPrefix)
+                .createFrom(getXml("hierarchy-with-ids.xml"));
+
+        assertSame("Unexpected layout", layout, testController.verticalLayout);
+        assertSame("Button in controller should not have been overwritten",
+                testButton, testController.button);
+        assertSame("Button in layout should be the same as in the controller",
+                testController.button, layout.getComponent(0));
+        assertEquals("Unexpected id for button (should include prefix)",
+                idPrefix + "id1_1", testButton.getId());
+        assertFalse("Button shouldn't have been pressed yet",
+                testController.buttonPressed);
+        testController.button.click();
+        assertTrue("Expected click event handler to have been called",
+                testController.buttonPressed);
+    }
+
+    @Test
+    public void inflaterListener_componentReuse() {
+        VerticalLayout layout = (VerticalLayout) Clara.build()
+                .createFrom("/org/vaadin/teemu/clara/component-reuse.xml");
+
+        assertEquals(2, layout.getComponentCount());
+        assertCustomComponentInflaterListener("custom1",
+                (CustomComponentInflaterListener) layout.getComponent(0));
+        assertCustomComponentInflaterListener("custom2",
+                (CustomComponentInflaterListener) layout.getComponent(1));
+    }
+
     private void assertSameBuilder(ClaraBuilder returnedBuilder) {
         assertSame("Expected same builder", builder, returnedBuilder);
     }
@@ -163,6 +254,18 @@ public class ClaraBuilderTest {
                             objectTypeName, idx),
                     expectedObjects[idx], objectsToCheck.get(idx));
         }
+    }
+
+    private void assertCustomComponentInflaterListener(String expectedRootId,
+            CustomComponentInflaterListener component) {
+        assertEquals("Unexpected id for root", expectedRootId, component.getId());
+        VerticalLayout layout = (VerticalLayout) component.getCompositionRoot();
+        assertEquals("Unexpected id for layout", expectedRootId + "_" + "id1",
+                layout.getId());
+    }
+
+    private InputStream getXml(String fileName) {
+        return getClass().getClassLoader().getResourceAsStream(fileName);
     }
 
     private static class DummyAttributeFilter implements AttributeFilter {
@@ -183,6 +286,36 @@ public class ClaraBuilderTest {
         public Object getValueAs(String value, Class<?> valueType,
                 Component component) {
             return null;
+        }
+    }
+
+    /**
+     * Controller for binding to {@code hierarchy-with-ids.xml}.
+     */
+    public static class SimpleTestController {
+        private static final String TEST_VALUE = "TestValue";
+
+        private boolean buttonPressed;
+
+        private Property<String> property = new ObjectProperty<String>(TEST_VALUE);
+
+        @UiField("id1")
+        private VerticalLayout verticalLayout;
+
+        @UiField("id1_1")
+        private Button button;
+
+        @UiField("id1_2_1")
+        private Label label;
+
+        @UiHandler("id1_1")
+        public void onButtonPressed(Button.ClickEvent event) {
+            buttonPressed = true;
+        }
+
+        @UiDataSource("id1_2_1")
+        public Property<String> propertyForLabel() {
+            return property;
         }
     }
 }

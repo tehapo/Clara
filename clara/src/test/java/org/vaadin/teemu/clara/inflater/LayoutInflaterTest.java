@@ -1,12 +1,10 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.vaadin.ui.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.vaadin.teemu.clara.Clara;
@@ -17,15 +15,8 @@ import org.vaadin.teemu.clara.inflater.handler.AttributeHandlerException;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
+
+import static org.junit.Assert.*;
 
 public class LayoutInflaterTest {
 
@@ -257,5 +248,54 @@ public class LayoutInflaterTest {
     @Test(expected = LayoutInflaterException.class)
     public void inflate_invalidXml_exceptionThrown() {
         inflater.inflate(new ByteArrayInputStream("THIS IS NOT XML!".getBytes()));
+    }
+
+    @Test
+    public void inflate_inflaterListener_called() {
+        VerticalLayoutWithInflaterListener layout =
+                (VerticalLayoutWithInflaterListener) inflater.inflate(
+                        getXml("component-with-inflaterlistener.xml"));
+
+        assertTrue("Expected componentInflated to have been called",
+                layout.isComponentInflatedCalled());
+        assertEquals("Expected id to have been set before call to componentInflated",
+                "idOfVerticalLayoutWithInflaterListener", layout.getIdAfterInflate());
+        assertEquals("Expected child components to have been added before componentInflated",
+                1, layout.getComponentCountAfterInflate());
+    }
+
+    @Test
+    public void inflate_noIdPrefix_prefixOnAllComponentsWithId() {
+        VerticalLayout layout = (VerticalLayout) inflater.inflate(
+                getXml("hierarchy-with-ids.xml"));
+
+        assertHierarchyWithIds("", layout);
+    }
+
+    @Test
+    public void inflate_usingIdPrefix_prefixOnAllComponentsWithId() {
+        final String idPrefix = "myIdPrefix_";
+        inflater.setIdPrefix(idPrefix);
+
+        VerticalLayout layout = (VerticalLayout) inflater.inflate(
+                getXml("hierarchy-with-ids.xml"));
+
+        assertHierarchyWithIds(idPrefix, layout);
+    }
+
+    private void assertHierarchyWithIds(String idPrefix, VerticalLayout layout) {
+        assertEquals(idPrefix + "id1", layout.getId());
+
+        Button button = (Button) layout.getComponent(0);
+        assertEquals(idPrefix + "id1_1", button.getId());
+
+        Panel panel = (Panel) layout.getComponent(1);
+        assertEquals(idPrefix + "id1_2", panel.getId());
+
+        Label label = (Label) panel.getContent();
+        assertEquals(idPrefix + "id1_2_1", label.getId());
+
+        HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(2);
+        assertNull(horizontalLayout.getId());
     }
 }
