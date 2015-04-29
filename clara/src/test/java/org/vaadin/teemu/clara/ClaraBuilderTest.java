@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for {@link ClaraBuilder}.
  *
- * @author <a href="mailto:mrotteveel@bol.com>Mark Rotteveel</a>
+ * @author <a href="mailto:mrotteveel@bol.com">Mark Rotteveel</a>
  */
 public class ClaraBuilderTest {
 
