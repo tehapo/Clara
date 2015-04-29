@@ -264,38 +264,4 @@ public class LayoutInflaterTest {
                 1, layout.getComponentCountAfterInflate());
     }
 
-    @Test
-    public void inflate_noIdPrefix_prefixOnAllComponentsWithId() {
-        VerticalLayout layout = (VerticalLayout) inflater.inflate(
-                getXml("hierarchy-with-ids.xml"));
-
-        assertHierarchyWithIds("", layout);
-    }
-
-    @Test
-    public void inflate_usingIdPrefix_prefixOnAllComponentsWithId() {
-        final String idPrefix = "myIdPrefix_";
-        inflater.setIdPrefix(idPrefix);
-
-        VerticalLayout layout = (VerticalLayout) inflater.inflate(
-                getXml("hierarchy-with-ids.xml"));
-
-        assertHierarchyWithIds(idPrefix, layout);
-    }
-
-    private void assertHierarchyWithIds(String idPrefix, VerticalLayout layout) {
-        assertEquals(idPrefix + "id1", layout.getId());
-
-        Button button = (Button) layout.getComponent(0);
-        assertEquals(idPrefix + "id1_1", button.getId());
-
-        Panel panel = (Panel) layout.getComponent(1);
-        assertEquals(idPrefix + "id1_2", panel.getId());
-
-        Label label = (Label) panel.getContent();
-        assertEquals(idPrefix + "id1_2_1", label.getId());
-
-        HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(2);
-        assertNull(horizontalLayout.getId());
-    }
 }

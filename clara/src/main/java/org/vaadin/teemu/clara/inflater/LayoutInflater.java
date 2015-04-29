@@ -36,7 +36,6 @@ public class LayoutInflater {
 
     private List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
     private List<AttributeParser> extraAttributeParsers = new ArrayList<AttributeParser>();
-    private String idPrefix = "";
 
     protected Logger getLogger() {
         return Logger.getLogger(LayoutInflater.class.getName());
@@ -119,10 +118,6 @@ public class LayoutInflater {
 
     public void addAttributeParser(AttributeParser attributeParser) {
         extraAttributeParsers.add(attributeParser);
-    }
-
-    public void setIdPrefix(String idPrefix) {
-        this.idPrefix = idPrefix != null ? idPrefix : "";
     }
 
     private class LayoutInflaterContentHandler extends DefaultHandler {
@@ -260,9 +255,6 @@ public class LayoutInflater {
                     // Namespace matches -> add to map.
                     String value = attributes.getValue(i);
                     String name = attributes.getLocalName(i);
-                    if (ID_ATTRIBUTE.equals(name) && value != null) {
-                        value = idPrefix + value;
-                    }
                     attributeMap.put(name, value);
                 }
             }

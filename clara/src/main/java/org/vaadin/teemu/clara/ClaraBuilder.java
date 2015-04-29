@@ -6,7 +6,9 @@ import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.inflater.InflaterListener;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
+import org.vaadin.teemu.clara.inflater.filter.AttributeContext;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 
 import java.io.InputStream;
@@ -25,7 +27,7 @@ public class ClaraBuilder {
     private Object controller;
     private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
     private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
-    private String idPrefix;
+    private String idPrefix = "";
 
     /**
      * Assigns the controller to the builder.
@@ -56,11 +58,11 @@ public class ClaraBuilder {
      * id <b>without prefix</b>.
      * </p>
      *
-     * @param idPrefix Prefix for ids
+     * @param idPrefix Prefix for ids, {@code null} is replaced with empty string, value is trimmed
      * @return this builder
      */
     public ClaraBuilder withIdPrefix(String idPrefix) {
-        this.idPrefix = idPrefix;
+        this.idPrefix = idPrefix != null ? idPrefix.trim() : "";
         return this;
     }
 
@@ -201,13 +203,36 @@ public class ClaraBuilder {
         for (AttributeFilter filter : attributeFilters) {
             inflater.addAttributeFilter(filter);
         }
+        if (!idPrefix.isEmpty()) {
+            inflater.addAttributeFilter(new IdPrefixAttributeFilter(idPrefix));
+        }
 
         for (AttributeParser parser : attributeParsers) {
             inflater.addAttributeParser(parser);
         }
 
-        inflater.setIdPrefix(idPrefix);
-
         return inflater;
+    }
+
+    /**
+     * AttributeFilter to add a prefix to the id of inflated components.
+     */
+    private static class IdPrefixAttributeFilter implements AttributeFilter {
+
+        private final String idPrefix;
+
+        public IdPrefixAttributeFilter(String idPrefix) {
+            this.idPrefix = idPrefix;
+        }
+
+        @Override
+        public void filter(AttributeContext attributeContext)
+                throws AttributeFilterException {
+            if (attributeContext.getValue() instanceof String
+                    && "setId".equals(attributeContext.getSetter().getName())) {
+                attributeContext.setValue(idPrefix + attributeContext.getValue());
+            }
+            attributeContext.proceed();
+        }
     }
 }

@@ -157,12 +157,23 @@ public class ClaraBuilderTest {
 
     @Test
     public void withIdPrefix_setsIdPrefix() {
-        assertNull("idPrefix should initially be empty", builder.getIdPrefix());
+        assertEquals("idPrefix should initially be empty", "", builder.getIdPrefix());
         final String idPrefix = "someIdPrefix";
 
         ClaraBuilder returnedBuilder = builder.withIdPrefix(idPrefix);
 
         assertEquals("Unexpected idPrefix", idPrefix, builder.getIdPrefix());
+        assertSameBuilder(returnedBuilder);
+    }
+
+    @Test
+    public void withIdPrefix_idPrefixTrimmed() {
+        assertEquals("idPrefix should initially be empty", "", builder.getIdPrefix());
+        final String idPrefix = "   someIdPrefix   ";
+
+        ClaraBuilder returnedBuilder = builder.withIdPrefix(idPrefix);
+
+        assertEquals("Unexpected idPrefix", idPrefix.trim(), builder.getIdPrefix());
         assertSameBuilder(returnedBuilder);
     }
 
@@ -238,6 +249,41 @@ public class ClaraBuilderTest {
                 (CustomComponentInflaterListener) layout.getComponent(0));
         assertCustomComponentInflaterListener("custom2",
                 (CustomComponentInflaterListener) layout.getComponent(1));
+    }
+
+    @Test
+    public void create_noIdPrefix_prefixOnAllComponentsWithId() {
+        VerticalLayout layout = (VerticalLayout) Clara.build()
+                .createFrom(getXml("hierarchy-with-ids.xml"));
+
+        assertHierarchyWithIds("", layout);
+    }
+
+    @Test
+    public void create_usingIdPrefix_prefixOnAllComponentsWithId() {
+        final String idPrefix = "myIdPrefix_";
+
+        VerticalLayout layout = (VerticalLayout) Clara.build()
+                .withIdPrefix(idPrefix)
+                .createFrom(getXml("hierarchy-with-ids.xml"));
+
+        assertHierarchyWithIds(idPrefix, layout);
+    }
+
+    private void assertHierarchyWithIds(String idPrefix, VerticalLayout layout) {
+        assertEquals(idPrefix + "id1", layout.getId());
+
+        Button button = (Button) layout.getComponent(0);
+        assertEquals(idPrefix + "id1_1", button.getId());
+
+        Panel panel = (Panel) layout.getComponent(1);
+        assertEquals(idPrefix + "id1_2", panel.getId());
+
+        Label label = (Label) panel.getContent();
+        assertEquals(idPrefix + "id1_2_1", label.getId());
+
+        HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(2);
+        assertNull(horizontalLayout.getId());
     }
 
     private void assertSameBuilder(ClaraBuilder returnedBuilder) {
