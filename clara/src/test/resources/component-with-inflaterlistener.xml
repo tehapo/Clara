@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test:VerticalLayoutWithInflaterListener id="idOfVerticalLayoutWithInflaterListener" xmlns="urn:import:com.vaadin.ui" xmlns:l="urn:vaadin:parent" xmlns:test="urn:import:org.vaadin.teemu.clara.inflater">
+    <Button l:expandRatio="1.0" />
+</test:VerticalLayoutWithInflaterListener>

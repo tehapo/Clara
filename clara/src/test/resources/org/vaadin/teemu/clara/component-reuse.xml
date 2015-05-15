@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VerticalLayout id="root" xmlns="urn:import:com.vaadin.ui" xmlns:c="urn:import:org.vaadin.teemu.clara">
+    <c:CustomComponentInflaterListener id="custom1"/>
+    <c:CustomComponentInflaterListener id="custom2"/>
+</VerticalLayout>

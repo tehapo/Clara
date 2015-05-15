@@ -32,6 +32,16 @@ import com.vaadin.ui.Component;
 
 public class Binder {
 
+    private final String idPrefix;
+
+    public Binder() {
+        this(null);
+    }
+
+    public Binder(String idPrefix) {
+        this.idPrefix = idPrefix != null ? idPrefix : "";
+    }
+
     protected Logger getLogger() {
         return Logger.getLogger(Binder.class.getName());
     }
@@ -90,6 +100,8 @@ public class Binder {
                     field.setAccessible(true);
                     Object value = field.get(controller);
                     if (value instanceof Component) {
+                        // We are intentionally not using the idPrefix here
+                        // The specific use in the inflater doesn't need the prefix
                         assignedFields.put(extractComponentId(field),
                                 (Component) value);
                     }
@@ -347,9 +359,11 @@ public class Binder {
     }
 
     private Component tryToFindComponentById(Component root, String id) {
-        Component component = Clara.findComponentById(root, id);
+        Component component = Clara.findComponentById(root, idPrefix, id);
         if (component == null) {
-            throw new BinderException("No component found for id: " + id + ".");
+            throw new BinderException(
+                    String.format("No component found for id: %1$s (%2$s%1$s).",
+                            id, idPrefix));
         }
         return component;
     }
