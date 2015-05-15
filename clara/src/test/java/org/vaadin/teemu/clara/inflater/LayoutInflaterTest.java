@@ -252,15 +252,17 @@ public class LayoutInflaterTest {
 
     @Test
     public void inflate_inflaterListener_called() {
-        VerticalLayoutWithInflaterListener layout =
-                (VerticalLayoutWithInflaterListener) inflater.inflate(
-                        getXml("component-with-inflaterlistener.xml"));
+        VerticalLayoutWithInflaterListener layout = (VerticalLayoutWithInflaterListener) inflater
+                .inflate(getXml("component-with-inflaterlistener.xml"));
 
         assertTrue("Expected componentInflated to have been called",
                 layout.isComponentInflatedCalled());
-        assertEquals("Expected id to have been set before call to componentInflated",
-                "idOfVerticalLayoutWithInflaterListener", layout.getIdAfterInflate());
-        assertEquals("Expected child components to have been added before componentInflated",
+        assertEquals(
+                "Expected id to have been set before call to componentInflated",
+                "idOfVerticalLayoutWithInflaterListener",
+                layout.getIdAfterInflate());
+        assertEquals(
+                "Expected child components to have been added before componentInflated",
                 1, layout.getComponentCountAfterInflate());
     }
 

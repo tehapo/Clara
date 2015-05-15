@@ -101,7 +101,8 @@ public class Binder {
                     Object value = field.get(controller);
                     if (value instanceof Component) {
                         // We are intentionally not using the idPrefix here
-                        // The specific use in the inflater doesn't need the prefix
+                        // The specific use in the inflater doesn't need the
+                        // prefix
                         assignedFields.put(extractComponentId(field),
                                 (Component) value);
                     }
@@ -362,8 +363,9 @@ public class Binder {
         Component component = Clara.findComponentById(root, idPrefix, id);
         if (component == null) {
             throw new BinderException(
-                    String.format("No component found for id: %1$s (%2$s%1$s).",
-                            id, idPrefix));
+                    String.format(
+                            "No component found for id: %1$s (%2$s%1$s).", id,
+                            idPrefix));
         }
         return component;
     }

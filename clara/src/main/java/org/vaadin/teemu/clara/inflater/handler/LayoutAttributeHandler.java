@@ -20,7 +20,7 @@ public class LayoutAttributeHandler extends AttributeHandler {
     private static final String LAYOUT_ATTRIBUTE_NAMESPACE = "urn:vaadin:parent";
 
     public LayoutAttributeHandler(List<AttributeFilter> attributeFilters) {
-        this(attributeFilters, Collections.<AttributeParser>emptyList());
+        this(attributeFilters, Collections.<AttributeParser> emptyList());
     }
 
     public LayoutAttributeHandler(List<AttributeFilter> attributeFilters,

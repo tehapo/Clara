@@ -64,10 +64,8 @@ public class Clara {
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
-        return new ClaraBuilder()
-                .withController(controller)
-                .withAttributeFilters(attributeFilters)
-                .createFrom(xml);
+        return new ClaraBuilder().withController(controller)
+                .withAttributeFilters(attributeFilters).createFrom(xml);
     }
 
     /**
@@ -125,7 +123,8 @@ public class Clara {
      * <b>Warning</b>: if you use this method to search for a component created
      * with an id prefix (see {@link ClaraBuilder#withIdPrefix(String)}, then
      * this method will only find the component if the prefix is included in
-     * {@code componentId}. You can also use {@link #findComponentById(Component, String, String)}.
+     * {@code componentId}. You can also use
+     * {@link #findComponentById(Component, String, String)}.
      * </p>
      *
      * @param root
@@ -176,20 +175,21 @@ public class Clara {
      * </p>
      *
      * @param root
-     *         root of a component tree (non-{@code null}).
+     *            root of a component tree (non-{@code null}).
      * @param idPrefix
-     *         Prefix of the id (empty string is used when {@code null})
+     *            Prefix of the id (empty string is used when {@code null})
      * @param componentId
-     *         {@code id} of a component to search for (non-{@code null}).
+     *            {@code id} of a component to search for (non-{@code null}).
      * @return {@link Component} with a given {@code idPrefix} and
-     * {@code componentId} as its {@code id} or {@code null} if no such
-     * component is found.
+     *         {@code componentId} as its {@code id} or {@code null} if no such
+     *         component is found.
      * @throws IllegalArgumentException
-     *         if either of the given parameters is {@code null}.
+     *             if either of the given parameters is {@code null}.
      * @see Component#setId(String)
      * @see #findComponentById(Component, String, String)
      */
-    public static Component findComponentById(Component root, String idPrefix, String componentId) {
+    public static Component findComponentById(Component root, String idPrefix,
+            String componentId) {
         if (idPrefix != null && !"".equals(idPrefix)) {
             componentId = idPrefix + componentId;
         }

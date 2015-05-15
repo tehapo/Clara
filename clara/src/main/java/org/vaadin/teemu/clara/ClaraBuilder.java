@@ -33,7 +33,8 @@ public class ClaraBuilder {
      * Assigns the controller to the builder.
      *
      * @param controller
-     *         Controller object for binding component fields ({@code null} allowed).
+     *            Controller object for binding component fields ({@code null}
+     *            allowed).
      * @return this builder
      */
     public ClaraBuilder withController(Object controller) {
@@ -48,8 +49,9 @@ public class ClaraBuilder {
     /**
      * Prefix to add to ids of components.
      * <p>
-     * You can, for example, use this in a {@link InflaterListener#componentInflated()}
-     * to initialize reusable components to ensure unique ids.
+     * You can, for example, use this in a
+     * {@link InflaterListener#componentInflated()} to initialize reusable
+     * components to ensure unique ids.
      * </p>
      * <p>
      * Note: the {@link org.vaadin.teemu.clara.binder.annotation.UiField},
@@ -58,7 +60,9 @@ public class ClaraBuilder {
      * id <b>without prefix</b>.
      * </p>
      *
-     * @param idPrefix Prefix for ids, {@code null} is replaced with empty string, value is trimmed
+     * @param idPrefix
+     *            Prefix for ids, {@code null} is replaced with empty string,
+     *            value is trimmed
      * @return this builder
      */
     public ClaraBuilder withIdPrefix(String idPrefix) {
@@ -74,7 +78,7 @@ public class ClaraBuilder {
      * Adds an attribute filter.
      *
      * @param filter
-     *         Attribute filter
+     *            Attribute filter
      * @return this builder
      */
     public ClaraBuilder withAttributeFilter(AttributeFilter filter) {
@@ -86,7 +90,7 @@ public class ClaraBuilder {
      * Adds attribute filters.
      *
      * @param filters
-     *         Attribute filters
+     *            Attribute filters
      * @return this builder
      */
     public ClaraBuilder withAttributeFilters(AttributeFilter... filters) {
@@ -106,15 +110,17 @@ public class ClaraBuilder {
      * <p>
      * The attribute parsers added are in addition to the defaults parsers:
      * <ul>
-     * <li>{@link org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser}</li>
+     * <li>
+     * {@link org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser}</li>
      * <li>{@link org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser}</li>
      * <li>{@link org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser}</li>
-     * <li>{@link org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser}</li>
+     * <li>
+     * {@link org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser}</li>
      * </ul>
      * </p>
      *
      * @param parser
-     *         Attribute parser
+     *            Attribute parser
      * @return this builder
      */
     public ClaraBuilder withAttributeParser(AttributeParser parser) {
@@ -126,7 +132,7 @@ public class ClaraBuilder {
      * Adds attribute filters.
      *
      * @param parsers
-     *         Attribute parsers
+     *            Attribute parsers
      * @return this builder
      * @see #withAttributeParser(AttributeParser)
      */
@@ -143,18 +149,18 @@ public class ClaraBuilder {
     }
 
     /**
-     * Returns a {@link Component} that is read from the XML representation given
-     * as {@link InputStream} and binds the resulting {@link Component} to the
-     * {@code controller} object set in this builder.
+     * Returns a {@link Component} that is read from the XML representation
+     * given as {@link InputStream} and binds the resulting {@link Component} to
+     * the {@code controller} object set in this builder.
      *
      * @param xml
-     *         XML representation.
+     *            XML representation.
      * @return a {@link Component} that is read from the XML representation and
-     * bound to the given {@code controller}.
+     *         bound to the given {@code controller}.
      * @throws LayoutInflaterException
-     *         if an error is encountered during the layout inflation.
+     *             if an error is encountered during the layout inflation.
      * @throws BinderException
-     *         if an error is encountered during the binding.
+     *             if an error is encountered during the binding.
      */
     public Component createFrom(InputStream xml) {
         Binder binder = new Binder(idPrefix);
@@ -230,7 +236,8 @@ public class ClaraBuilder {
                 throws AttributeFilterException {
             if (attributeContext.getValue() instanceof String
                     && "setId".equals(attributeContext.getSetter().getName())) {
-                attributeContext.setValue(idPrefix + attributeContext.getValue());
+                attributeContext.setValue(idPrefix
+                        + attributeContext.getValue());
             }
             attributeContext.proceed();
         }

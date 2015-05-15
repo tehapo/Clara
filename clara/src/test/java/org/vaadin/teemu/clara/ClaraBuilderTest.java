@@ -33,7 +33,8 @@ public class ClaraBuilderTest {
                 builder.getController());
         final Object controllerInstance = new Object();
 
-        ClaraBuilder returnedBuilder = builder.withController(controllerInstance);
+        ClaraBuilder returnedBuilder = builder
+                .withController(controllerInstance);
 
         assertSame("Expected controller set after withController",
                 controllerInstance, builder.getController());
@@ -42,8 +43,8 @@ public class ClaraBuilderTest {
 
     @Test
     public void withAttributeFilter_addsFilter() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeFilters().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeFilters().isEmpty());
         final AttributeFilter filter = new DummyAttributeFilter();
 
         ClaraBuilder returnedBuilder = builder.withAttributeFilter(filter);
@@ -54,14 +55,13 @@ public class ClaraBuilderTest {
 
     @Test
     public void withAttributeFilters_addsFilters_inOrder() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeFilters().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeFilters().isEmpty());
         final AttributeFilter filter1 = new DummyAttributeFilter();
         final AttributeFilter filter2 = new DummyAttributeFilter();
 
         ClaraBuilder returnedBuilder = builder.withAttributeFilters(filter1,
                 filter2);
-
 
         assertSameObjectsInList("filter", builder.getAttributeFilters(),
                 filter1, filter2);
@@ -70,15 +70,14 @@ public class ClaraBuilderTest {
 
     @Test
     public void combination_withAttributeFilter_withAttributeFilters_inOrder() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeFilters().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeFilters().isEmpty());
         final AttributeFilter filter1 = new DummyAttributeFilter();
         final AttributeFilter filter2 = new DummyAttributeFilter();
         final AttributeFilter filter3 = new DummyAttributeFilter();
         final AttributeFilter filter4 = new DummyAttributeFilter();
 
-        ClaraBuilder returnedBuilder = builder
-                .withAttributeFilter(filter1)
+        ClaraBuilder returnedBuilder = builder.withAttributeFilter(filter1)
                 .withAttributeFilters(filter2, filter3)
                 .withAttributeFilter(filter4);
 
@@ -89,21 +88,20 @@ public class ClaraBuilderTest {
 
     @Test
     public void withAttributeParser_addsParser() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeParsers().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeParsers().isEmpty());
         final AttributeParser parser = new DummyAttributeParser();
 
         ClaraBuilder returnedBuilder = builder.withAttributeParser(parser);
 
-        assertSameObjectsInList("parser", builder.getAttributeParsers(),
-                parser);
+        assertSameObjectsInList("parser", builder.getAttributeParsers(), parser);
         assertSameBuilder(returnedBuilder);
     }
 
     @Test
     public void withAttributeParsers_addsParsers_inOrder() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeParsers().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeParsers().isEmpty());
         final AttributeParser parser1 = new DummyAttributeParser();
         final AttributeParser parser2 = new DummyAttributeParser();
 
@@ -117,15 +115,14 @@ public class ClaraBuilderTest {
 
     @Test
     public void combination_withAttributeParser_withAttributeParsers_inOrder() {
-        assertTrue("AttributeFilters should initially be empty",
-                builder.getAttributeParsers().isEmpty());
+        assertTrue("AttributeFilters should initially be empty", builder
+                .getAttributeParsers().isEmpty());
         final AttributeParser parser1 = new DummyAttributeParser();
         final AttributeParser parser2 = new DummyAttributeParser();
         final AttributeParser parser3 = new DummyAttributeParser();
         final AttributeParser parser4 = new DummyAttributeParser();
 
-        ClaraBuilder returnedBuilder = builder
-                .withAttributeParser(parser1)
+        ClaraBuilder returnedBuilder = builder.withAttributeParser(parser1)
                 .withAttributeParsers(parser2, parser3)
                 .withAttributeParser(parser4);
 
@@ -142,11 +139,9 @@ public class ClaraBuilderTest {
         final AttributeParser parser1 = new DummyAttributeParser();
         final AttributeParser parser2 = new DummyAttributeParser();
 
-        LayoutInflater inflater = builder
-                .withController(controller)
+        LayoutInflater inflater = builder.withController(controller)
                 .withAttributeFilters(filter1, filter2)
-                .withAttributeParsers(parser1, parser2)
-                .createInflater();
+                .withAttributeParsers(parser1, parser2).createInflater();
 
         assertNotNull(inflater);
         // ideally we'd like to test whether the info in the builder
@@ -157,7 +152,8 @@ public class ClaraBuilderTest {
 
     @Test
     public void withIdPrefix_setsIdPrefix() {
-        assertEquals("idPrefix should initially be empty", "", builder.getIdPrefix());
+        assertEquals("idPrefix should initially be empty", "",
+                builder.getIdPrefix());
         final String idPrefix = "someIdPrefix";
 
         ClaraBuilder returnedBuilder = builder.withIdPrefix(idPrefix);
@@ -168,18 +164,20 @@ public class ClaraBuilderTest {
 
     @Test
     public void withIdPrefix_idPrefixTrimmed() {
-        assertEquals("idPrefix should initially be empty", "", builder.getIdPrefix());
+        assertEquals("idPrefix should initially be empty", "",
+                builder.getIdPrefix());
         final String idPrefix = "   someIdPrefix   ";
 
         ClaraBuilder returnedBuilder = builder.withIdPrefix(idPrefix);
 
-        assertEquals("Unexpected idPrefix", idPrefix.trim(), builder.getIdPrefix());
+        assertEquals("Unexpected idPrefix", idPrefix.trim(),
+                builder.getIdPrefix());
         assertSameBuilder(returnedBuilder);
     }
 
     /**
-     * This tests if a controller (annotated without id prefixes) is
-     * correctly wired up if an id prefix is used
+     * This tests if a controller (annotated without id prefixes) is correctly
+     * wired up if an id prefix is used
      */
     @Test
     public void testFieldBinding_withIdPrefix() {
@@ -187,8 +185,7 @@ public class ClaraBuilderTest {
         final String idPrefix = "myIdPrefix_";
 
         VerticalLayout layout = (VerticalLayout) Clara.build()
-                .withController(testController)
-                .withIdPrefix(idPrefix)
+                .withController(testController).withIdPrefix(idPrefix)
                 .createFrom(getXml("hierarchy-with-ids.xml"));
 
         assertSame("Unexpected layout", layout, testController.verticalLayout);
@@ -210,8 +207,8 @@ public class ClaraBuilderTest {
     }
 
     /**
-     * Tests if a preassigned field in a controller (annotated without id prefix)
-     * is correctly inserted in the component tree.
+     * Tests if a preassigned field in a controller (annotated without id
+     * prefix) is correctly inserted in the component tree.
      */
     @Test
     public void preassignedField_withIdPrefix() {
@@ -221,8 +218,7 @@ public class ClaraBuilderTest {
         final String idPrefix = "myIdPrefix_";
 
         VerticalLayout layout = (VerticalLayout) Clara.build()
-                .withController(testController)
-                .withIdPrefix(idPrefix)
+                .withController(testController).withIdPrefix(idPrefix)
                 .createFrom(getXml("hierarchy-with-ids.xml"));
 
         assertSame("Unexpected layout", layout, testController.verticalLayout);
@@ -241,8 +237,8 @@ public class ClaraBuilderTest {
 
     @Test
     public void inflaterListener_componentReuse() {
-        VerticalLayout layout = (VerticalLayout) Clara.build()
-                .createFrom("/org/vaadin/teemu/clara/component-reuse.xml");
+        VerticalLayout layout = (VerticalLayout) Clara.build().createFrom(
+                "/org/vaadin/teemu/clara/component-reuse.xml");
 
         assertEquals(2, layout.getComponentCount());
         assertCustomComponentInflaterListener("custom1",
@@ -253,8 +249,8 @@ public class ClaraBuilderTest {
 
     @Test
     public void create_noIdPrefix_prefixOnAllComponentsWithId() {
-        VerticalLayout layout = (VerticalLayout) Clara.build()
-                .createFrom(getXml("hierarchy-with-ids.xml"));
+        VerticalLayout layout = (VerticalLayout) Clara.build().createFrom(
+                getXml("hierarchy-with-ids.xml"));
 
         assertHierarchyWithIds("", layout);
     }
@@ -282,7 +278,8 @@ public class ClaraBuilderTest {
         Label label = (Label) panel.getContent();
         assertEquals(idPrefix + "id1_2_1", label.getId());
 
-        HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(2);
+        HorizontalLayout horizontalLayout = (HorizontalLayout) layout
+                .getComponent(2);
         assertNull(horizontalLayout.getId());
     }
 
@@ -297,14 +294,15 @@ public class ClaraBuilderTest {
 
         for (int idx = 0; idx < expectedObjects.length; idx++) {
             assertSame(String.format("Unexpected %s object for position %d",
-                            objectTypeName, idx),
-                    expectedObjects[idx], objectsToCheck.get(idx));
+                    objectTypeName, idx), expectedObjects[idx],
+                    objectsToCheck.get(idx));
         }
     }
 
     private void assertCustomComponentInflaterListener(String expectedRootId,
             CustomComponentInflaterListener component) {
-        assertEquals("Unexpected id for root", expectedRootId, component.getId());
+        assertEquals("Unexpected id for root", expectedRootId,
+                component.getId());
         VerticalLayout layout = (VerticalLayout) component.getCompositionRoot();
         assertEquals("Unexpected id for layout", expectedRootId + "_" + "id1",
                 layout.getId());
@@ -343,7 +341,8 @@ public class ClaraBuilderTest {
 
         private boolean buttonPressed;
 
-        private Property<String> property = new ObjectProperty<String>(TEST_VALUE);
+        private Property<String> property = new ObjectProperty<String>(
+                TEST_VALUE);
 
         @UiField("id1")
         private VerticalLayout verticalLayout;

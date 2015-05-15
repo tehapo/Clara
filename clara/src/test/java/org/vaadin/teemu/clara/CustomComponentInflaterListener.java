@@ -1,6 +1,5 @@
 package org.vaadin.teemu.clara;
 
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import org.vaadin.teemu.clara.inflater.InflaterListener;
@@ -11,14 +10,13 @@ import org.vaadin.teemu.clara.inflater.InflaterListener;
  * For testing purposes.
  * </p>
  */
-public class CustomComponentInflaterListener extends CustomComponent
-        implements InflaterListener{
+public class CustomComponentInflaterListener extends CustomComponent implements
+        InflaterListener {
     @Override
     public void componentInflated() {
         Component root = Clara.build()
                 .withIdPrefix(getId() != null ? getId() + "_" : null)
-                .withController(this)
-                .createFrom("/hierarchy-with-ids.xml");
+                .withController(this).createFrom("/hierarchy-with-ids.xml");
         setCompositionRoot(root);
     }
 

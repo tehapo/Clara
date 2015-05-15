@@ -31,10 +31,11 @@ public class AttributeHandler {
     private final List<AttributeFilter> attributeFilters;
 
     public AttributeHandler(List<AttributeFilter> attributeFilters) {
-        this(attributeFilters, Collections.<AttributeParser>emptyList());
+        this(attributeFilters, Collections.<AttributeParser> emptyList());
     }
 
-    public AttributeHandler(List<AttributeFilter> attributeFilters, List<AttributeParser> extraAttributeParsers) {
+    public AttributeHandler(List<AttributeFilter> attributeFilters,
+            List<AttributeParser> extraAttributeParsers) {
         this.attributeFilters = attributeFilters;
 
         // Setup the default AttributeParsers.
