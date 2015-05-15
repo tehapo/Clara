@@ -1,8 +1,15 @@
 package org.vaadin.teemu.clara;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+import java.util.List;
+
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
@@ -13,10 +20,14 @@ import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 
-import java.io.InputStream;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Tests for {@link ClaraBuilder}.

@@ -1,6 +1,11 @@
 package org.vaadin.teemu.clara;
 
-import com.vaadin.ui.Component;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.inflater.InflaterListener;
@@ -11,11 +16,7 @@ import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.vaadin.ui.Component;
 
 /**
  * Builder for configuring Clara.

@@ -1,8 +1,9 @@
 package org.vaadin.teemu.clara;
 
+import org.vaadin.teemu.clara.inflater.InflaterListener;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import org.vaadin.teemu.clara.inflater.InflaterListener;
 
 /**
  * Custom component that implements {@link InflaterListener}.
