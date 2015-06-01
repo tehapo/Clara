@@ -62,8 +62,32 @@ public class LayoutInflater {
      * @throws LayoutInflaterException in case of an error in the inflation process.
      */
     public Component inflate(InputStream xml, Map<String, Component> componentOverrideMap) {
-        return inflate(xml, new OverrideMapComponentProvider(componentOverrideMap),
-                new ReflectionComponentProvider());
+        return inflate(xml, componentOverrideMap, new ComponentProvider[0]);
+    }
+
+    /**
+     * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+     *
+     * @param xml {@link InputStream} for the XML.
+     * @param componentOverrideMap {@link Map} of already existing {@link Component} instances
+     * from their {@code id} properties.
+     * @return the inflated {@link Component} (hierarchy).
+     * @throws LayoutInflaterException in case of an error in the inflation process.
+     */
+    public Component inflate(InputStream xml, Map<String, Component> componentOverrideMap,
+            ComponentProvider... additionalComponentProviders) {
+        ArrayList<ComponentProvider> providers = createDefaultComponentProviders(
+                componentOverrideMap);
+        providers.addAll(Arrays.asList(additionalComponentProviders));
+        return inflate(xml, providers.toArray(new ComponentProvider[providers.size()]));
+    }
+
+    private ArrayList<ComponentProvider> createDefaultComponentProviders(
+            Map<String, Component> componentOverrideMap) {
+        ArrayList<ComponentProvider> providers = new ArrayList<ComponentProvider>();
+        providers.add(new OverrideMapComponentProvider(componentOverrideMap));
+        providers.add(new ReflectionComponentProvider());
+        return providers;
     }
 
     /**
@@ -76,6 +100,19 @@ public class LayoutInflater {
      * @throws LayoutInflaterException in case of an error in the inflation process.
      */
     public Component inflate(InputStream xml, ComponentProvider... componentProviders) {
+        return inflate(xml, Arrays.asList(componentProviders));
+    }
+
+    /**
+     * Inflates the given {@code xml} into a {@link Component} (hierarchy).
+     *
+     * @param xml the xml to inflate.
+     * @param componentProviders the {@link ComponentProvider}s to apply in given order to
+     * inflate xml to components.
+     * @return the inflated {@link Component} (hierarchy).
+     * @throws LayoutInflaterException in case of an error in the inflation process.
+     */
+    public Component inflate(InputStream xml, List<ComponentProvider> componentProviders) {
         try {
             LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
                     componentProviders);
@@ -119,7 +156,11 @@ public class LayoutInflater {
         private final List<ComponentProvider> componentProviders;
 
         public LayoutInflaterContentHandler(ComponentProvider... componentProviders) {
-            this.componentProviders = Arrays.asList(componentProviders);
+            this(Arrays.asList(componentProviders));
+        }
+
+        public LayoutInflaterContentHandler(List<ComponentProvider> componentProviders) {
+            this.componentProviders = componentProviders;
 
             attributeHandler = new AttributeHandler(attributeFilters, extraAttributeParsers);
             layoutAttributeHandler = new LayoutAttributeHandler(attributeFilters);
