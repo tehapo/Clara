@@ -1,5 +1,19 @@
 package org.vaadin.teemu.clara.inflater;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.SingleComponentContainer;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
+import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
+import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,21 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
-
-import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
-import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
-import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
-import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.SingleComponentContainer;
 
 public class LayoutInflater {
 
@@ -44,12 +43,9 @@ public class LayoutInflater {
     /**
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
      *
-     * @param xml
-     *            {@link InputStream} for the XML.
+     * @param xml {@link InputStream} for the XML.
      * @return the inflated {@link Component} (hierarchy).
-     *
-     * @throws LayoutInflaterException
-     *             in case of an error in the inflation process.
+     * @throws LayoutInflaterException in case of an error in the inflation process.
      */
     public Component inflate(InputStream xml) {
         Map<String, Component> empty = Collections.emptyMap();
@@ -59,37 +55,27 @@ public class LayoutInflater {
     /**
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
      *
-     * @param xml
-     *            {@link InputStream} for the XML.
-     * @param componentOverrideMap
-     *            {@link Map} of already existing {@link Component} instances
-     *            from their {@code id} properties.
+     * @param xml {@link InputStream} for the XML.
+     * @param componentOverrideMap {@link Map} of already existing {@link Component} instances
+     * from their {@code id} properties.
      * @return the inflated {@link Component} (hierarchy).
-     *
-     * @throws LayoutInflaterException
-     *             in case of an error in the inflation process.
+     * @throws LayoutInflaterException in case of an error in the inflation process.
      */
-    public Component inflate(InputStream xml,
-            Map<String, Component> componentOverrideMap) {
-        return inflate(xml, new OverrideMapComponentProvider(
-                componentOverrideMap), new ReflectionComponentProvider());
+    public Component inflate(InputStream xml, Map<String, Component> componentOverrideMap) {
+        return inflate(xml, new OverrideMapComponentProvider(componentOverrideMap),
+                new ReflectionComponentProvider());
     }
 
     /**
      * Inflates the given {@code xml} into a {@link Component} (hierarchy).
      *
-     * @param xml
-     *            the xml to inflate.
-     * @param componentProviders
-     *            the {@link ComponentProvider}s to apply in given order to
-     *            inflate xml to components.
+     * @param xml the xml to inflate.
+     * @param componentProviders the {@link ComponentProvider}s to apply in given order to
+     * inflate xml to components.
      * @return the inflated {@link Component} (hierarchy).
-     *
-     * @throws LayoutInflaterException
-     *             in case of an error in the inflation process.
+     * @throws LayoutInflaterException in case of an error in the inflation process.
      */
-    public Component inflate(InputStream xml,
-            ComponentProvider... componentProviders) {
+    public Component inflate(InputStream xml, ComponentProvider... componentProviders) {
         try {
             LayoutInflaterContentHandler contentHandler = new LayoutInflaterContentHandler(
                     componentProviders);
@@ -132,14 +118,11 @@ public class LayoutInflater {
         private final Set<String> assignedIds = new HashSet<String>();
         private final List<ComponentProvider> componentProviders;
 
-        public LayoutInflaterContentHandler(
-                ComponentProvider... componentProviders) {
+        public LayoutInflaterContentHandler(ComponentProvider... componentProviders) {
             this.componentProviders = Arrays.asList(componentProviders);
 
-            attributeHandler = new AttributeHandler(attributeFilters,
-                    extraAttributeParsers);
-            layoutAttributeHandler = new LayoutAttributeHandler(
-                    attributeFilters);
+            attributeHandler = new AttributeHandler(attributeFilters, extraAttributeParsers);
+            layoutAttributeHandler = new LayoutAttributeHandler(attributeFilters);
         }
 
         @Override
@@ -149,41 +132,55 @@ public class LayoutInflater {
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName,
-                Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
             super.startElement(uri, localName, qName, attributes);
 
             if (uri.length() == 0) {
                 uri = DEFAULT_NAMESPACE;
             }
 
-            if (uri.startsWith(IMPORT_URN_PREFIX)) {
-                // Throw an exception if the id is already used.
-                verifyUniqueId(attributes);
+            String id = attributes.getValue(ID_ATTRIBUTE);
 
-                Component component = instantiateComponent(uri, localName,
-                        attributes.getValue(ID_ATTRIBUTE));
+            ComponentProvider componentProvider = findApplicableComponentProvider(uri, localName,
+                    id);
 
-                if (root == null) {
-                    // This was the first Component created -> root.
-                    root = component;
-                }
+            verifyUniqueId(attributes);
 
-                // Basic attributes -> attach -> layout attributes.
-                handleAttributes(component, attributes, attributeHandler);
-                attachComponent(component);
-                handleAttributes(component, attributes, layoutAttributeHandler);
+            Component component = instantiateComponent(componentProvider, uri, localName, id);
 
-                if (component instanceof ComponentContainer) {
-                    currentContainer = (ComponentContainer) component;
-                }
-                componentStack.push(component);
+            if (root == null) {
+                // This was the first Component created -> root.
+                root = component;
             }
+
+            // Basic attributes -> attach -> layout attributes.
+            handleAttributes(component, attributes, attributeHandler);
+            attachComponent(component);
+            handleAttributes(component, attributes, layoutAttributeHandler);
+
+            if (component instanceof ComponentContainer) {
+                currentContainer = (ComponentContainer) component;
+            }
+            componentStack.push(component);
+
+        }
+
+        private ComponentProvider findApplicableComponentProvider(String uri, String localName,
+                String id) {
+            for (ComponentProvider provider : componentProviders) {
+                if (provider.isApplicableFor(uri, localName, id)) {
+                    return provider;
+                }
+            }
+
+            throw new LayoutInflaterException(String.format("None of the component providers is "
+                            + "capable to provide a component for uri=%s, localName=%s, id=%s", uri,
+                    localName, id));
         }
 
         private void attachComponent(Component component) {
-            Component topComponent = componentStack.isEmpty() ? null
-                    : componentStack.peek();
+            Component topComponent = componentStack.isEmpty() ? null : componentStack.peek();
             if (topComponent instanceof SingleComponentContainer) {
                 ((SingleComponentContainer) topComponent).setContent(component);
             } else if (currentContainer != null) {
@@ -192,14 +189,12 @@ public class LayoutInflater {
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             super.endElement(uri, localName, qName);
             Component component = componentStack.pop();
             if (component instanceof ComponentContainer) {
                 Component parent = component.getParent();
-                while (parent != null
-                        && !(parent instanceof ComponentContainer)) {
+                while (parent != null && !(parent instanceof ComponentContainer)) {
                     parent = parent.getParent();
                 }
                 currentContainer = (ComponentContainer) parent;
@@ -209,8 +204,8 @@ public class LayoutInflater {
             }
         }
 
-        private Component instantiateComponent(String uri, String localName,
-                String id) {
+        private Component instantiateComponent(ComponentProvider componentProvider, String uri,
+                String localName, String id) {
             for (ComponentProvider provider : componentProviders) {
                 Component component = provider.getComponent(uri, localName, id);
                 if (component != null) {
@@ -218,15 +213,13 @@ public class LayoutInflater {
                 }
             }
 
-            throw new LayoutInflaterException(
-                    String.format(
-                            "None of the component providers was "
-                                    + "able to provide component for uri=%s, localName=%s, id=%s",
-                            uri, localName, id));
+            throw new LayoutInflaterException(String.format("None of the component providers was "
+                            + "able to provide component for uri=%s, localName=%s, id=%s", uri,
+                    localName, id));
         }
 
-        private void handleAttributes(Component component,
-                Attributes attributes, AttributeHandler attributeHandler) {
+        private void handleAttributes(Component component, Attributes attributes,
+                AttributeHandler attributeHandler) {
             // Get attributes for the namespace this AttributeHandler is
             // interested in.
             Map<String, String> attributeMap = getAttributeMap(attributes,
@@ -234,22 +227,19 @@ public class LayoutInflater {
             attributeHandler.assignAttributes(component, attributeMap);
         }
 
-        private void verifyUniqueId(Attributes attributes)
-                throws LayoutInflaterException {
+        private void verifyUniqueId(Attributes attributes) throws LayoutInflaterException {
             String id = attributes.getValue(ID_ATTRIBUTE);
             if (id != null && id.length() > 0) {
                 boolean unique = assignedIds.add(id);
                 if (!unique) {
-                    throw new LayoutInflaterException(String.format(
-                            "Given id %s has already been assigned.", id));
+                    throw new LayoutInflaterException(
+                            String.format("Given id %s has already been assigned.", id));
                 }
             }
         }
 
-        private Map<String, String> getAttributeMap(Attributes attributes,
-                String namespace) {
-            Map<String, String> attributeMap = new HashMap<String, String>(
-                    attributes.getLength());
+        private Map<String, String> getAttributeMap(Attributes attributes, String namespace) {
+            Map<String, String> attributeMap = new HashMap<String, String>(attributes.getLength());
             for (int i = 0; i < attributes.getLength(); i++) {
                 if (attributes.getURI(i).equals(namespace)) {
                     // Namespace matches -> add to map.

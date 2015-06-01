@@ -1,12 +1,17 @@
 package org.vaadin.teemu.clara.inflater;
 
-import static org.vaadin.teemu.clara.inflater.LayoutInflater.IMPORT_URN_PREFIX;
-
 import com.vaadin.ui.Component;
+
+import static org.vaadin.teemu.clara.inflater.LayoutInflater.IMPORT_URN_PREFIX;
 
 public class ReflectionComponentProvider implements ComponentProvider {
 
     private final ComponentFactory componentFactory = new ComponentFactory();
+
+    @Override
+    public boolean isApplicableFor(String uri, String localName, String id) {
+        return uri.startsWith(IMPORT_URN_PREFIX);
+    }
 
     /**
      * {@inheritDoc}

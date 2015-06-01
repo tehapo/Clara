@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.vaadin.addons</groupId>
         <artifactId>clara-parent</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>clara-demo</artifactId>
@@ -81,7 +81,7 @@
                 <version>${vaadin.plugin.version}</version>
                 <configuration>
                     <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                    <!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This way 
+                    <!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This way
                         compatible with Vaadin eclipse plugin. -->
                     <webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets</webappDirectory>
                     <hostedWebapp>${basedir}/src/main/webapp/VAADIN/widgetsets</hostedWebapp>
@@ -97,7 +97,7 @@
                     <execution>
                         <configuration>
                             <modules>
-                                <module>org.vaadin.teemu.clara.demo.widgetset.ClaraDemoWidgetset</module> 
+                                <module>org.vaadin.teemu.clara.demo.widgetset.ClaraDemoWidgetset</module>
                             </modules>
                         </configuration>
                         <goals>
