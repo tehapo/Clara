@@ -104,7 +104,8 @@ public class ClaraBuilder {
     /**
      * Adds a component provider.
      *
-     * @param provider Component provider
+     * @param provider
+     *            Component provider
      * @return this builder
      */
     public ClaraBuilder withComponentProvider(ComponentProvider provider) {
@@ -114,7 +115,8 @@ public class ClaraBuilder {
     /**
      * Adds component providers.
      *
-     * @param providers Component providers
+     * @param providers
+     *            Component providers
      * @return this builder
      */
     public ClaraBuilder withComponentProviders(ComponentProvider... providers) {
@@ -124,7 +126,8 @@ public class ClaraBuilder {
     /**
      * Adds Component providers.
      *
-     * @param providers Component providers
+     * @param providers
+     *            Component providers
      * @return this builder
      */
     public ClaraBuilder withComponentProviders(List<ComponentProvider> providers) {
@@ -201,8 +204,9 @@ public class ClaraBuilder {
 
         // Inflate the XML to a component (tree).
         LayoutInflater inflater = createInflater();
-        Component result = inflater.inflate(xml, binder.getAlreadyAssignedFields(controller),
-                componentProviders.toArray(new ComponentProvider[componentProviders.size()]));
+        Component result = inflater.inflate(xml, binder
+                .getAlreadyAssignedFields(controller), componentProviders
+                .toArray(new ComponentProvider[componentProviders.size()]));
 
         // Bind to controller.
         binder.bind(result, controller);

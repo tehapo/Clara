@@ -47,11 +47,12 @@ public class Clara {
      *
      * @param xml
      *            XML representation.
-     * @param componentProviders 
+     * @param componentProviders
      *            additional component providers.
      * @return a {@link Component} that is read from the XML representation.
      */
-    public static Component create(InputStream xml, ComponentProvider... componentProviders) {
+    public static Component create(InputStream xml,
+            ComponentProvider... componentProviders) {
         return create(xml, null, Arrays.asList(componentProviders));
     }
 
@@ -82,8 +83,8 @@ public class Clara {
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
-        return create(xml, controller, Collections.<ComponentProvider>emptyList(),
-                attributeFilters);
+        return create(xml, controller,
+                Collections.<ComponentProvider> emptyList(), attributeFilters);
     }
 
     /**
@@ -101,7 +102,7 @@ public class Clara {
      * @param controller
      *            controller object to bind the resulting {@code Component} (
      *            {@code null} allowed).
-     * @param componentProviders 
+     * @param componentProviders
      *            additional component providers.
      * @param attributeFilters
      *            optional {@link AttributeFilter}s to do attribute
@@ -114,11 +115,11 @@ public class Clara {
      *             if an error is encountered during the binding.
      */
     public static Component create(InputStream xml, Object controller,
-            List<ComponentProvider> componentProviders, AttributeFilter... attributeFilters) {
+            List<ComponentProvider> componentProviders,
+            AttributeFilter... attributeFilters) {
         return new ClaraBuilder().withController(controller)
                 .withComponentProviders(componentProviders)
-                .withAttributeFilters(attributeFilters)
-                .createFrom(xml);
+                .withAttributeFilters(attributeFilters).createFrom(xml);
     }
 
     /**
@@ -154,10 +155,10 @@ public class Clara {
      * @throws BinderException
      *             if an error is encountered during the binding.
      */
-    public static Component create(String xmlClassResourceFileName, Object controller,
-            AttributeFilter... attributeFilters) {
+    public static Component create(String xmlClassResourceFileName,
+            Object controller, AttributeFilter... attributeFilters) {
         return create(xmlClassResourceFileName, controller,
-                Collections.<ComponentProvider>emptyList(), attributeFilters);
+                Collections.<ComponentProvider> emptyList(), attributeFilters);
     }
 
     /**
@@ -183,7 +184,7 @@ public class Clara {
      * @param controller
      *            controller object to bind the resulting {@code Component}
      *            (non-{@code null}).
-     * @param componentProviders 
+     * @param componentProviders
      *            additional component providers.
      * @param attributeFilters
      *            optional {@link AttributeFilter}s to do attribute
@@ -195,9 +196,11 @@ public class Clara {
      * @throws BinderException
      *             if an error is encountered during the binding.
      */
-    public static Component create(String xmlClassResourceFileName, Object controller,
-            List<ComponentProvider> componentProviders, AttributeFilter... attributeFilters) {
-        InputStream xml = controller.getClass().getResourceAsStream(xmlClassResourceFileName);
+    public static Component create(String xmlClassResourceFileName,
+            Object controller, List<ComponentProvider> componentProviders,
+            AttributeFilter... attributeFilters) {
+        InputStream xml = controller.getClass().getResourceAsStream(
+                xmlClassResourceFileName);
         return create(xml, controller, componentProviders, attributeFilters);
     }
 
