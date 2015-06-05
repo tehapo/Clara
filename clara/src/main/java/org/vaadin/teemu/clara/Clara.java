@@ -1,17 +1,18 @@
 package org.vaadin.teemu.clara;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HasComponents;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.vaadin.teemu.clara.binder.BinderException;
 import org.vaadin.teemu.clara.inflater.ComponentProvider;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HasComponents;
 
 public class Clara {
 

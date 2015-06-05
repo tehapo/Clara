@@ -1,19 +1,5 @@
 package org.vaadin.teemu.clara.inflater;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.SingleComponentContainer;
-import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
-import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
-import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
-import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +12,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
+
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+import org.vaadin.teemu.clara.inflater.handler.AttributeHandler;
+import org.vaadin.teemu.clara.inflater.handler.LayoutAttributeHandler;
+import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.SingleComponentContainer;
 
 public class LayoutInflater {
 

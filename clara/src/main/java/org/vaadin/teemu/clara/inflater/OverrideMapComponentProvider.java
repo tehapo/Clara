@@ -1,8 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import com.vaadin.ui.Component;
-
 import java.util.Map;
+
+import com.vaadin.ui.Component;
 
 public class OverrideMapComponentProvider implements ComponentProvider {
     private final Map<String, Component> componentOverrideMap;

@@ -1,8 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import com.vaadin.ui.Component;
-
 import static org.vaadin.teemu.clara.inflater.LayoutInflater.IMPORT_URN_PREFIX;
+
+import com.vaadin.ui.Component;
 
 public class ReflectionComponentProvider implements ComponentProvider {
 
