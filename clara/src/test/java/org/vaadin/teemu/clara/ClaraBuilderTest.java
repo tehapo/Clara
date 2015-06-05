@@ -36,7 +36,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ClaraBuilderTest {
 
-    private final ClaraBuilder builder = new ClaraBuilder();
+    private final ClaraBuilder builder = Clara.build();
 
     @Test
     public void withController_setsController() {

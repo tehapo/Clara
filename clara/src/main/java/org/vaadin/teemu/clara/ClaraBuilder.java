@@ -20,7 +20,8 @@ import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 import com.vaadin.ui.Component;
 
 /**
- * Builder for configuring Clara.
+ * Builder for configuring Clara. Create instances of this class with the
+ * factory method {@code Clara.build()}.
  *
  * @author <a href="mailto:mrotteveel@bol.com">Mark Rotteveel</a>
  */
@@ -32,6 +33,10 @@ public class ClaraBuilder {
     private final List<ComponentProvider> componentProviders = new ArrayList<ComponentProvider>();
 
     private String idPrefix = "";
+
+    ClaraBuilder() {
+        // Package-private constructor. Create instances with Clara.build().
+    }
 
     /**
      * Assigns the controller to the builder.
