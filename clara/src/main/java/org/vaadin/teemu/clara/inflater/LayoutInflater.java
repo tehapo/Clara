@@ -87,15 +87,15 @@ public class LayoutInflater {
     public Component inflate(InputStream xml,
             Map<String, Component> componentOverrideMap,
             ComponentProvider... additionalComponentProviders) {
-        ArrayList<ComponentProvider> providers = createDefaultComponentProviders(componentOverrideMap);
+        List<ComponentProvider> providers = createDefaultComponentProviders(componentOverrideMap);
         providers.addAll(Arrays.asList(additionalComponentProviders));
         return inflate(xml,
                 providers.toArray(new ComponentProvider[providers.size()]));
     }
 
-    private ArrayList<ComponentProvider> createDefaultComponentProviders(
+    private List<ComponentProvider> createDefaultComponentProviders(
             Map<String, Component> componentOverrideMap) {
-        ArrayList<ComponentProvider> providers = new ArrayList<ComponentProvider>();
+        List<ComponentProvider> providers = new ArrayList<ComponentProvider>();
         providers.add(new OverrideMapComponentProvider(componentOverrideMap));
         providers.add(new ReflectionComponentProvider());
         return providers;
