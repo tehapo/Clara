@@ -1,8 +1,8 @@
 package org.vaadin.teemu.clara.inflater;
 
-import java.util.Map;
-
 import com.vaadin.ui.Component;
+
+import java.util.Map;
 
 public class OverrideMapComponentProvider implements ComponentProvider {
     private final Map<String, Component> componentOverrideMap;
@@ -16,6 +16,11 @@ public class OverrideMapComponentProvider implements ComponentProvider {
     public OverrideMapComponentProvider(
             Map<String, Component> componentOverrideMap) {
         this.componentOverrideMap = componentOverrideMap;
+    }
+
+    @Override
+    public boolean isApplicableFor(String uri, String localName, String id) {
+        return componentOverrideMap.containsKey(id);
     }
 
     /**

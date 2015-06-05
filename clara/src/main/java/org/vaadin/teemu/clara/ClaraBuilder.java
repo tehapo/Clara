@@ -1,13 +1,9 @@
 package org.vaadin.teemu.clara;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import com.vaadin.ui.Component;
 import org.vaadin.teemu.clara.binder.Binder;
 import org.vaadin.teemu.clara.binder.BinderException;
+import org.vaadin.teemu.clara.inflater.ComponentProvider;
 import org.vaadin.teemu.clara.inflater.InflaterListener;
 import org.vaadin.teemu.clara.inflater.LayoutInflater;
 import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
@@ -16,7 +12,11 @@ import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
 import org.vaadin.teemu.clara.inflater.filter.AttributeFilterException;
 import org.vaadin.teemu.clara.inflater.parser.AttributeParser;
 
-import com.vaadin.ui.Component;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Builder for configuring Clara.
@@ -28,6 +28,8 @@ public class ClaraBuilder {
     private Object controller;
     private final List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
     private final List<AttributeParser> attributeParsers = new ArrayList<AttributeParser>();
+    private final List<ComponentProvider> componentProviders = new ArrayList<ComponentProvider>();
+
     private String idPrefix = "";
 
     /**
@@ -100,6 +102,37 @@ public class ClaraBuilder {
     }
 
     /**
+     * Adds a component provider.
+     *
+     * @param provider Component provider
+     * @return this builder
+     */
+    public ClaraBuilder withComponentProvider(ComponentProvider provider) {
+        return withComponentProviders(Collections.singletonList(provider));
+    }
+
+    /**
+     * Adds component providers.
+     *
+     * @param providers Component providers
+     * @return this builder
+     */
+    public ClaraBuilder withComponentProviders(ComponentProvider... providers) {
+        return withComponentProviders(Arrays.asList(providers));
+    }
+
+    /**
+     * Adds Component providers.
+     *
+     * @param providers Component providers
+     * @return this builder
+     */
+    public ClaraBuilder withComponentProviders(List<ComponentProvider> providers) {
+        componentProviders.addAll(providers);
+        return this;
+    }
+
+    /**
      * @return Unmodifiable list of the current attribute filters
      */
     public List<AttributeFilter> getAttributeFilters() {
@@ -168,8 +201,8 @@ public class ClaraBuilder {
 
         // Inflate the XML to a component (tree).
         LayoutInflater inflater = createInflater();
-        Component result = inflater.inflate(xml,
-                binder.getAlreadyAssignedFields(controller));
+        Component result = inflater.inflate(xml, binder.getAlreadyAssignedFields(controller),
+                componentProviders.toArray(new ComponentProvider[componentProviders.size()]));
 
         // Bind to controller.
         binder.bind(result, controller);

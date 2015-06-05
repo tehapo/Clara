@@ -1,14 +1,17 @@
 package org.vaadin.teemu.clara;
 
-import java.io.InputStream;
-
-import org.vaadin.teemu.clara.binder.BinderException;
-import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
-import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
+import org.vaadin.teemu.clara.binder.BinderException;
+import org.vaadin.teemu.clara.inflater.ComponentProvider;
+import org.vaadin.teemu.clara.inflater.LayoutInflaterException;
+import org.vaadin.teemu.clara.inflater.filter.AttributeFilter;
+
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Clara {
 
@@ -33,7 +36,23 @@ public class Clara {
      * @return a {@link Component} that is read from the XML representation.
      */
     public static Component create(InputStream xml) {
-        return create(xml, null);
+        return create(xml, null, new AttributeFilter[0]);
+    }
+
+    /**
+     * Returns a {@link Component} that is read from the XML representation
+     * given as {@link InputStream}. If you would like to bind the resulting
+     * {@link Component} to a controller object, you should use
+     * {@link #create(InputStream, Object, AttributeFilter...)} method instead.
+     *
+     * @param xml
+     *            XML representation.
+     * @param componentProviders 
+     *            additional component providers.
+     * @return a {@link Component} that is read from the XML representation.
+     */
+    public static Component create(InputStream xml, ComponentProvider... componentProviders) {
+        return create(xml, null, Arrays.asList(componentProviders));
     }
 
     /**
@@ -56,7 +75,6 @@ public class Clara {
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
-     *
      * @throws LayoutInflaterException
      *             if an error is encountered during the layout inflation.
      * @throws BinderException
@@ -64,8 +82,43 @@ public class Clara {
      */
     public static Component create(InputStream xml, Object controller,
             AttributeFilter... attributeFilters) {
+        return create(xml, controller, Collections.<ComponentProvider>emptyList(),
+                attributeFilters);
+    }
+
+    /**
+     * Returns a {@link Component} that is read from the XML representation
+     * given as {@link InputStream} and binds the resulting {@link Component} to
+     * the given {@code controller} object.
+     * <p>
+     * Optionally you may also provide {@link AttributeFilter}s to do some
+     * modifications (or example localized translations) to any attributes
+     * present in the XML representation.
+     * </p>
+     *
+     * @param xml
+     *            XML representation.
+     * @param controller
+     *            controller object to bind the resulting {@code Component} (
+     *            {@code null} allowed).
+     * @param componentProviders 
+     *            additional component providers.
+     * @param attributeFilters
+     *            optional {@link AttributeFilter}s to do attribute
+     *            modifications.
+     * @return a {@link Component} that is read from the XML representation and
+     *         bound to the given {@code controller}.
+     * @throws LayoutInflaterException
+     *             if an error is encountered during the layout inflation.
+     * @throws BinderException
+     *             if an error is encountered during the binding.
+     */
+    public static Component create(InputStream xml, Object controller,
+            List<ComponentProvider> componentProviders, AttributeFilter... attributeFilters) {
         return new ClaraBuilder().withController(controller)
-                .withAttributeFilters(attributeFilters).createFrom(xml);
+                .withComponentProviders(componentProviders)
+                .withAttributeFilters(attributeFilters)
+                .createFrom(xml);
     }
 
     /**
@@ -96,17 +149,56 @@ public class Clara {
      *            modifications.
      * @return a {@link Component} that is read from the XML representation and
      *         bound to the given {@code controller}.
-     *
      * @throws LayoutInflaterException
      *             if an error is encountered during the layout inflation.
      * @throws BinderException
      *             if an error is encountered during the binding.
      */
-    public static Component create(String xmlClassResourceFileName,
-            Object controller, AttributeFilter... attributeFilters) {
-        InputStream xml = controller.getClass().getResourceAsStream(
-                xmlClassResourceFileName);
-        return create(xml, controller, attributeFilters);
+    public static Component create(String xmlClassResourceFileName, Object controller,
+            AttributeFilter... attributeFilters) {
+        return create(xmlClassResourceFileName, controller,
+                Collections.<ComponentProvider>emptyList(), attributeFilters);
+    }
+
+    /**
+     * Returns a {@link Component} that is read from an XML file in the
+     * classpath and binds the resulting {@link Component} to the given
+     * {@code controller} object.
+     * <p>
+     * The filename is given either as a path relative to the class of the
+     * {@code controller} object or as an absolute path. For example if you have
+     * a {@code MyController.java} and {@code MyController.xml} files in the
+     * same package, you can call this method like
+     * {@code Clara.create("MyController.xml", new MyController())}.
+     * </p>
+     * <p>
+     * Optionally you may also provide {@link AttributeFilter}s to do some
+     * modifications (or example localized translations) to any attributes
+     * present in the XML representation.
+     * </p>
+     *
+     * @param xmlClassResourceFileName
+     *            filename of the XML representation (within classpath, relative
+     *            to {@code controller}'s class or absolute path).
+     * @param controller
+     *            controller object to bind the resulting {@code Component}
+     *            (non-{@code null}).
+     * @param componentProviders 
+     *            additional component providers.
+     * @param attributeFilters
+     *            optional {@link AttributeFilter}s to do attribute
+     *            modifications.
+     * @return a {@link Component} that is read from the XML representation and
+     *         bound to the given {@code controller}.
+     * @throws LayoutInflaterException
+     *             if an error is encountered during the layout inflation.
+     * @throws BinderException
+     *             if an error is encountered during the binding.
+     */
+    public static Component create(String xmlClassResourceFileName, Object controller,
+            List<ComponentProvider> componentProviders, AttributeFilter... attributeFilters) {
+        InputStream xml = controller.getClass().getResourceAsStream(xmlClassResourceFileName);
+        return create(xml, controller, componentProviders, attributeFilters);
     }
 
     /**
