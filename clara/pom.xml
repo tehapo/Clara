@@ -81,18 +81,6 @@
         </plugins>
     </build>
 
-    <developers>
-        <developer>
-            <id>tehapo</id>
-            <name>Teemu Pöntelin</name>
-        </developer>
-    </developers>
-    <contributors>
-        <contributor>
-            <name>Vincent Demeester</name>
-            <email>vincent+github@demeester.fr</email>
-        </contributor>
-    </contributors>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
