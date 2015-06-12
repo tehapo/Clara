@@ -160,7 +160,6 @@ public class ClaraBuilder {
      * <li>
      * {@link org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser}</li>
      * </ul>
-     * </p>
      *
      * @param parser
      *            Attribute parser
