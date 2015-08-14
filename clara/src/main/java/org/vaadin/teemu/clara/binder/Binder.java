@@ -121,10 +121,6 @@ public class Binder {
                 controller.getClass(), UiField.class)) {
             bindField(componentRoot, controller, field);
         }
-        Class<?> superclass = clazz.getSuperclass();
-        if (superclass != null) {
-            bindFields(componentRoot, controller, superclass);
-        }
     }
 
     private void bindMethods(Component componentRoot, Object controller) {
@@ -137,7 +133,6 @@ public class Binder {
                 controller.getClass(), UiHandler.class)) {
             bindEventHandler(componentRoot, controller, method);
         }
-
     }
 
     private void bindField(Component componentRoot, Object controller,
