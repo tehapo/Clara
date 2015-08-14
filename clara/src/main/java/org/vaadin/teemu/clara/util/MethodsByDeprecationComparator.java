@@ -7,7 +7,7 @@ import java.util.Comparator;
  * {@link Comparator} to sort {@link Method}s so that deprecated methods come
  * last.
  */
-public class MethodComparator implements Comparator<Method> {
+public class MethodsByDeprecationComparator implements Comparator<Method> {
 
     private boolean isDeprecated(Method method) {
         return method.isAnnotationPresent(Deprecated.class);

@@ -6,7 +6,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
 import org.vaadin.teemu.clara.binder.annotation.UiField;
@@ -103,7 +102,6 @@ public class BinderTest {
         assertEquals(1, assignedFields.size());
     }
 
-    @Ignore("needs adjustment in Binder")
     @Test
     public void getAlreadyAssignedFields_yieldFieldFromBaseClass() {
         SubcontrollerWithoutFieldBinding controller =

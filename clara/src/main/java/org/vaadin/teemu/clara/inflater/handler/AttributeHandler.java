@@ -19,7 +19,7 @@ import org.vaadin.teemu.clara.inflater.parser.ComponentPositionParser;
 import org.vaadin.teemu.clara.inflater.parser.EnumAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.PrimitiveAttributeParser;
 import org.vaadin.teemu.clara.inflater.parser.VaadinAttributeParser;
-import org.vaadin.teemu.clara.util.MethodComparator;
+import org.vaadin.teemu.clara.util.MethodsByDeprecationComparator;
 import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import com.vaadin.ui.Component;
@@ -50,7 +50,7 @@ public class AttributeHandler {
     /**
      * Returns the namespace of attributes this {@link AttributeHandler} is
      * interested in.
-     * 
+     *
      * @return XML namespace this handler is responsible for.
      */
     public String getNamespace() {
@@ -205,7 +205,7 @@ public class AttributeHandler {
      * Comparator to sort {@link Method}s into a preferred ordering taking into
      * account available parsers in addition to method deprecation.
      */
-    private class ParserAwareMethodComparator extends MethodComparator {
+    private class ParserAwareMethodComparator extends MethodsByDeprecationComparator {
 
         private Class<?> getPropertyClass(Method method) {
             Class<?>[] parameterTypes = method.getParameterTypes();

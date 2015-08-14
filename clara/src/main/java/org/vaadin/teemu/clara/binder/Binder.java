@@ -1,6 +1,16 @@
 package org.vaadin.teemu.clara.binder;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
+import org.vaadin.teemu.clara.Clara;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
+import org.vaadin.teemu.clara.util.MethodsByDeprecationComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -18,17 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vaadin.teemu.clara.Clara;
-import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
-import org.vaadin.teemu.clara.binder.annotation.UiField;
-import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.util.MethodComparator;
-import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Component;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 public class Binder {
 
@@ -51,15 +51,15 @@ public class Binder {
      * {@link Component}s found in the given {@code componentRoot} component
      * hierarchy. The binding is defined by the annotations {@link UiField},
      * {@link UiHandler} and {@link UiDataSource}.
-     * 
+     *
      * @param componentRoot
      *            root of a {@link Component} hierarchy.
      * @param controller
      *            controller instance with annotations defining some bindings.
-     * 
+     *
      * @throws BinderException
      *             if an error is encountered during the binding.
-     * 
+     *
      * @see UiField
      * @see UiHandler
      * @see UiDataSource
@@ -78,13 +78,13 @@ public class Binder {
      * controller fields decorated with the {@link UiField} annotation that
      * already have a {@link Component} reference assigned. If the given
      * controller is {@code null}, an empty {@link Map} is returned.
-     * 
+     *
      * @param controller
      *            controller instance which can have {@link UiField} annotated
      *            fields.
      * @return a {@link Map} containing already assigned fields with
      *         {@link UiField} annotation.
-     * 
+     *
      * @see UiField
      */
     public Map<String, Component> getAlreadyAssignedFields(Object controller) {
@@ -93,9 +93,8 @@ public class Binder {
         }
 
         Map<String, Component> assignedFields = new HashMap<String, Component>();
-        Field[] fields = controller.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(UiField.class)) {
+        for (Field field : ReflectionUtils.getAllDeclaredFieldsAnnotatedWith(
+                controller.getClass(), UiField.class)) {
                 try {
                     field.setAccessible(true);
                     Object value = field.get(controller);
@@ -112,18 +111,15 @@ public class Binder {
                                     "Exception while accessing controller object fields.",
                                     e);
                 }
-            }
         }
         return assignedFields;
     }
 
     private void bindFields(Component componentRoot, Object controller,
             Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(UiField.class)) {
-                bindField(componentRoot, controller, field);
-            }
+        for (Field field : ReflectionUtils.getAllDeclaredFieldsAnnotatedWith(
+                controller.getClass(), UiField.class)) {
+            bindField(componentRoot, controller, field);
         }
         Class<?> superclass = clazz.getSuperclass();
         if (superclass != null) {
@@ -132,16 +128,16 @@ public class Binder {
     }
 
     private void bindMethods(Component componentRoot, Object controller) {
-        Method[] methods = controller.getClass().getMethods();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(UiDataSource.class)) {
-                bindDataSource(componentRoot, controller, method);
-            }
-
-            if (method.isAnnotationPresent(UiHandler.class)) {
-                bindEventHandler(componentRoot, controller, method);
-            }
+        for (Method method : ReflectionUtils.getAllDeclaredMethodsAnnotatedWith(
+                controller.getClass(), UiDataSource.class)) {
+            bindDataSource(componentRoot, controller, method);
         }
+
+        for (Method method : ReflectionUtils.getAllDeclaredMethodsAnnotatedWith(
+                controller.getClass(), UiHandler.class)) {
+            bindEventHandler(componentRoot, controller, method);
+        }
+
     }
 
     private void bindField(Component componentRoot, Object controller,
@@ -165,7 +161,7 @@ public class Binder {
      * Returns id of the {@link Component} that the given {@link Field} should
      * be bound to. Assumes that the given {@code field} has {@link UiField}
      * annotation. This should be checked before calling this method.
-     * 
+     *
      * @return id of the component to bind the field.
      */
     private String extractComponentId(Field field) {
@@ -183,7 +179,7 @@ public class Binder {
     /**
      * Expects that the given {@link Method} is annotated with {@link UiHandler}
      * annotation.
-     * 
+     *
      * @param componentRoot
      * @param controller
      * @param method
@@ -257,9 +253,8 @@ public class Binder {
                                     method.getName(), listenerMethod.getName()));
                     return listenerMethod.invoke(controller, args);
                 }
-                getLogger().fine(
-                        String.format("Forwarding method call %s to %s.",
-                                method.getName(), controller.getClass()));
+                getLogger().fine(String.format("Forwarding method call %s to %s.", method.getName(),
+                                controller.getClass()));
                 return method.invoke(controller, args);
             } catch (InvocationTargetException ex) {
                 throw ex.getCause();
@@ -303,7 +298,7 @@ public class Binder {
             Class<? extends Component> componentClass, Class<?> eventClass) {
         List<Method> addListenerCandidates = findMethods(componentClass,
                 "add(.*)Listener", ParamCount.constant(1));
-        Collections.sort(addListenerCandidates, new MethodComparator());
+        Collections.sort(addListenerCandidates, new MethodsByDeprecationComparator());
 
         for (Method addListenerCandidate : addListenerCandidates) {
             // Check if this method accepts correct type of listeners.
@@ -323,7 +318,7 @@ public class Binder {
     /**
      * Expects that the given {@link Method} is annotated with
      * {@link UiDataSource} annotation.
-     * 
+     *
      * @param componentRoot
      * @param controller
      * @param method
