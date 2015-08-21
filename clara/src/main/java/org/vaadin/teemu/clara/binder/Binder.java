@@ -1,16 +1,6 @@
 package org.vaadin.teemu.clara.binder;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Component;
-import org.vaadin.teemu.clara.Clara;
-import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
-import org.vaadin.teemu.clara.binder.annotation.UiField;
-import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.util.MethodsByDeprecationComparator;
-import org.vaadin.teemu.clara.util.ReflectionUtils;
-import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -28,7 +18,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+import org.vaadin.teemu.clara.Clara;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
+import org.vaadin.teemu.clara.util.MethodsByDeprecationComparator;
+import org.vaadin.teemu.clara.util.ReflectionUtils;
+import org.vaadin.teemu.clara.util.ReflectionUtils.ParamCount;
+
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
 
 public class Binder {
 
@@ -95,22 +96,21 @@ public class Binder {
         Map<String, Component> assignedFields = new HashMap<String, Component>();
         for (Field field : ReflectionUtils.getAllDeclaredFieldsAnnotatedWith(
                 controller.getClass(), UiField.class)) {
-                try {
-                    field.setAccessible(true);
-                    Object value = field.get(controller);
-                    if (value instanceof Component) {
-                        // We are intentionally not using the idPrefix here
-                        // The specific use in the inflater doesn't need the
-                        // prefix
-                        assignedFields.put(extractComponentId(field),
-                                (Component) value);
-                    }
-                } catch (IllegalAccessException e) {
-                    getLogger()
-                            .log(Level.WARNING,
-                                    "Exception while accessing controller object fields.",
-                                    e);
+            try {
+                field.setAccessible(true);
+                Object value = field.get(controller);
+                if (value instanceof Component) {
+                    // We are intentionally not using the idPrefix here
+                    // The specific use in the inflater doesn't need the
+                    // prefix
+                    assignedFields.put(extractComponentId(field),
+                            (Component) value);
                 }
+            } catch (IllegalAccessException e) {
+                getLogger().log(Level.WARNING,
+                        "Exception while accessing controller object fields.",
+                        e);
+            }
         }
         return assignedFields;
     }
@@ -124,13 +124,15 @@ public class Binder {
     }
 
     private void bindMethods(Component componentRoot, Object controller) {
-        for (Method method : ReflectionUtils.getAllDeclaredMethodsAnnotatedWith(
-                controller.getClass(), UiDataSource.class)) {
+        for (Method method : ReflectionUtils
+                .getAllDeclaredMethodsAnnotatedWith(controller.getClass(),
+                        UiDataSource.class)) {
             bindDataSource(componentRoot, controller, method);
         }
 
-        for (Method method : ReflectionUtils.getAllDeclaredMethodsAnnotatedWith(
-                controller.getClass(), UiHandler.class)) {
+        for (Method method : ReflectionUtils
+                .getAllDeclaredMethodsAnnotatedWith(controller.getClass(),
+                        UiHandler.class)) {
             bindEventHandler(componentRoot, controller, method);
         }
     }
@@ -248,8 +250,9 @@ public class Binder {
                                     method.getName(), listenerMethod.getName()));
                     return listenerMethod.invoke(controller, args);
                 }
-                getLogger().fine(String.format("Forwarding method call %s to %s.", method.getName(),
-                                controller.getClass()));
+                getLogger().fine(
+                        String.format("Forwarding method call %s to %s.",
+                                method.getName(), controller.getClass()));
                 return method.invoke(controller, args);
             } catch (InvocationTargetException ex) {
                 throw ex.getCause();
@@ -293,7 +296,8 @@ public class Binder {
             Class<? extends Component> componentClass, Class<?> eventClass) {
         List<Method> addListenerCandidates = findMethods(componentClass,
                 "add(.*)Listener", ParamCount.constant(1));
-        Collections.sort(addListenerCandidates, new MethodsByDeprecationComparator());
+        Collections.sort(addListenerCandidates,
+                new MethodsByDeprecationComparator());
 
         for (Method addListenerCandidate : addListenerCandidates) {
             // Check if this method accepts correct type of listeners.

@@ -1,16 +1,12 @@
 package org.vaadin.teemu.clara.binder;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import org.junit.Before;
-import org.junit.Test;
-import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
-import org.vaadin.teemu.clara.binder.annotation.UiField;
-import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.inflater.LayoutInflater;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,13 +20,18 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
+import org.vaadin.teemu.clara.inflater.LayoutInflater;
+
+import com.vaadin.data.Property;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 
 public class BinderTest {
 
@@ -95,19 +96,21 @@ public class BinderTest {
 
     @Test
     public void getAlreadyAssignedFields_yieldFieldFromClass() {
-        ControllerWithFieldBinding controller =
-                new ControllerWithFieldBinding(new Button("myButton"));
+        ControllerWithFieldBinding controller = new ControllerWithFieldBinding(
+                new Button("myButton"));
         Binder binder = new Binder();
-        Map<String, Component> assignedFields = binder.getAlreadyAssignedFields(controller);
+        Map<String, Component> assignedFields = binder
+                .getAlreadyAssignedFields(controller);
         assertEquals(1, assignedFields.size());
     }
 
     @Test
     public void getAlreadyAssignedFields_yieldFieldFromBaseClass() {
-        SubcontrollerWithoutFieldBinding controller =
-                new SubcontrollerWithoutFieldBinding(new Button("myButton"));
+        SubcontrollerWithoutFieldBinding controller = new SubcontrollerWithoutFieldBinding(
+                new Button("myButton"));
         Binder binder = new Binder();
-        Map<String, Component> assignedFields = binder.getAlreadyAssignedFields(controller);
+        Map<String, Component> assignedFields = binder
+                .getAlreadyAssignedFields(controller);
         assertEquals(1, assignedFields.size());
     }
 

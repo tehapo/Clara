@@ -205,7 +205,8 @@ public class AttributeHandler {
      * Comparator to sort {@link Method}s into a preferred ordering taking into
      * account available parsers in addition to method deprecation.
      */
-    private class ParserAwareMethodComparator extends MethodsByDeprecationComparator {
+    private class ParserAwareMethodComparator extends
+            MethodsByDeprecationComparator {
 
         private Class<?> getPropertyClass(Method method) {
             Class<?>[] parameterTypes = method.getParameterTypes();

@@ -1,9 +1,10 @@
 package org.vaadin.teemu.clara.inflater;
 
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import org.vaadin.teemu.clara.binder.annotation.UiField;
 
 @SuppressWarnings("serial")
 public class CustomVerticalLayout extends VerticalLayout {

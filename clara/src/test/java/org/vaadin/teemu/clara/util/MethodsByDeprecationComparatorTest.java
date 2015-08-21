@@ -1,13 +1,13 @@
 package org.vaadin.teemu.clara.util;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class MethodsByDeprecationComparatorTest {
 
