@@ -175,11 +175,6 @@ public class LayoutInflater {
         private final List<ComponentProvider> componentProviders;
 
         public LayoutInflaterContentHandler(
-                ComponentProvider... componentProviders) {
-            this(Arrays.asList(componentProviders));
-        }
-
-        public LayoutInflaterContentHandler(
                 List<ComponentProvider> componentProviders) {
             this.componentProviders = componentProviders;
 
