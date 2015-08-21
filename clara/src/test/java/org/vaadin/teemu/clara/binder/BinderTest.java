@@ -1,11 +1,16 @@
 package org.vaadin.teemu.clara.binder;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
+import org.junit.Before;
+import org.junit.Test;
+import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
+import org.vaadin.teemu.clara.binder.annotation.UiField;
+import org.vaadin.teemu.clara.binder.annotation.UiHandler;
+import org.vaadin.teemu.clara.inflater.LayoutInflater;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,18 +22,15 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
+import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.vaadin.teemu.clara.binder.annotation.UiDataSource;
-import org.vaadin.teemu.clara.binder.annotation.UiField;
-import org.vaadin.teemu.clara.binder.annotation.UiHandler;
-import org.vaadin.teemu.clara.inflater.LayoutInflater;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.DateField;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class BinderTest {
 
@@ -76,19 +78,37 @@ public class BinderTest {
         binder.bind(button, controller);
 
         // check that the field is correctly set
-        assertTrue(controller.myButton == button);
+        assertSame(button, controller.getMyButton());
     }
 
     @Test
     public void bind_field_fieldOfSuperclassSetCorrectly() {
         Button button = (Button) inflater.inflate(getXml("single-button.xml"));
 
-        ControllerWithFieldBinding controller = new SubcontrollerWithoutFieldBinding();
+        SubcontrollerWithoutFieldBinding controller = new SubcontrollerWithoutFieldBinding();
         Binder binder = new Binder();
         binder.bind(button, controller);
 
         // check that the field is correctly set
-        assertTrue(controller.myButton == button);
+        assertSame(button, controller.getMyButton());
+    }
+
+    @Test
+    public void getAlreadyAssignedFields_yieldFieldFromClass() {
+        ControllerWithFieldBinding controller =
+                new ControllerWithFieldBinding(new Button("myButton"));
+        Binder binder = new Binder();
+        Map<String, Component> assignedFields = binder.getAlreadyAssignedFields(controller);
+        assertEquals(1, assignedFields.size());
+    }
+
+    @Test
+    public void getAlreadyAssignedFields_yieldFieldFromBaseClass() {
+        SubcontrollerWithoutFieldBinding controller =
+                new SubcontrollerWithoutFieldBinding(new Button("myButton"));
+        Binder binder = new Binder();
+        Map<String, Component> assignedFields = binder.getAlreadyAssignedFields(controller);
+        assertEquals(1, assignedFields.size());
     }
 
     @Test(expected = BinderException.class)
@@ -129,7 +149,7 @@ public class BinderTest {
         binder.bind(button, controller);
 
         // check that the field is correctly set
-        assertTrue(controller.myButton == button);
+        assertSame(button, controller.myButton);
     }
 
     @Test
@@ -223,6 +243,14 @@ public class BinderTest {
         @UiField("myButton")
         private Button myButton;
 
+        public ControllerWithFieldBinding() {
+            // do nothing
+        }
+
+        public ControllerWithFieldBinding(Button button) {
+            myButton = button;
+        }
+
         public Button getMyButton() {
             return myButton;
         }
@@ -232,6 +260,13 @@ public class BinderTest {
     public static class SubcontrollerWithoutFieldBinding extends
             ControllerWithFieldBinding {
 
+        public SubcontrollerWithoutFieldBinding() {
+            super();
+        }
+
+        public SubcontrollerWithoutFieldBinding(Button button) {
+            super(button);
+        }
     }
 
     public static class ControllerWithFieldBindingOfMissingId {
