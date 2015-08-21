@@ -30,7 +30,10 @@ import com.vaadin.ui.TextField;
 public class ReflectionUtilsTest {
 
     public static class BaseClassToExamine {
+
+        @SuppressWarnings("unused")
         private String stringBase;
+
         @UiField("textFieldFromBase")
         private TextField textFieldBase;
 
@@ -51,7 +54,10 @@ public class ReflectionUtilsTest {
     }
 
     public static class SubClassToExamine extends BaseClassToExamine {
+
+        @SuppressWarnings("unused")
         private String stringSub;
+
         @UiField("textFieldFromSub")
         private TextField textFieldSub;
 
