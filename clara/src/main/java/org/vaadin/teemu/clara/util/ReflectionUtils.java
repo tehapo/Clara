@@ -1,7 +1,5 @@
 package org.vaadin.teemu.clara.util;
 
-import com.vaadin.ui.Component;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -10,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.vaadin.ui.Component;
 
 /**
  * Static utility methods leveraging the Java Reflection API.
@@ -38,6 +40,10 @@ public class ReflectionUtils {
             return new ParamCount(minAndMax, minAndMax);
         }
 
+        public boolean matches(int numberOfParams) {
+            return numberOfParams >= this.min && numberOfParams <= this.max;
+        }
+
     }
 
     /**
@@ -55,11 +61,15 @@ public class ReflectionUtils {
      */
     public static List<Method> findMethods(Class<?> clazz, String nameRegex,
             ParamCount numberOfParams) {
+        // Create the Pattern and Matcher outside the loop to optimize
+        // performance (and possibly memory usage).
+        Pattern p = Pattern.compile(nameRegex);
+        Matcher m = p.matcher("");
+
         List<Method> methods = new ArrayList<Method>();
         for (Method method : clazz.getMethods()) {
-            if (method.getName().matches(nameRegex)
-                    && method.getParameterTypes().length >= numberOfParams.min
-                    && method.getParameterTypes().length <= numberOfParams.max) {
+            if (numberOfParams.matches(method.getParameterTypes().length)
+                    && m.reset(method.getName()).matches()) {
                 methods.add(method);
             }
         }
