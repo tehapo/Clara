@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ 
+    Modify this XML layout definition and notice your changes 
+    on the right panel.
+
+    Try to move around the id attributes to see effects of the
+    binding. For example you can move the bound data source of
+    the Table to the Select. Or you can change the value change
+    event handler from the RatingStars component to the DateField
+    by moving the value-field id.
+    
+    Have fun!
+     
+-->
+<VerticalLayout 
+    xmlns="urn:import:com.vaadin.ui"
+    xmlns:a="urn:import:org.vaadin.teemu.ratingstars"
+    xmlns:l="urn:vaadin:parent"
+    margin="true"
+    spacing="true">
+
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+    <Label contentMode="HTML" value="Welcome to &lt;strong&gt;Clara&lt;/strong&gt; demo application." />
+
+
+</VerticalLayout>

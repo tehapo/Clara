@@ -1,6 +1,6 @@
 package org.vaadin.teemu.clara.inflater.handler;
 
-import static org.vaadin.teemu.clara.util.ReflectionUtils.findMethods;
+import static org.vaadin.teemu.clara.util.ReflectionUtils.listMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -186,7 +186,7 @@ public class AttributeHandler {
 
     protected Method getWriteMethod(String propertyName,
             Class<? extends Component> componentClass) {
-        List<Method> writeMethods = findMethods(componentClass,
+        List<Method> writeMethods = listMethods(componentClass,
                 getWriteMethodName(propertyName), ParamCount.fromTo(0, 1));
         return getPreferredMethod(writeMethods);
     }

@@ -76,6 +76,34 @@ public class ReflectionUtils {
         return methods;
     }
 
+	/**
+	 * Returns a {@link List} of {@link Method}s from the given {@code clazz}
+	 * {@link Class} that match the given {@code name} by method name and
+	 * has parameter count matching the given {@code numberOfParams}.
+	 *
+	 * This method allocates a lot less memory than findMethods.
+	 *
+	 * @param clazz
+	 *            {@link Class} to find the methods from.
+	 * @param name
+	 *            the exact name of the method.
+	 * @param numberOfParams
+	 *            number of parameters expected.
+	 * @return {@link List} of methods or an empty {@link List}.
+	 */
+	public static List<Method> listMethods(Class<?> clazz, String name,
+			ParamCount numberOfParams) {
+		List<Method> methods = new ArrayList<Method>();
+		for (Method method : clazz.getMethods()) {
+			if (method.getName().equals(name)
+					&& method.getParameterTypes().length >= numberOfParams.min
+					&& method.getParameterTypes().length <= numberOfParams.max) {
+				methods.add(method);
+			}
+		}
+		return methods;
+	}
+
     /**
      * Returns a {@link List} of {@link Method}s from the given {@code clazz}
      * {@link Class} that match the given {@code nameRegex} by method name and
